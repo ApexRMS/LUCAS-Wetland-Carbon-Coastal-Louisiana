@@ -14,7 +14,7 @@ signIn(mySession)
 
 rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
+pathInDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -148,7 +148,7 @@ myScenario <- scenario(myProject,
                        scenario="SF Flow Multipliers [Non Forest; Updated]",
                        folder = "Single-Cell Sub-Scenarios")
 
-flowMultipliers <- read.csv(paste0(outpathDatasheets,"FlowMultipliersLAModel.csv"), stringsAsFactors = F)
+flowMultipliers <- read.csv(paste0(pathInDatasheets,"FlowMultipliersLAModel.csv"), stringsAsFactors = F)
 names(flowMultipliers) <- gsub("ID","Id",names(flowMultipliers))
 
 flowMultipliersAgCrop <- flowMultipliers %>%
@@ -241,7 +241,7 @@ myScenario <- scenario(myProject,
 
 myData <- datasheet(myScenario, name = "stsim_FlowPathway")
 
-flowPathways <- read.csv(paste0(outpathDatasheets,"FlowPathwaysLAModel.csv"), stringsAsFactors = F)
+flowPathways <- read.csv(paste0(pathInDatasheets,"FlowPathwaysLAModel.csv"), stringsAsFactors = F)
 names(flowPathways) <- gsub("ID","Id",names(flowPathways))
 
 flowPathways$StateAttributeTypeId[flowPathways$StateAttributeTypeId == "NPP"] <- "Net Growth"
@@ -346,7 +346,7 @@ myScenario <- scenario(myProject,
                        scenario="Init C Stocks at Equilibrium Water and Shore [Mean]",
                        folder = "Single-Cell Sub-Scenarios")
 
-myUpdate <- read.csv(paste0(outpathDatasheets,"StateAttributeValuesOtherLAModel.csv"), stringsAsFactors = F)
+myUpdate <- read.csv(paste0(pathInDatasheets,"StateAttributeValuesOtherLAModel.csv"), stringsAsFactors = F)
 names(myUpdate) <- gsub("ID","Id",names(myUpdate))
 
 myUpdate <- myUpdate %>%

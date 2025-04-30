@@ -14,9 +14,10 @@ signIn(mySession)
 
 rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
-rootPathUpdatedTables <- paste0(outpathDatasheets,"Emergent/")
-carbonDataPath <- paste0(outpathDatasheets,"ForestedWetland/")
+outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/Output/")
+rootPathUpdatedTables <- paste0(rootpath,"Data/Datasheets Wetland/Emergent/")
+carbonDataPath <- paste0(rootpath,"Data/Datasheets Wetland/ForestedWetland/")
+pathInDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -161,7 +162,7 @@ flowGroupsMissingValues <- unique(emergentWetland$FlowGroupId)
 flowGroupsMissingValues <- flowGroupsMissingValues[!(flowGroupsMissingValues %in% c("Biomass Turnover: Fine Roots -> AG Very Fast [Type]",
                                                                                     "Decay: AG Very Fast -> AG Slow [Type]"))]
 
-flowMultipliersAg <- read.csv(paste0(outpathDatasheets,"FlowMultipliersLAModel.csv"), stringsAsFactors = F)
+flowMultipliersAg <- read.csv(paste0(pathInDatasheets,"FlowMultipliersLAModel.csv"), stringsAsFactors = F)
 names(flowMultipliersAg) <- gsub("ID","Id",names(flowMultipliersAg))
 
 flowMultipliersAg <- flowMultipliersAg %>%

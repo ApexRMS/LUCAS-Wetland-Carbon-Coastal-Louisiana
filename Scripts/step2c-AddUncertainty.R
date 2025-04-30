@@ -13,8 +13,8 @@ signIn(mySession)
 
 rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
-rootPathUpdatedTables <- paste0(outpathDatasheets,"Emergent/")
+pathInDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
+rootPathUpdatedTables <- paste0(rootpath,"Data/Datasheets Wetland/Emergent/")
 
 numberOfJobs <- 3
 
@@ -183,7 +183,7 @@ flowGroupsMissingValues <- unique(emergentWetland$FlowGroupId)
 flowGroupsMissingValues <- flowGroupsMissingValues[!(flowGroupsMissingValues %in% c("Biomass Turnover: Fine Roots -> AG Very Fast [Type]",
                                                                                     "Decay: AG Very Fast -> AG Slow [Type]"))]
 
-flowMultipliersAg <- read.csv(paste0(outpathDatasheets,"FlowMultipliersLAModel.csv"), stringsAsFactors = F)
+flowMultipliersAg <- read.csv(paste0(pathInDatasheets,"FlowMultipliersLAModel.csv"), stringsAsFactors = F)
 names(flowMultipliersAg) <- gsub("ID","Id",names(flowMultipliersAg))
 
 flowMultipliersAg <- flowMultipliersAg %>%
@@ -287,8 +287,8 @@ rm(myData,myScenario)
 # Add distributions for Methane
 
 # Wetland crosswalk
-LUCASWetlandSubclassRaw <- read_csv(paste0(outpathDatasheets, "LUCAS_Wetland_Subclass.csv"))
-siteSummary <- read_csv(paste0(outpathDatasheets,"siteSummaryLatFlux_StockBasedEquilibrium_2024_07_11.csv"))
+LUCASWetlandSubclassRaw <- read_csv(paste0(pathInDatasheets, "LUCAS_Wetland_Subclass.csv"))
+siteSummary <- read_csv(paste0(pathInDatasheets,"siteSummaryLatFlux_StockBasedEquilibrium_2024_07_11.csv"))
 
 siteSummary <- siteSummary %>%
   select(Site.ID,`Wetland Subclass LUCAS`,externalVariableLatSite)

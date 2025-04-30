@@ -14,7 +14,7 @@ signIn(mySession)
 
 rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
+pathInDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -196,7 +196,7 @@ saveDatasheet(myScenario, myDataUnVegForested, "stsim_FlowPathway", append = TRU
 
 # Calculate the correct partitions between lateral and emissions
 
-siteSummary <- read_csv(paste0(outpathDatasheets,"siteSummaryLatFlux_StockBasedEquilibrium_2024_07_11.csv"))
+siteSummary <- read_csv(paste0(pathInDatasheets,"siteSummaryLatFlux_StockBasedEquilibrium_2024_07_11.csv"))
 
 partAGVF <- siteSummary %>%
   select(AGVFEmission_Amount,AGVFLatTrans_Amount) %>%
@@ -242,7 +242,7 @@ myScenario <- scenario(myProject,
                        scenario="SF Flow Multipliers [Emergent Wetland to Water]",
                        folder = "Single-Cell Sub-Scenarios")
 
-flowMultipliers <- read.csv(paste0(outpathDatasheets,"FlowMultipliersLAModel.csv"), stringsAsFactors = F)
+flowMultipliers <- read.csv(paste0(pathInDatasheets,"FlowMultipliersLAModel.csv"), stringsAsFactors = F)
 names(flowMultipliers) <- gsub("ID","Id",names(flowMultipliers))
 
 flowMultipliersWater <- flowMultipliers %>%

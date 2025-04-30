@@ -14,7 +14,7 @@ signIn(mySession)
 
 rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
+outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/Output/")
 
 dataPath <- "Data/"
 modelPath <- "Models/"
