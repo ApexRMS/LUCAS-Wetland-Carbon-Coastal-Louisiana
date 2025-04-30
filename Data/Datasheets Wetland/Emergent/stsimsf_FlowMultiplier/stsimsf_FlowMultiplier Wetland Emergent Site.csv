@@ -1,0 +1,25 @@
+StateClassID,FlowGroupID,DistributionType
+Wetland: Estuarine Emergent,Net Growth Wetland Emergent: Atmosphere -> Foliage,Wetland: Estuarine Emergent Net Growth Wetland Emergent: Atmosphere -> Foliage
+Wetland: Palustrine Emergent,Net Growth Wetland Emergent: Atmosphere -> Foliage,Wetland: Palustrine Emergent Net Growth Wetland Emergent: Atmosphere -> Foliage
+Wetland: Estuarine Emergent,Net Growth Wetland Emergent: Atmosphere -> Fine Roots,Wetland: Estuarine Emergent Net Growth Wetland Emergent: Atmosphere -> Fine Roots
+Wetland: Palustrine Emergent,Net Growth Wetland Emergent: Atmosphere -> Fine Roots,Wetland: Palustrine Emergent Net Growth Wetland Emergent: Atmosphere -> Fine Roots
+Wetland: Estuarine Emergent,Biomass Turnover: Foliage -> AG Very Fast,Wetland: Estuarine Emergent Biomass Turnover: Foliage -> AG Very Fast
+Wetland: Palustrine Emergent,Biomass Turnover: Foliage -> AG Very Fast,Wetland: Palustrine Emergent Biomass Turnover: Foliage -> AG Very Fast
+Wetland: Estuarine Emergent,Biomass Turnover: Fine Roots -> BG Very Fast,Wetland: Estuarine Emergent Biomass Turnover: Fine Roots -> BG Very Fast
+Wetland: Palustrine Emergent,Biomass Turnover: Fine Roots -> BG Very Fast,Wetland: Palustrine Emergent Biomass Turnover: Fine Roots -> BG Very Fast
+Wetland: Estuarine Emergent,Emission: AG Very Fast -> Atmosphere Temp,Wetland: Estuarine Emergent Emission: AG Very Fast -> Atmosphere Temp
+Wetland: Palustrine Emergent,Emission: AG Very Fast -> Atmosphere Temp,Wetland: Palustrine Emergent Emission: AG Very Fast -> Atmosphere Temp
+Wetland: Estuarine Emergent,Emission: BG Very Fast -> Atmosphere Temp,Wetland: Estuarine Emergent Emission: BG Very Fast -> Atmosphere Temp
+Wetland: Palustrine Emergent,Emission: BG Very Fast -> Atmosphere Temp,Wetland: Palustrine Emergent Emission: BG Very Fast -> Atmosphere Temp
+Wetland: Estuarine Emergent,Emission: BG Slow -> Atmosphere Temp,Wetland: Estuarine Emergent Emission: BG Slow -> Atmosphere Temp
+Wetland: Palustrine Emergent,Emission: BG Slow -> Atmosphere Temp,Wetland: Palustrine Emergent Emission: BG Slow -> Atmosphere Temp
+Wetland: Estuarine Emergent,Lateral Transport: AG Very Fast -> Aquatic,Wetland: Estuarine Emergent Lateral Transport: AG Very Fast -> Aquatic
+Wetland: Palustrine Emergent,Lateral Transport: AG Very Fast -> Aquatic,Wetland: Palustrine Emergent Lateral Transport: AG Very Fast -> Aquatic
+Wetland: Estuarine Emergent,Lateral Transport: BG Very Fast -> Aquatic,Wetland: Estuarine Emergent Lateral Transport: BG Very Fast -> Aquatic
+Wetland: Palustrine Emergent,Lateral Transport: BG Very Fast -> Aquatic,Wetland: Palustrine Emergent Lateral Transport: BG Very Fast -> Aquatic
+Wetland: Estuarine Emergent,Lateral Transport: BG Slow -> Aquatic,Wetland: Estuarine Emergent Lateral Transport: BG Slow -> Aquatic
+Wetland: Palustrine Emergent,Lateral Transport: BG Slow -> Aquatic,Wetland: Palustrine Emergent Lateral Transport: BG Slow -> Aquatic
+Wetland: Estuarine Emergent,Decay: BG Very Fast -> BG Slow,Wetland: Estuarine Emergent Decay: BG Very Fast -> BG Slow
+Wetland: Palustrine Emergent,Decay: BG Very Fast -> BG Slow,Wetland: Palustrine Emergent Decay: BG Very Fast -> BG Slow
+Wetland: Estuarine Emergent,Stabilization: BG Slow -> Deep Soil,Wetland: Estuarine Emergent Stabilization: BG Slow -> Deep Soil
+Wetland: Palustrine Emergent,Stabilization: BG Slow -> Deep Soil,Wetland: Palustrine Emergent Stabilization: BG Slow -> Deep Soil
