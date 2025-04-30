@@ -1,0 +1,53 @@
+Name,Description
+Cropland,Agriculture
+Pasture,Agriculture
+High Intensity,Developed
+Low Intensity,Developed
+Medium Intensity,Developed
+Open Space,Developed
+Transportation,Developed
+Alder/Maple Group,Forest
+Aspen/Birch Group,Forest
+California Mixed Conifer Group,Forest
+Douglas-fir Coastal Group,Forest
+Douglas-fir Inland Group,Forest
+Elm/Ash/Cottonwood Group,Forest
+Exotic Hardwoods Group,Forest
+Exotic Softwoods Group,Forest
+Fir/Spruce/Mountain Hemlock Group,Forest
+Hemlock/Sitka Spruce Group,Forest
+Loblolly/Shortleaf Pine Group,Forest
+Lodgepole Pine Group,Forest
+Longleaf/Slash Pine Group,Forest
+Maple/Beech/Birch Group,Forest
+Oak/Gum/Cypress Group,Forest
+Oak/Hickory Group,Forest
+Oak/Pine Group,Forest
+Other Western Hardwoods Group,Forest
+Other Western Softwood Group,Forest
+Pinyon/Juniper Group,Forest
+Ponderosa Pine Group,Forest
+Redwood Group,Forest
+Spruce/Fir Group,Forest
+Tanoak/Laurel Group,Forest
+Tropical Hardwoods Group,Forest
+Western Larch Group,Forest
+Western Oak Group,Forest
+Western White Pine Group,Forest
+White/Red/Jack Pine Group,Forest
+Annual,Grassland
+Natural Perennial,Grassland
+Irrigated Perennial,Grassland
+Native Sage Steppe,Shrubland
+Invaded Sage Steppe,Shrubland
+Sage,Shrubland
+Non-sage,Shrubland
+Chaparral,Shrubland
+Herbaceous,Wetland
+Unconsolidated Shore,Wetland
+Estuarine Emergent,Wetland
+Palustrine Emergent,Wetland
+Palustrine Forested,Wetland
+Estuarine Forested,Wetland
+All,
+Post Fire Shrub,

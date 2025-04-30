@@ -1,0 +1,5 @@
+Iteration,Timestep,StratumID,SecondaryStratumID,TertiaryStratumID,StateClassID,StateAttributeTypeID,AgeMin,AgeMax,TSTGroupID,TSTMin,TSTMax,Value,DistributionType,DistributionFrequencyID,DistributionSD,DistributionMin,DistributionMax
+,,,,,Barren:All,Carbon Initial Conditions: Belowground Slow,,,,,,65.2037,,,,,
+,,,,,Developed:All,Carbon Initial Conditions: Belowground Slow,,,,,,65.2037,,,,,
+,,,,,Unconsolidated Shore:All,Carbon Initial Conditions: Belowground Slow,,,,,,233.4655,,,,,
+,,,,,Water:All,Carbon Initial Conditions: Belowground Slow,,,,,,172.9603,,,,,
