@@ -9,11 +9,12 @@ library(tidyverse)
 
 # Specify file paths, library, and project
 
-mySession <- session("C:/Program Files/SyncroSim Studio/")
+mySession <- session("C:/Program Files/SyncroSim/")
+signIn(mySession)
 
-rootPath <- "E:/gitprojects/lucas-cmp/"
+rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-outpathDatasheets <- "E:/gitprojects/lucas-cmp/Data/Datasheets Wetland/"
+outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
 
 numberOfJobs <- 3
 

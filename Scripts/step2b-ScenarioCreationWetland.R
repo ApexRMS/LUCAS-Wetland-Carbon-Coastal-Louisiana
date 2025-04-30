@@ -9,15 +9,14 @@ library(tidyverse)
 
 # Specify file paths, library, and project
 
-mySession <- session("C:/Program Files/SyncroSim Studio/")
+mySession <- session("C:/Program Files/SyncroSim/")
+signIn(mySession)
 
-rootPath <- "E:/gitprojects/lucas-cmp/"
+rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-carbonDataPath <- "E:/gitprojects/a275/Data/CONUS/Carbon/Tabular/ForestedWetland/"
-
-rootPathUpdatedTables <- "E:/gitprojects/a275/Scripts/CONUS/Carbon Preprocessing/Wetland Emergent/Results/libraries/subscenarios/updatedAug2024/"
-
-outpathDatasheets <- "E:/gitprojects/lucas-cmp/Data/Datasheets Wetland/"
+outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
+rootPathUpdatedTables <- paste0(outpathDatasheets,"Emergent/")
+carbonDataPath <- paste0(outpathDatasheets,"ForestedWetland/")
 
 dataPath <- "Data/"
 modelPath <- "Models/"

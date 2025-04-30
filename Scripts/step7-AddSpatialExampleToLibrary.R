@@ -15,12 +15,12 @@ tileSize                     <- 650000 #1e4 # Approximate number of cells per ti
 contig                       <- TRUE # Create contiguous tiles?
 numberOfJobs <- 15
 
-mySession <- session("C:/Program Files/SyncroSim Studio/")
+mySession <- session("C:/Program Files/SyncroSim/")
+signIn(mySession)
 
-rootPath <- "E:/gitprojects/lucas-cmp/"
+rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-outpathDatasheets <- "E:/gitprojects/lucas-cmp/Data/Datasheets Wetland/"
-
+outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/")
 
 dataPath <- "Data/"
 modelPath <- "Models/"

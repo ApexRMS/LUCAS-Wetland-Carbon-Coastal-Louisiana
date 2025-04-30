@@ -10,7 +10,7 @@ library(sf)
 library(terra)
 
 # Specify file paths
-rootPath <- "E:/gitprojects/lucas-cmp/"
+rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 sourceDataPath <- "E:/Data Sources/"
 studyAreaFullPath <- "E:/LUCAS LA Model/Data Inputs/Basins/Basins/shapefile/BasinsCoastal.shp"
 

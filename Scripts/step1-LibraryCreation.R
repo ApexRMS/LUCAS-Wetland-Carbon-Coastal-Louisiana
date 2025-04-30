@@ -6,10 +6,10 @@
 library(rsyncrosim)
 library(tidyverse)
 
-rootPath <- "E:/gitprojects/lucas-cmp/"
-SyncroSimDir <- "C:/Program Files/SyncroSim Studio/"
+rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
-mySession <- session(SyncroSimDir)
+mySession <- session("C:/Program Files/SyncroSim/")
+signIn(mySession)
 
 primaryStrata <- "Study Area"
 primaryStrataID <- 1
