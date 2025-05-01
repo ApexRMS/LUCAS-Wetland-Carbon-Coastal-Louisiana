@@ -1,8 +1,0 @@
-MapID,ProjectID,Name,IsReadOnly,Timesteps,Iteration,NumPanesX,NumPanesY,ShowScenarioName,ShowScenarioID,ShowIndicatorLabel,ShowTimestepLabel,ShowTimestepPrefix,ShowTimestamp,ScenarioNameFont,MapLabelFont,TimestepFont,PanelSize,ViewExtent,Criteria,LayoutName,NestLabels
-682,1,Carbon: Dead Organic Matter,0,"2001, 2021",,3,3,-1,-1,0,0,0,,,,,100,,stsimsf_avgstkg-519-itemid-519-itemsrc-stsimsf_StockGroup,,-1
-683,1,Carbon: Live Biomass Carbon,0,"2001, 2021",,3,3,-1,-1,0,0,0,,,,,100,,stsimsf_avgstkg-510-itemid-510-itemsrc-stsimsf_StockGroup,,-1
-684,1,Carbon: LULC Emissions,0,2002 - 2021,,3,3,-1,-1,0,-1,0,,,,,100,ssimextent|252.9459|852.4766|19.67717,stsimsf_avgflog-642-itemid-642-itemsrc-stsimsf_FlowGroup,,-1
-685,1,Carbon: NBP,0,2021,,3,3,-1,-1,0,0,0,,,,,100,,stsimsf_avgflog-657-itemid-657-itemsrc-stsimsf_FlowGroup,,-1
-686,1,Carbon: Total Ecosystem Carbon,0,"2001, 2021",,3,3,-1,-1,0,0,0,0,Microsoft Sans Serif|8.25|0,Microsoft Sans Serif|8.25|0,Microsoft Sans Serif|8.25|0,100,,stsimsf_avgstkg-520-itemid-520-itemsrc-stsimsf_StockGroup,,-1
-687,1,LULC,0,"2001, 2021",,3,3,-1,-1,-1,-1,-1,,,,,100,,stsim_sc,,-1
-688,1,LULC Transitions,0,,,3,3,-1,-1,-1,-1,-1,0,Microsoft Sans Serif|8.25|0,Microsoft Sans Serif|8.25|0,Microsoft Sans Serif|8.25|0,100,,stsim_avgtp-335-itemid-335-itemsrc-stsim_TransitionGroup|stsim_avgtp-341-itemid-341-itemsrc-stsim_TransitionGroup,,-1
