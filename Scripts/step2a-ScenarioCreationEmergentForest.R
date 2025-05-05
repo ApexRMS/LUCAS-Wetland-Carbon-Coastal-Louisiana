@@ -12,10 +12,10 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
+rootPath <- "C:/Users/AmandaSchwantes/Documents/GitHub/A329-LucasBarataria/"
 
-outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/Output/")
-rootPathUpdatedTables <- paste0(rootpath,"Data/Datasheets Wetland/Emergent/")
+outpathDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/Output/")
+rootPathUpdatedTables <- paste0(rootPath,"Data/Datasheets Wetland/Emergent/")
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -447,6 +447,14 @@ flowTypesEmergentEmission <- c("Emission Emergent: BG Slow -> Atmosphere Temp",
                                "Emission: BG Very Fast -> Atmosphere Temp",
                                "Emission: AG Very Fast -> Atmosphere Temp")
 
+flowTypesEmergentDecay <- tibble(FromStateClassId = c("Wetland: Estuarine Emergent",
+                                                              "Wetland: Palustrine Emergent"),
+                                 FromStockTypeId = "DOM: Aboveground Very Fast",
+                                 ToStockTypeId = "DOM: Belowground Slow",
+                                 FlowTypeId = "Decay: AG Very Fast -> BG Slow",
+                                 Multiplier = 1)
+                                                            
+
 flowTypesAddEmergent <- tibble(FromStateClassId = rep(c("Wetland: Estuarine Emergent",
                                                 "Wetland: Palustrine Emergent"),
                                                 length(flowTypesEmergentEmission)),
@@ -552,6 +560,7 @@ myData$FlowTypeId[myData$FlowTypeId == "Stabilization: BG Slow -> Deep Soil" &
 myDataState <- flowTypesMethane
 
 myDataAll <- flowTypesAddEmergent %>%
+  addRow(flowTypesEmergentDecay) %>%
   addRow(flowTypesAddForest1) %>%
   addRow(flowTypesAddForest2) %>%
   addRow(flowTypesAddCO2) %>%
