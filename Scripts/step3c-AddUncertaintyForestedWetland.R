@@ -11,10 +11,10 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
+rootPath <- "C:/Users/AmandaSchwantes/Documents/GitHub/A329-LucasBarataria/"
 
-outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/Output/")
-rootPathUpdatedTables <- paste0(rootpath,"Data/Datasheets Wetland/Emergent/")
+outpathDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/Output/")
+rootPathUpdatedTables <- paste0(rootPath,"Data/Datasheets Wetland/Emergent/")
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -368,7 +368,7 @@ myDataUpdateEmissionW <- myUpdateDistFlowsW %>%
 myDataNewW <- myDataKeepW %>%
   addRow(myDataUpdateLatW) %>%
   addRow(myDataUpdateEmissionW) %>%
-  select(-StateClassId,-AgeMin,-AgeMax)
+  select(-StateClassId,-AgeMin,-AgeMax,-FlowGroupId)
 
 myDataNewW <- myDataNewW[!(duplicated(myDataNewW)),]
   
@@ -409,19 +409,19 @@ myDataUpdateEmissionS <- myUpdateDistFlowsS %>%
 myDataNewS <- myDataKeepS %>%
   addRow(myDataUpdateLatS) %>%
   addRow(myDataUpdateEmissionS) %>%
-  select(-StateClassId,-AgeMin,-AgeMax)
+  select(-StateClassId,-AgeMin,-AgeMax,-FlowGroupId)
 
 myDataNewS <- myDataNewS[!(duplicated(myDataNewS)),]
   
 saveDatasheet(myScenario, myDataNewS, "stsim_DistributionValue", append = TRUE)
 
 myUpdateDistFlowsW2 <- myUpdateDistFlowsW2 %>%
-  select(-StateClassId,-AgeMin,-AgeMax)
+  select(-StateClassId,-AgeMin,-AgeMax,-FlowGroupId)
 
 myUpdateDistFlowsW2 <- myUpdateDistFlowsW2[!(duplicated(myUpdateDistFlowsW2)),]
 
 myUpdateDistFlowsS2 <- myUpdateDistFlowsS2 %>%
-  select(-StateClassId,-AgeMin,-AgeMax)
+  select(-StateClassId,-AgeMin,-AgeMax,-FlowGroupId)
 
 myUpdateDistFlowsS2 <- myUpdateDistFlowsS2[!(duplicated(myUpdateDistFlowsS2)),]
 

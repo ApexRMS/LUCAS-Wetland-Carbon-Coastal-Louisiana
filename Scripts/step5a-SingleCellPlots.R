@@ -11,7 +11,7 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
+rootPath <- "C:/Users/AmandaSchwantes/Documents/GitHub/A329-LucasBarataria/"
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -215,7 +215,8 @@ plotFlows<- c("Annual Emissions: CO2 (tons C per year)",
               "Annual Lateral Flux (tons C per year)",               
               "Annual Lateral Flux (tons CO2-eq per year)",
               "Annual Net Ecosystem Carbon Balance (tons C per year)",
-              "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
+              "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+              "Decay: AG Very Fast -> BG Slow [Type]")
 
 for (i in 1:length(plotFlows)){
   
