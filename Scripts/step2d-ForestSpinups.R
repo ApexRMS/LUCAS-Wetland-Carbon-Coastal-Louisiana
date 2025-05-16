@@ -14,9 +14,9 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
+rootPath <- "C:/Users/AmandaSchwantes/Documents/GitHub/A329-LucasBarataria/"
 
-outpathDatasheets <- paste0(rootpath,"Data/Datasheets Wetland/Output/")
+outpathDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/Output/")
 
 numberOfJobs <- 7
 

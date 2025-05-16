@@ -219,10 +219,16 @@ methaneTab <- tibble(StateClassId = c("Wetland: Palustrine Forested",
 # 1 ha = 10,000 m2
 #((104.7 + 0.8)/2)/100
 
-methaneTab2 <- tibble(StateClassId = c("Wetland: Palustrine Emergent",
-                                       "Wetland: Estuarine Emergent"),
-                      StateAttributeTypeId = "Methane Emissions",
-                      Value = c(0.1450,0.09666667))#0.1450*12/18# 6 saline sites
+methaneTab2 <- read_csv(paste0(rootPathUpdatedTables,"stsim_StateAttributeValue/stsim_StateAttributeValue CH4 Wetland Emergent Mean.csv"))
+names(methaneTab2) <- gsub("ID","Id",names(methaneTab2))
+
+methaneTab2 <- methaneTab2 %>%
+  mutate(Value = Value/100)
+
+# methaneTab2 <- tibble(StateClassId = c("Wetland: Palustrine Emergent",
+#                                        "Wetland: Estuarine Emergent"),
+#                       StateAttributeTypeId = "Methane Emissions",
+#                       Value = c(0.1450,0.09666667))#0.1450*12/18# 6 saline sites
 
 dataAll <- methaneTab %>%
   addRow(methaneTab2)

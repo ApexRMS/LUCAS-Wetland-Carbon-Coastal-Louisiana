@@ -286,37 +286,23 @@ rm(myData,myScenario)
 
 # Add distributions for Methane
 
-# Wetland crosswalk
-LUCASWetlandSubclassRaw <- read_csv(paste0(pathInDatasheets, "LUCAS_Wetland_Subclass.csv"))
-siteSummary <- read_csv(paste0(pathInDatasheets,"siteSummaryLatFlux_StockBasedEquilibrium_2024_07_11.csv"))
-
-siteSummary <- siteSummary %>%
-  select(Site.ID,`Wetland Subclass LUCAS`,externalVariableLatSite)
-
-LUCASWetlandSubclass <- LUCASWetlandSubclassRaw %>%
-  mutate(MethaneValue = case_when(`Habitat Type 2014` == "Saline"~ 0,
-                                  `Habitat Type 2014` != "Saline" ~ 0.1450)) %>%
-  select(Site.ID,MethaneValue)
-
-siteSummary <- siteSummary %>%
-  left_join(LUCASWetlandSubclass, by = join_by(Site.ID))
-
 myScenario <- scenario(myProject, 
                        scenario="Distributions [CH4, Lat, Site]",
                        folder = "Single-Cell Sub-Scenarios")
 
-distCH4 <- siteSummary %>%
-  mutate(DistributionTypeId = paste0(`Wetland Subclass LUCAS`," Emission: Atmosphere Temp -> Atmosphere: CH4"),
-         ExternalVariableTypeId = paste0("Site ID ",`Wetland Subclass LUCAS`),
-         ExternalVariableMin = externalVariableLatSite,
-         ExternalVariableMax = externalVariableLatSite,
-         Value = MethaneValue,
-         ValueDistributionRelativeFrequency = 1) %>%
-  select(-Site.ID,-`Wetland Subclass LUCAS`,-externalVariableLatSite,-MethaneValue)
-  
-saveDatasheet(myScenario, distCH4, "stsim_DistributionValue", append = FALSE)
+myUpdate <- read_csv(paste0(rootPathUpdatedTables,"stsim_DistributionValue/stsim_DistributionValue CH4 Wetland Emergent Site Lat.csv"))
+names(myUpdate) <- gsub("ID","Id",names(myUpdate))
 
-rm(distCH4,myScenario)
+myUpdate <- myUpdate %>%
+  mutate(Value = Value/100) %>%
+  select(-Site.Id) %>%
+  mutate(DistributionTypeId = gsub("Methane Emissions",
+                                   "Emission: Atmosphere Temp -> Atmosphere: CH4",
+                                   DistributionTypeId))
+
+saveDatasheet(myScenario, myUpdate, "stsim_DistributionValue", append = FALSE)
+
+rm(myUpdate,myScenario)
 
 myScenario <- scenario(myProject,
                        scenario="Distributions [Site, Lat]",
