@@ -1,0 +1,27 @@
+StateClassID,FlowGroupID,Value
+Wetland: Estuarine Emergent,Net Growth Wetland Emergent: Atmosphere -> Foliage,0.18785305947365163
+Wetland: Palustrine Emergent,Net Growth Wetland Emergent: Atmosphere -> Foliage,0.14596156509705824
+Wetland: Estuarine Emergent,Net Growth Wetland Emergent: Atmosphere -> Fine Roots,0.8121469405263484
+Wetland: Palustrine Emergent,Net Growth Wetland Emergent: Atmosphere -> Fine Roots,0.8540384349029418
+Wetland: Estuarine Emergent,Biomass Turnover: Foliage -> AG Very Fast,0.8073065626723284
+Wetland: Palustrine Emergent,Biomass Turnover: Foliage -> AG Very Fast,0.9224494116261789
+Wetland: Estuarine Emergent,Biomass Turnover: Fine Roots -> BG Very Fast,0.8644449597656865
+Wetland: Palustrine Emergent,Biomass Turnover: Fine Roots -> BG Very Fast,0.8415359910258587
+Wetland: Estuarine Emergent,Emission: AG Very Fast -> Atmosphere Temp,0.40150667397978723
+Wetland: Palustrine Emergent,Emission: AG Very Fast -> Atmosphere Temp,0.35215378281335946
+Wetland: Estuarine Emergent,Emission: BG Very Fast -> Atmosphere Temp,0.22694107795558988
+Wetland: Palustrine Emergent,Emission: BG Very Fast -> Atmosphere Temp,0.3012816924144346
+Wetland: Estuarine Emergent,Emission: BG Slow -> Atmosphere Temp,0.019254750424710105
+Wetland: Palustrine Emergent,Emission: BG Slow -> Atmosphere Temp,0.02045125806167992
+Wetland: Estuarine Emergent,Lateral Transport: AG Very Fast -> Aquatic,0.04006075451964128
+Wetland: Palustrine Emergent,Lateral Transport: AG Very Fast -> Aquatic,0.01194207498147252
+Wetland: Estuarine Emergent,Lateral Transport: BG Very Fast -> Aquatic,0.022643286908001298
+Wetland: Palustrine Emergent,Lateral Transport: BG Very Fast -> Aquatic,0.010216924357916128
+Wetland: Estuarine Emergent,Lateral Transport: BG Slow -> Aquatic,0.0019211631588970854
+Wetland: Palustrine Emergent,Lateral Transport: BG Slow -> Aquatic,6.935335332389924e-4
+Wetland: Estuarine Emergent,Decay: BG Very Fast -> BG Slow,0.33786350071564947
+Wetland: Palustrine Emergent,Decay: BG Very Fast -> BG Slow,0.38235392459300716
+Wetland: Estuarine Emergent,Decay: AG Very Fast -> BG Slow,0.17137147499930402
+Wetland: Palustrine Emergent,Decay: AG Very Fast -> BG Slow,0.20871817889047417
+Wetland: Estuarine Emergent,Stabilization: BG Slow -> Deep Soil,0.006150156745240487
+Wetland: Palustrine Emergent,Stabilization: BG Slow -> Deep Soil,0.003204108802350096
