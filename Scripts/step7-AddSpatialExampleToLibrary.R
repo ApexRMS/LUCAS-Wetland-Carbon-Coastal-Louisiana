@@ -556,7 +556,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- T
 
-dependency(myScenario) <- c("SF Flow Multipliers [Forested Wetland to Water IPCC]",
+dependency(myScenario) <- c("SF Flow Multipliers [Forested Wetland to Water]",
                             "SF Flow Multipliers [Emergent Wetland to Water IPCC]",
                             "SF Flow Multipliers [Non Forest; Updated]",
                             "SF Flow Multipliers [Emergent Wetland]",
@@ -622,7 +622,7 @@ sheetName <- "stsim_OutputOptionsSpatial"
 
 myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>% 
   addRow(data.frame(RasterOutputSC = TRUE,
-                    RasterOutputSCTimesteps = 5))
+                    RasterOutputSCTimesteps = 1))
 saveDatasheet(myScenario, myData, sheetName, append = FALSE)
 
 rm(myScenario, myData, sheetName)
@@ -715,11 +715,12 @@ myScenario <- scenario(myProject,
 myDataOrig <- datasheet(myScenario, name = "stsim_OutputFilterFlows")
 
 flowGroupsAdd1 <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
-                   "Annual Emissions: CH4 (tons CO2-eq per year)",
-                   "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
-                   "Annual Net Growth (tons CO2-eq per year)",
-                   "Annual Emissions: CO2 (tons CO2-eq per year)",
-                   "Annual Lateral Flux (tons CO2-eq per year)")
+                    "Annual Net Ecosystem Carbon Balance (tons C per year)",
+                    "Annual Emissions: CH4 (tons CO2-eq per year)",
+                    "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
+                    "Annual Net Growth (tons CO2-eq per year)",
+                    "Annual Emissions: CO2 (tons CO2-eq per year)",
+                    "Annual Lateral Flux (tons CO2-eq per year)")
 
 myDataOrig$Spatial <- FALSE
 myDataOrig$AvgSpatial <- FALSE
@@ -751,7 +752,7 @@ myDataOrig <- datasheet(myScenario, name = "stsim_OutputOptionsStockFlow")
 myDataOrig$SpatialOutputST <- "No"
 myDataOrig$SpatialOutputFL <- "No"
 myDataOrig$AvgSpatialOutputSTTimesteps <- 15
-myDataOrig$AvgSpatialOutputFLTimesteps <- 15
+myDataOrig$AvgSpatialOutputFLTimesteps <- 1
 
 saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = FALSE)
 

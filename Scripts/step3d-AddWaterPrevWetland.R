@@ -12,7 +12,7 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "C:/Users/AmandaSchwantes/Documents/GitHub/A329-LucasBarataria/"
+rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
 pathInDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/")
 
@@ -439,10 +439,9 @@ rm(myScenario, myData, myData2,myData3,myData4)
 # Technically forest live pools (coarse roots, merch, other all decay slower)?
 # Think about what to do about this later
 
-myScenario <- scenario(myProject, 
+myScenario <- scenario(myProject,
                        scenario="SF Flow Multipliers [Emergent Wetland to Water IPCC]",
-                       folder = "Single-Cell Sub-Scenarios",
-                       source = "SF Flow Multipliers [Emergent Wetland to Water]")
+                       folder = "Single-Cell Sub-Scenarios")
 
 myScenarioOld <- scenario(myProject,
                           scenario = "SF Flow Multipliers [Emergent Wetland to Water]")
@@ -460,11 +459,15 @@ flowsZero <- c("Decay: AG Fast -> AG Slow [Type]",
                "Decay: AG Very Fast -> AG Slow [Type]",
                "Decay: BG Fast -> BG Slow [Type]",
                "Decay: BG Very Fast -> BG Slow [Type]",
+               "Decay: Snag Branch -> AG Slow [Type]",
+               "Decay: Snag Stem -> AG Slow [Type]",
                "Lateral Transport Emergent: BG Slow -> Aquatic [Type]",
                "Lateral Transport: AG Very Fast -> Aquatic [Type]",
                "Lateral Transport: BG Very Fast -> Aquatic [Type]",
                "Stabilization Emergent: BG Slow -> Deep Soil [Type]",
-               "Transfer: AG Slow -> BG Slow [Type]")
+               "Transfer: AG Slow -> BG Slow [Type]",
+               "Transfer: Snag Branch -> AG Fast [Type]",
+               "Transfer: Snag Stem -> AG Medium [Type]")
 
 flowsOne <- c("Emission Emergent: BG Slow -> Atmosphere Temp [Type]",
               "Emission: AG Fast -> Atmosphere [Type]",
@@ -472,10 +475,19 @@ flowsOne <- c("Emission Emergent: BG Slow -> Atmosphere Temp [Type]",
               "Emission: AG Slow -> Atmosphere [Type]",
               "Emission: AG Very Fast -> Atmosphere Temp [Type]",
               "Emission: BG Very Fast -> Atmosphere Temp [Type]",
-              "Emission: BG Fast -> Atmosphere [Type]")
+              "Emission: BG Fast -> Atmosphere [Type]",
+              "Emission: Snag Branch -> Atmosphere [Type]",
+              "Emission: Snag Stem -> Atmosphere [Type]",
+              "Biomass Turnover: Merchantable -> Snag Stems [Type]")
 
 myData$Value[myData$FlowGroupId %in% flowsZero] <- 0
 myData$Value[myData$FlowGroupId %in% flowsOne] <- 1
+
+myData$Value[myData$FlowGroupId %in% c("Biomass Turnover: Coarse Roots -> AG Fast [Type]",
+                                       "Biomass Turnover: Coarse Roots -> BG Fast [Type]")] <- 0.5
+
+myData$Value[myData$FlowGroupId %in% c("Biomass Turnover: Other Wood -> AG Fast [Type]")] <- 0.75
+myData$Value[myData$FlowGroupId %in% c("Biomass Turnover: Other Wood -> Snag Branches [Type]")] <- 0.25
 
 myData
 
