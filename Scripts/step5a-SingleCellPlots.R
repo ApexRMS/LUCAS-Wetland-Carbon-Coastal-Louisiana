@@ -370,8 +370,8 @@ myDataFluxF <- datasheet(myScenarioF, "stsim_OutputFlow")
 
 excludeId <- scenarioList$ScenarioId[grep("Updated: Ag to Palustrine Forested Wetland",scenarioList$Name)]
 
-#forWetId <- scenarioList$ScenarioId[grep("Palustrine Forested Wetland: Add Uncertainty",scenarioList$Name)]
-forWetId <- scenarioList$ScenarioId[grep("Palustrine Forested Wetland: Mean",scenarioList$Name)]
+forWetId <- scenarioList$ScenarioId[grep("Palustrine Forested Wetland: Add Uncertainty",scenarioList$Name)]
+#forWetId <- scenarioList$ScenarioId[grep("Palustrine Forested Wetland: Mean",scenarioList$Name)]
 
 forWetId <- forWetId[!(forWetId %in% excludeId)]
 

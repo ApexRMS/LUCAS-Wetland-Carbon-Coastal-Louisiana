@@ -196,7 +196,7 @@ saveDatasheet(myScenario, myDataUnVegForested, "stsim_FlowPathway", append = TRU
 
 # Calculate the correct partitions between lateral and emissions
 
-siteSummary <- read_csv(paste0(pathInDatasheets,"siteSummaryLatFlux_StockBasedEquilibrium_2024_07_11.csv"))
+siteSummary <- read_csv(paste0(pathInDatasheets,"siteSummaryLatFlux_StockBasedEquilibrium_2025_05_16.csv"))
 
 partAGVF <- siteSummary %>%
   select(AGVFEmission_Amount,AGVFLatTrans_Amount) %>%
