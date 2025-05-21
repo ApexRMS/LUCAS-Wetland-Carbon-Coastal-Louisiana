@@ -87,18 +87,19 @@ for (j in 1:length(keepStocksSpatial)){
       units = "in",
       res = 600)
   plot(r1, 
-       plg=list(title="tons C/ha", title.cex=0.8),
+       plg=list(title=as.expression(bquote("tons C"~ha^-1)), 
+                title.cex=0.7),
        type = "continuous",
        axes = FALSE,
-       main = stockName,
+       main = paste0("e. ", stockName),
        col = rev(mako(n = 100)),
        cex.main = 0.8,
        maxcell = 10000000)
-  north(type = 1, cex = 0.7, "bottomleft")
-  sbar(40000, xy=c(500000,694000),
-       divs=2, cex=0.8, 
-       type = "bar", below = "km",
-       label = c(0,20,40))
+  # north(type = 1, cex = 0.7, "bottomleft")
+  # sbar(40000, xy=c(500000,694000),
+  #      divs=2, cex=0.8, 
+  #      type = "bar", below = "km",
+  #      label = c(0,20,40))
   dev.off()
   
   rm(stockId,listStocksSub,stockName,r1)
@@ -115,11 +116,17 @@ listFluxes <- list.files(paste0(rootPath,"/Models/",
                          pattern = ".tif",
                          full.names = T)
 
-keepFluxesSpatial <- c("Annual Emissions: CH4 (tons CO2-eq per year)",
+keepFluxesSpatial <- c("Annual Net Growth (tons CO2-eq per year)",
                        "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
-                       "Annual Net Growth (tons CO2-eq per year)",
-                       "Annual Emissions: CO2 (tons CO2-eq per year)",
-                       "Annual Lateral Flux (tons CO2-eq per year)")
+                       "Annual Lateral Flux (tons CO2-eq per year)",
+                       "Annual Emissions: CH4 (tons CO2-eq per year)",
+                       "Annual Emissions: CO2 (tons CO2-eq per year)")
+
+fluxNameLetters <- c("a. ",
+                     "b. ",
+                     "c. ",
+                     "z. ",
+                     "z. ")
 
 keepFluxesSpatialDiff <- "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
 
@@ -137,6 +144,7 @@ for (k in 1:length(keepFluxesSpatial)){
   fluxName <- gsub(": "," ",fluxName)
   fluxName <- gsub("-"," ",fluxName)
   fluxName <- gsub("Annual Net Ecosystem Carbon Balance","Annual NECB",fluxName)
+  fluxName <- gsub(" CO2 and CH4","",fluxName)
   
   r1 <- rast(listFluxesSub)
   
@@ -146,18 +154,19 @@ for (k in 1:length(keepFluxesSpatial)){
       units = "in",
       res = 600)
   plot(r1, 
-       plg=list(title="tons CO2-eq/ha/yr", title.cex=0.8),
+       plg=list(title=as.expression(bquote("tons "~CO[2-eq]~ha^-1~y^-1)), 
+                title.cex=0.7),
        type = "continuous",
        axes = FALSE,
-       main = fluxName,
+       main = paste0(fluxNameLetters[k],fluxName),
        col = rev(mako(n = 100)),
        cex.main = 0.8,
        maxcell = 10000000)
-  north(type =1,cex = 0.7, "bottomleft")
-  sbar(40000, xy=c(500000,694000), 
-       divs=2, cex=0.8, 
-       type = "bar", below = "km",
-       label = c(0,20,40))
+  # north(type =1,cex = 0.7, "bottomleft")
+  # sbar(40000, xy=c(500000,694000), 
+  #      divs=2, cex=0.8, 
+  #      type = "bar", below = "km",
+  #      label = c(0,20,40))
   dev.off()
   
   rm(fluxId,listFluxesSub,fluxName,r1)
@@ -193,20 +202,21 @@ for (k in 1:length(keepFluxesSpatialDiff)){
       units = "in",
       res = 600)
   plot(r1, 
-       plg=list(title="tons CO2-eq/ha/yr", title.cex=0.8),
+       plg=list(title=as.expression(bquote("tons "~CO[2-eq]~ha^-1~y^-1)), 
+                title.cex=0.7),
        type = "continuous",
        axes = FALSE,
-       main = fluxName,
+       main = paste0("d. ", fluxName),
        range = c(-(max2-50),(max2-50)),
        col = rev(turbo(n = 100)),
        cex.main = 0.8,
        fill_range = T,
        maxcell = 10000000)
-  north(type =1,cex = 0.7, "bottomleft")
-  sbar(40000, xy=c(500000,694000), 
-       divs=2, cex=0.8, 
-       type = "bar", below = "km",
-       label = c(0,20,40))
+  # north(type =1,cex = 0.7, "bottomleft")
+  # sbar(40000, xy=c(500000,694000), 
+  #      divs=2, cex=0.8, 
+  #      type = "bar", below = "km",
+  #      label = c(0,20,40))
   dev.off()
   
   rm(fluxId,listFluxesSub,fluxName,r1)
@@ -248,7 +258,7 @@ col1 <- data.frame(value = c(82,
                              500,
                              700),
                    col = c("#BFA056",
-                           "#C1C1C1",
+                           "#C3CB48",
                            "#EFBA8B",
                            "#6D6C14",
                            "#A91EAC",
@@ -298,9 +308,9 @@ png(filename = paste0(pathOutMaps,"LandCover.png"),
     units = "in",
     res = 600)
 plot(r1, 
-     plg=list(x = "bottomleft", cex = 0.5),
+     plg=list(x = "bottomleft", cex = 0.55),
      axes = FALSE,
-     main = "Land Cover",
+     main = "f. Land Cover",
      cex.main = 0.8,
      maxcell = 10000000)
 # add_legend("bottomleft", 
@@ -309,9 +319,9 @@ plot(r1,
 #            bty = "n",
 #            x.intersp = 0.5,
 #            y.intersp = 0.5)
-north(type =1,cex = 0.7, xy = c(640000,684000))
+north(type =1,cex = 0.6, xy = c(640000,684000))
 sbar(40000, xy=c(590000,684000), 
-     divs=2, cex=0.8, 
+     divs=2, cex=0.6, 
      type = "bar", below = "km",
      label = c(0,20,40))
 dev.off()
