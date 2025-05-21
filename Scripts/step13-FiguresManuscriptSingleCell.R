@@ -11,7 +11,7 @@ library(viridis)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "C:/Users/AmandaSchwantes/Documents/GitHub/A329-LucasBarataria/"
+rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -171,8 +171,10 @@ for (i in 1:length(scenarios)){
 }
 
 
-
 # Loop through all flux tables and save data needed for plots
+
+scenariosForest <- c("Original Oak Gum Cypress Forest",
+                     "Palustrine Forested Wetland: Add Uncertainty")
 
 for (i in 1:length(scenarios)){
   
@@ -180,9 +182,18 @@ for (i in 1:length(scenarios)){
   
   myScenario1 <- scenario(myProject, scenario=max(sId))
   
+  if (scenarios[i] %in% scenariosForest){
+    
+    yr <- 2124
+    
+  } else{
+    
+    yr <- 2100
+  }
+  
   myDataFlux1 <- datasheet(myScenario1, "stsim_OutputFlow",
                            filterColumn = "Timestep",
-                           filterValue = 2100)
+                           filterValue = yr)
   write.csv(myDataFlux1,
             paste0(pathOutSingleCell,"/",gsub(":","",gsub(" ","",scenarios[i]),fixed = T),".csv"),
             row.names = F)
@@ -312,7 +323,7 @@ for (i in 1:length(plotFlows)){
   
   p5
   
-  ggsave(paste0(pathOutSingleCell,"/",plotName,".png"), p5, width = 4, height = 3.5, dpi = 600)
+  ggsave(paste0(pathOutSingleCell,"/",plotName,".png"), p5, width = 3.5, height = 3.5, dpi = 600)
   
   rm(plotName,plotFlowsName,myDataFlux1,myDataFlux1necb,
      myDataFlux2,myDataFlux2necb,
@@ -498,13 +509,14 @@ p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           axis.line = element_line(colour = "black"),
-          legend.position="right") +
+          legend.position.inside=c(0.2, 0.8),
+          legend.position = "inside") +
   xlab("\nLand Cover Class") + 
   ylab(as.expression(bquote(atop(.(plotEName),"tons "~CO[2-eq]~ha^-1~y^-1)))) +
   ylim(minVal,maxVal)
   
   p6
   
-ggsave(paste0(pathOutSingleCell,"/",plotEName,".png"), p6, width = 4.5, height = 3.5, dpi = 600)
+ggsave(paste0(pathOutSingleCell,"/",plotEName,".png"), p6, width = 3.5, height = 3.5, dpi = 600)
 
 
