@@ -44,6 +44,22 @@ saveDatasheet(myScenario, myData, sheetName, append = FALSE)
 
 rm(myScenario, myData, sheetName)
 
+# sub-scenario: 1 MC
+myScenario <- scenario(myProject, 
+                       scenario = "Run Control [2001-2124; 1 MC]",
+                       folder = "Single-Cell Sub-Scenarios")
+
+sheetName <- "stsim_RunControl"
+myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>% 
+  addRow(data.frame(MinimumIteration = 1,
+                    MaximumIteration = 1,
+                    MinimumTimestep = 2001,
+                    MaximumTimestep = 2124,
+                    IsSpatial = FALSE))
+saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+
+rm(myScenario, myData, sheetName)
+
 # sub-scenario: 1000 MC
 myScenario <- scenario(myProject, 
                        scenario = "Run Control [2001-2100; 1000 MC]",
@@ -55,6 +71,22 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MaximumIteration = 1000,
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2100,
+                    IsSpatial = FALSE))
+saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+
+rm(myScenario, myData, sheetName)
+
+# sub-scenario: 1000 MC
+myScenario <- scenario(myProject, 
+                       scenario = "Run Control [2001-2124; 1000 MC]",
+                       folder = "Single-Cell Sub-Scenarios")
+
+sheetName <- "stsim_RunControl"
+myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>% 
+  addRow(data.frame(MinimumIteration = 1,
+                    MaximumIteration = 1000,
+                    MinimumTimestep = 2001,
+                    MaximumTimestep = 2124,
                     IsSpatial = FALSE))
 saveDatasheet(myScenario, myData, sheetName, append = FALSE)
 
@@ -390,7 +422,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [2001-2100; 1 MC]",
+dependency(myScenario) <- c("Run Control [2001-2124; 1 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "SF Output Options [All]",
                             "Initial Conditions: Single Cell - Forest: Oak Gum Cypress [Age 1]",
@@ -428,7 +460,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [2001-2100; 1000 MC]",
+dependency(myScenario) <- c("Run Control [2001-2124; 1000 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "SF Output Options [All]",
                             "Initial Conditions: Single Cell - Wetland: Palustrine Forested [Age 1]",
