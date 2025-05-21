@@ -407,7 +407,8 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Stock Limit [Forested Wetland]",
+dependency(myScenario) <- c("Stock Limit [All]",
+                            "STSM Transition Pathways [Update Harvest: Wetland]",
                             "SF Initial Stocks",
                             "SF Stock and Flow Group Membership [Add Methane]",
                             "SF Output Options and Filters [Add Methane]",
@@ -416,6 +417,7 @@ dependency(myScenario) <- c("Stock Limit [Forested Wetland]",
                             "Pipeline")
 
 rm(myScenario)
+
 
 # Ag Spinups
 
@@ -450,7 +452,7 @@ dependency(myScenario) <- c("Run Control [Spinup Agriculture; Non-Spatial; 1850-
                             "Initial Conditions: Single Cell - Wetland: Palustrine Forested [Age 124]",
                             "Transition Multipliers: Single Cell - Agriculture Spinup",
                             "SF Flow Multipliers [Update Emergent, Ag]",
-                            "Single Cell: Carbon and LULC: Spinup Original")
+                            "Single Cell: Carbon and LULC: Spinup Ag")
 
 rm(myScenario)
 
@@ -469,7 +471,7 @@ dependency(myScenario) <- c("Run Control [Spinup Agriculture; Non-Spatial; 1850-
                             "Initial Conditions: Single Cell - Wetland: Palustrine Emergent",
                             "Transition Multipliers: Single Cell - Agriculture Spinup",
                             "SF Flow Multipliers [Update Emergent, Ag]",
-                            "Single Cell: Carbon and LULC: Spinup Original")
+                            "Single Cell: Carbon and LULC: Spinup Ag")
 
 rm(myScenario)
 
