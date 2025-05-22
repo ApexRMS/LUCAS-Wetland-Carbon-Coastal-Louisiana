@@ -180,6 +180,10 @@ for (s in 1:length(scen)){
   
 }
 
+id2 <- scenarioList$ScenarioId[grep("2 Land Cover Change and Climate",scenarioList$Name)]
+
+myScenario2 <- scenario(myProject, scenario=max(id2))
+
 lookupS <- lookupLC %>%
   rename(Start = StateClassId,
          LandClassStart = LandClass)
@@ -246,249 +250,106 @@ for (i in 2:length(years)){
     ylab(paste0(years[i-1],"\n")) +
     geom_text(aes(x=LandClassEnd, y=LandClassStart, label = Area_haR), color = "black", size = 4)
   
-  ggsave(paste0(pathOutLandCover,"/LandCoverT_",years[i],".png"), pT, width = 6, height = 4, dpi = 600)
+  ggsave(paste0(pathOutManuscript,"/LandCoverT_",years[i],".png"), pT, width = 6, height = 4, dpi = 600)
   
 }
 
 
-listLandCover <- list.files(paste0(rootPath,"/Models/",
-                                   modelName,"/",
-                                   modelName,".ssim.data/Scenario-",
-                                   scenarioId(myScenario2),
-                                   "/stsim_OutputSpatialState"),
-                            pattern = ".tif",
-                            full.names = T)
+# Net Changes
 
-sub1 <- grep("ts2001",listLandCover, value = T)
-sub2 <- grep("ts2016",listLandCover, value = T)
+timeStepPair <- c(2001,2016)
 
-r1 <- rast(sub1)
-r2 <- rast(sub2)
+stateClassTable <- datasheet(myProject, name = "stsim_StateClass") %>%
+  select(Name,Id)
 
-t1 <- r1*1000+r2
+lookupLC <- lookupLC %>%
+  rename(Name = StateClassId) %>%
+  left_join(stateClassTable,by = join_by(Name))
 
-lcF <- freq.table(t1)
 
-lcF$StartId <- as.numeric(substr(as.character(lcF$Value),1,4))
-lcF$EndId <- as.numeric(substr(as.character(lcF$Value),5,8))
+lookupS <- lookupLC %>%
+  rename(Start = Id,
+         LandClassStart = LandClass) %>%
+  select(Start,LandClassStart)
 
-stateClassTable <- stateClassTable %>%
-  rename(stateClassId = StartId,
-         Name = Start)
+lookupE <- lookupLC %>%
+  rename(End = Id,
+         LandClassEnd = LandClass) %>%
+  select(End,LandClassEnd)
 
-lookupS <- lookupS %>%
-  left_join(stateClassTable, by = join_by(StartId))
+scenList <- c("2 Land Cover Change and Climate")
 
-stateClassTable <- stateClassTable %>%
-  rename(StartId = EndId,
-         Start = End)
-
-lookupE <- lookupE %>%
-  left_join(stateClassTable, by = join_by(EndId))
-
-lcF <- lcF %>%
-  left_join(lookupS, by = join_by(StartId)) %>%
-  left_join(lookupE, by = join_by(EndId)) %>%
-  group_by(Timestep,LandClassStart,LandClassEnd) %>%
-  summarize(Area_ha = sum(Amount)) %>%
-  ungroup()
-
-landClasses <- c("Estuarine Emergent Wetland",
-                 "Palustrine Emergent Wetland",
-                 "Palustrine Forested Wetland",
-                 "Water & Shore",
-                 "Crop & Urban",
-                 "Forest, Grass, & Shrub")
-
-subTabTransitionBlank <- data.frame(LandClassStart = landClasses,
-                                    LandClassEnd = landClasses,
-                                    Area_ha = NA,
-                                    TimeStep = years[i])
-
-subTabTransition <- subTabTransition %>%
-  filter(!(LandClassStart == LandClassEnd)) %>%
-  bind_rows(subTabTransitionBlank) %>%
-  mutate(Area_haR = round(Area_ha,0))
-
-pT <- ggplot(data = subTabTransition, aes(x=LandClassEnd, y=LandClassStart, fill=Area_ha)) + 
-  geom_tile() +
-  theme_bw() + 
-  theme(panel.border = element_blank(), 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), 
-        axis.line = element_line(colour = "black"),
-        legend.position="right",
-        legend.title=element_blank(),
-        axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_gradient2(low = "#d6ebe4", high = "#297c60", 
-                       limit = c(0,4300),#min(subTabTransition$Area_ha) #max(subTabTransition$Area_ha)
-                       space = "Lab", 
-                       name="Area (Ha)",
-                       na.value="gray70") +
-  xlab(paste0("\n",years[i])) + 
-  ylab(paste0(years[i-1],"\n")) +
-  geom_text(aes(x=LandClassEnd, y=LandClassStart, label = Area_haR), color = "black", size = 4)
-
-ggsave(paste0(pathOutLandCover,"/LandCoverT_",years[i],".png"), pT, width = 6, height = 4, dpi = 600)
-
-listLandCover <- list.files(paste0(rootPath,"/Models/",
-                                   modelName,"/",
-                                   modelName,".ssim.data/Scenario-",
-                                   scenarioId(myScenario2),
-                                   "/stsim_OutputSpatialState"),
-                            pattern = ".tif",
-                            full.names = T)
-
-sub1 <- grep("ts2001",listLandCover, value = T)
-sub2 <- grep("ts2016",listLandCover, value = T)
-
-r1 <- rast(sub1)
-r2 <- rast(sub2)
-
-t1 <- r1*1000+r2
-
-lcF <- freq(t1)
-
-lcF$StartId <- as.numeric(substr(as.character(lcF$Value),1,4))
-lcF$EndId <- as.numeric(substr(as.character(lcF$Value),5,8))
-
-stateClassTable <- stateClassTable %>%
-  rename(stateClassId = StartId,
-         Name = Start)
-
-lookupS <- lookupS %>%
-  left_join(stateClassTable, by = join_by(StartId))
-
-stateClassTable <- stateClassTable %>%
-  rename(StartId = EndId,
-         Start = End)
-
-lookupE <- lookupE %>%
-  left_join(stateClassTable, by = join_by(EndId))
-
-lcF <- lcF %>%
-  left_join(lookupS, by = join_by(StartId)) %>%
-  left_join(lookupE, by = join_by(EndId)) %>%
-  group_by(Timestep,LandClassStart,LandClassEnd) %>%
-  summarize(Area_ha = sum(Amount)) %>%
-  ungroup()
-
-landClasses <- c("Estuarine Emergent Wetland",
-                 "Palustrine Emergent Wetland",
-                 "Palustrine Forested Wetland",
-                 "Water & Shore",
-                 "Crop & Urban",
-                 "Forest, Grass, & Shrub")
-
-subTabTransitionBlank <- data.frame(LandClassStart = landClasses,
-                                    LandClassEnd = landClasses,
-                                    Area_ha = NA,
-                                    TimeStep = years[i])
-
-subTabTransition <- subTabTransition %>%
-  filter(!(LandClassStart == LandClassEnd)) %>%
-  bind_rows(subTabTransitionBlank) %>%
-  mutate(Area_haR = round(Area_ha,0))
-
-pT <- ggplot(data = subTabTransition, aes(x=LandClassEnd, y=LandClassStart, fill=Area_ha)) + 
-  geom_tile() +
-  theme_bw() + 
-  theme(panel.border = element_blank(), 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), 
-        axis.line = element_line(colour = "black"),
-        legend.position="right",
-        legend.title=element_blank(),
-        axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_gradient2(low = "#d6ebe4", high = "#297c60", 
-                       limit = c(0,4300),#min(subTabTransition$Area_ha) #max(subTabTransition$Area_ha)
-                       space = "Lab", 
-                       name="Area (Ha)",
-                       na.value="gray70") +
-  xlab(paste0("\n",years[i])) + 
-  ylab(paste0(years[i-1],"\n")) +
-  geom_text(aes(x=LandClassEnd, y=LandClassStart, label = Area_haR), color = "black", size = 4)
-
-ggsave(paste0(pathOutLandCover,"/LandCoverT_",years[i],".png"), pT, width = 6, height = 4, dpi = 600)
-
-# Transitions Net
-
-listLandCover <- list.files(paste0(rootPath,"/Models/",
-                                   modelName,"/",
-                                   modelName,".ssim.data/Scenario-",
-                                   scenarioId(myScenario2),
-                                   "/stsim_OutputSpatialState"),
-                            pattern = ".tif",
-                            full.names = T)
-
-sub1 <- grep("ts2001",listLandCover, value = T)
-sub2 <- grep("ts2016",listLandCover, value = T)
-
-r1 <- rast(sub1)
-r2 <- rast(sub2)
-
-t1 <- r1*1000+r2
-
-lcF <- freq(t1)
-
-lcF$StartId <- as.numeric(substr(as.character(lcF$Value),1,4))
-lcF$EndId <- as.numeric(substr(as.character(lcF$Value),5,8))
-
-stateClassTable <- stateClassTable %>%
-  rename(stateClassId = StartId,
-         Name = Start)
-
-lookupS <- lookupS %>%
-  left_join(stateClassTable, by = join_by(StartId))
-
-stateClassTable <- stateClassTable %>%
-  rename(StartId = EndId,
-         Start = End)
-
-lookupE <- lookupE %>%
-  left_join(stateClassTable, by = join_by(EndId))
-
-lcF <- lcF %>%
-  left_join(lookupS, by = join_by(StartId)) %>%
-  left_join(lookupE, by = join_by(EndId)) %>%
-  group_by(Timestep,LandClassStart,LandClassEnd) %>%
-  summarize(Area_ha = sum(Amount)) %>%
-  ungroup()
-
-landClasses <- c("Estuarine Emergent Wetland",
-                 "Palustrine Emergent Wetland",
-                 "Palustrine Forested Wetland",
-                 "Water & Shore",
-                 "Crop & Urban",
-                 "Forest, Grass, & Shrub")
-
-subTabTransitionBlank <- data.frame(LandClassStart = landClasses,
-                                    LandClassEnd = landClasses,
-                                    Area_ha = NA,
-                                    TimeStep = years[i])
-
-subTabTransition <- subTabTransition %>%
-  filter(!(LandClassStart == LandClassEnd)) %>%
-  bind_rows(subTabTransitionBlank) %>%
-  mutate(Area_haR = round(Area_ha,0))
-
-pT <- ggplot(data = subTabTransition, aes(x=LandClassEnd, y=LandClassStart, fill=Area_ha)) + 
-  geom_tile() +
-  theme_bw() + 
-  theme(panel.border = element_blank(), 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), 
-        axis.line = element_line(colour = "black"),
-        legend.position="right",
-        legend.title=element_blank(),
-        axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_gradient2(low = "#d6ebe4", high = "#297c60", 
-                       limit = c(0,4300),#min(subTabTransition$Area_ha) #max(subTabTransition$Area_ha)
-                       space = "Lab", 
-                       name="Area (Ha)",
-                       na.value="gray70") +
-  xlab(paste0("\n",years[i])) + 
-  ylab(paste0(years[i-1],"\n")) +
-  geom_text(aes(x=LandClassEnd, y=LandClassStart, label = Area_haR), color = "black", size = 4)
-
-ggsave(paste0(pathOutLandCover,"/LandCoverT_",years[i],".png"), pT, width = 6, height = 4, dpi = 600)
+for (i in 1:length(scenList)){
+  
+  scenID <- scenarioList$ScenarioId[grep(scenList[i],scenarioList$Name)]
+  
+  myScenario <- scenario(myProject, scenario=max(scenID))
+  
+  listLandCover <- list.files(paste0(rootPath,"/Models/",
+                                     modelName,"/",
+                                     modelName,".ssim.data/Scenario-",
+                                     scenarioId(myScenario),
+                                     "/stsim_OutputSpatialState"),
+                              pattern = ".tif",
+                              full.names = T)
+  
+  sub1 <- grep(paste0("ts",timeStepPair[1]),listLandCover, value = T)
+  sub2 <- grep(paste0("ts",timeStepPair[2]),listLandCover, value = T)
+  
+  r1 <- rast(sub1)
+  r2 <- rast(sub2)
+  
+  t1 <- r1*1000+r2
+  
+  lcF <- freq(t1)
+  
+  lcF$value6 <- formatC(lcF$value, width = 6, format = "d", flag = "0")
+  
+  lcF$Start <- as.numeric(substr(as.character(lcF$value6),1,3))
+  lcF$End <- as.numeric(substr(as.character(lcF$value6),4,6))
+  
+  lcF <- lcF %>%
+    left_join(lookupS, by = join_by(Start)) %>%
+    left_join(lookupE, by = join_by(End)) %>%
+    select(count,LandClassStart,LandClassEnd) %>%
+    group_by(LandClassStart,LandClassEnd) %>%
+    summarize(countT = sum(count, na.rm = T)) %>%
+    mutate(Area_ha = countT*30*30/10000)
+  
+  write.csv(lcF,
+            paste0(pathOutManuscript,"/LandCoverT_2001_2016.csv"),
+            row.names = F)
+  
+  landClasses <- unique(lookupLC$LandClass)
+  
+  subTabTransitionBlank <- data.frame(LandClassStart = landClasses,
+                                      LandClassEnd = landClasses,
+                                      Area_ha = NA)
+  
+  lcF <- lcF %>%
+    filter(!(LandClassStart == LandClassEnd)) %>%
+    bind_rows(subTabTransitionBlank) %>%
+    mutate(Area_haR = round(Area_ha,0))
+  
+  pT <- ggplot(data = lcF, aes(x=LandClassEnd, y=LandClassStart, fill=Area_haR)) + 
+    geom_tile() +
+    theme_bw() + 
+    theme(panel.border = element_blank(), 
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(), 
+          axis.line = element_line(colour = "black"),
+          legend.position="right",
+          legend.title=element_blank(),
+          axis.text.x = element_text(angle = 45, hjust = 1)) +
+    scale_fill_gradient2(low = "#d6ebe4", high = "#297c60", 
+                         limit = c(0,4300),#c(min(lcF$Area_haR),max(lcF$Area_haR)),
+                         space = "Lab", 
+                         name="Area (Ha)",
+                         na.value="gray70") +
+    xlab(paste0("\n",timeStepPair[2])) + 
+    ylab(paste0(timeStepPair[1],"\n")) +
+    geom_text(aes(x=LandClassEnd, y=LandClassStart, label = Area_haR), color = "black", size = 4)
+  
+  ggsave(paste0(pathOutManuscript,"/LandCoverT_",gsub(" ","",scenList[i]),".png"), pT, width = 6, height = 4, dpi = 600)
+  
+}
