@@ -325,8 +325,7 @@ add_legend(x = 472000,
            legend = clsCol$cover,
            fill = clsCol$col, cex = 0.3,
            bty = "n",
-           y.intersp = 0.5,
-           seg.len = 1.2)
+           y.intersp = 0.5)
 north(type =1,cex = 0.6, xy = c(640000,684000))
 sbar(40000, xy=c(590000,684000), 
      divs=2, cex=0.6, 
