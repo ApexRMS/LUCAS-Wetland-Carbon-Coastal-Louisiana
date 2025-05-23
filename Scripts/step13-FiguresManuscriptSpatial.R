@@ -267,7 +267,7 @@ for (i in 1:length(plotFlows)){
   
   
   rm(myDataFlux2c,myDataFlux4c,
-     myDataNECBB,plotName)
+     myDataNECBB,plotName,p7,col,lineType)
   
 }
 
