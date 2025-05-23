@@ -66,10 +66,12 @@ for (i in 1:length(scenarios)){
     summarize(meanTotal = mean(Amount, na.rm = T),
               lowTotal = quantile(Amount,0.025, na.rm = T),
               highTotal = quantile(Amount,0.975, na.rm = T)) %>%
+    ungroup() %>%
     select(-StockGroupId)
   
   print(i)
-  print(domSoil)
+  print(max(domSoil$meanTotal,na.rm = T))
+  print(max(domSoil$highTotal,na.rm = T))
   
   stocksKeep <- c("Aboveground Very Fast",
                   "Aboveground Fast",
@@ -90,12 +92,9 @@ for (i in 1:length(scenarios)){
               high = quantile(Amount,0.975, na.rm = T)) %>%
     ungroup()
   
-  myDataStock3 <- myDataStock2 %>%
-    filter(!StockGroupId %in% c("DOM: Soil"))
+  myDataStock2$Pool <- factor(myDataStock2$StockGroupId, levels = stocksKeep)
   
-  myDataStock3$Pool <- factor(myDataStock3$StockGroupId, levels = stocksKeep)
-  
-  p1 <- ggplot(myDataStock3, aes(x=Timestep, y=mean, fill=Pool)) + 
+  p1 <- ggplot(myDataStock2, aes(x=Timestep, y=mean, fill=Pool)) + 
         geom_area() + 
         scale_fill_viridis(discrete = T) +
         theme_bw() +
@@ -106,7 +105,7 @@ for (i in 1:length(scenarios)){
               legend.position="right",
               legend.title=element_blank()) +
         xlab("\nYear") +
-        ylab(as.expression(bquote(atop("Soil Carbon","tons C"~ha^-1)))) +
+        ylab(as.expression(bquote(atop("DOM: Soil","tons C"~ha^-1)))) +
         ggtitle(scenarioLetters[i]) +
         ylim(0,850)
   
@@ -116,7 +115,7 @@ for (i in 1:length(scenarios)){
   
   timestepKeep <- c(2001,2050,2100)
   
-  myDataStock3 <- myDataStock3 %>%
+  myDataStock3 <- myDataStock2 %>%
     left_join(domSoil, by = join_by(Timestep)) %>%
     mutate(lowTotalSub = case_when(!(Timestep %in% timestepKeep) ~ NA,
                                    (Timestep %in% timestepKeep) ~ lowTotal),
@@ -137,7 +136,7 @@ for (i in 1:length(scenarios)){
             legend.position="right",
             legend.title=element_blank()) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("Soil Carbon","tons C"~ha^-1)))) +
+      ylab(as.expression(bquote(atop("DOM: Soil","tons C"~ha^-1)))) +
       ggtitle(scenarioLetters[i]) +
       ylim(0,1800)
     
@@ -155,7 +154,7 @@ for (i in 1:length(scenarios)){
             legend.position="right",
             legend.title=element_blank()) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("Soil Carbon","tons C"~ha^-1)))) +
+      ylab(as.expression(bquote(atop("DOM: Soil","tons C"~ha^-1)))) +
       ggtitle(scenarioLetters[i]) +
       ylim(0,1800)
     
@@ -166,7 +165,7 @@ for (i in 1:length(scenarios)){
   ggsave(paste0(pathOutSingleCell,"/",plotName,"_Error_",substr(scenarioLetters[i],1,1),".png"), p2, width = 5, height = 3, dpi = 600)
   
 
-  rm(p1,myDataStock3,myDataStock2,domSoil,myDataStock1,myScenario1,sId)
+  rm(p1,myDataStock3,myDataStock2,domSoil,myDataStock1,myScenario1,sId,p2)
   
 }
 
@@ -177,35 +176,35 @@ scenariosForest <- c("Original Oak Gum Cypress Forest",
                      "Palustrine Forested Wetland: Add Uncertainty")
 
 for (i in 1:length(scenarios)){
-  
+
   sId <- scenarioList$ScenarioId[grep(scenarios[i],scenarioList$Name)]
-  
+
   myScenario1 <- scenario(myProject, scenario=max(sId))
-  
+
   if (scenarios[i] %in% scenariosForest){
-    
+
     yr <- 2124
-    
+
   } else{
-    
+
     yr <- 2100
   }
-  
+
   myDataFlux1 <- datasheet(myScenario1, "stsim_OutputFlow",
                            filterColumn = "Timestep",
                            filterValue = yr)
   write.csv(myDataFlux1,
             paste0(pathOutSingleCell,"/",gsub(":","",gsub(" ","",scenarios[i]),fixed = T),".csv"),
             row.names = F)
-  
-  rm(sId,myScenario1,myDataFlux1)
+
+  rm(sId,myScenario1,myDataFlux1,yr)
   gc()
-  
+
 }
 
 # Summarize Flows
 
-plotFlows<- c("Annual Lateral Flux (tons CO2-eq per year)",
+plotFlows <- c("Annual Lateral Flux (tons CO2-eq per year)",
               "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
 
 for (i in 1:length(plotFlows)){
@@ -295,18 +294,18 @@ for (i in 1:length(plotFlows)){
     minVal = 0
   } else if (minVal < 0 & maxVal < 0){
     maxVal = 0
-  } 
-  
-  col <- as.character(myDataNECB$Color)
-  names(col) <- as.character(myDataNECB$Scenario)
+  }
   
   myDataNECB$ScenarioO <- factor(myDataNECB$Scenario, levels = c("Upland \nForest",
                                                                  "Palustrine \nForested \nWetland",
                                                                  "Palustrine \nEmergent \nWetland",
                                                                  "Estuarine \nEmergent \nWetland"))
   
+  col <- as.character(myDataNECB$Color)
+  names(col) <- as.character(myDataNECB$ScenarioO)
+  
   p5 <- ggplot(myDataNECB, aes(x = ScenarioO, y = mean, colour = ScenarioO, fill = ScenarioO)) +
-    geom_errorbar(aes(x=ScenarioO, ymin=low, ymax=high), colour = "black", width = 0.3)+
+    geom_errorbar(aes(x=ScenarioO, ymin=low, ymax=high), colour = "black", width = 0.25)+
     geom_point(shape = 23, size = 3) +
     theme_bw() +
     scale_colour_manual(values=col,
@@ -499,7 +498,7 @@ myDataS$GHG <- factor(myDataS$FlowGroupId, levels = c("Annual Emissions: CH4 (to
 
 p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
   geom_bar(position="stack", stat="identity") +
-  geom_errorbar(aes(x=ScenarioO, ymin=lowT, ymax=highT), colour = "black", width = 0.5)+
+  geom_errorbar(aes(x=ScenarioO, ymin=lowT, ymax=highT), colour = "black", width = 0.25)+
   theme_bw() + 
   scale_fill_manual(values = c("Annual Emissions: CH4 (tons CO2-eq per year)" = "gray40",
                                "Annual Emissions: CO2 (tons CO2-eq per year)" = "gray80"),
