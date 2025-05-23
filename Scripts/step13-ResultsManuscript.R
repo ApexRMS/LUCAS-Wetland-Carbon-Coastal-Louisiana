@@ -50,8 +50,8 @@ scenariosTable <- c("Original Oak Gum Cypress Forest",
                     "4 Land Cover Change, Climate, and No Forested Wetland",
                     "3 Land Cover Change, Climate, Erosion")
 
-scenariosTimeStep <- c(2124,
-                       2124,
+scenariosTimeStep <- c(2100,
+                       2100,
                        2100,
                        2100,
                        2016,
@@ -135,8 +135,8 @@ plotFlows<- c("Annual Net Ecosystem Carbon Balance (tons C per year)",
 
 timePeriod <- c(2001,2016)
 
-scenariosDiff <- c("2 Land Cover Change and Climate",
-                   "4 Land Cover Change, Climate, and No Forested Wetland")
+# scenariosDiff <- c("2 Land Cover Change and Climate",
+#                    "4 Land Cover Change, Climate, and No Forested Wetland")
 
 scenariosDiff <- c("2 Land Cover Change and Climate",
                    "3 Land Cover Change, Climate, Erosion")
@@ -171,7 +171,7 @@ for (i in 1:length(plotFlows)){
            cumulativeDiff = cumsum(diff))
   
   print(plotFlows[i])
-  print(myDataFlux2necb[myDataFlux2necb$Timestep %in% c(2016),])
+  print(myDataFlux2necb[myDataFlux2necb$Timestep == timePeriod[2],])
   
   rm(id2,id3,
      myScenario2,myScenario3,
@@ -185,10 +185,11 @@ for (i in 1:length(plotFlows)){
 plotStocks<- c("Ecosystem Carbon Storage (tons C)")
 
 timePeriod <- c(2001,2016)
+#timePeriod <- c(2006,2010)
 
-scenariosDiff <- c("2 Land Cover Change and Climate",
-                   "4 Land Cover Change, Climate, and No Forested Wetland")
-
+# scenariosDiff <- c("2 Land Cover Change and Climate",
+#                    "4 Land Cover Change, Climate, and No Forested Wetland")
+# 
 scenariosDiff <- c("2 Land Cover Change and Climate",
                    "3 Land Cover Change, Climate, Erosion")
 
@@ -221,7 +222,7 @@ for (i in 1:length(plotStocks)){
     mutate(diff = eB-eA)
   
   print(plotStocks[i])
-  print(myDataStock2e[myDataStock2e$Timestep %in% c(2016),])
+  print(myDataStock2e[myDataStock2e$Timestep == timePeriod[2],])
   
   rm(id2,id3,
      myScenario2,myScenario3,
@@ -301,7 +302,7 @@ for (i in 1:length(start1)){
     }
     
     print(paste0("Area for ",start1[i]," to ",end1[i]," is ",
-          round(global(maskF, sum, na.rm = T)*(30*30/10000),2),
+          round((global(maskF, sum, na.rm = T)*(30*30/10000)),2),
           " ha"))
  
     if (i %in% c(1,2)){
@@ -361,7 +362,7 @@ print(paste0("NECB for all is ",
 
 print(paste0("NECB for all is ",
              round(global(rE,sum, na.rm = T),2),
-             " tons C"))
+             " tons CO2eq"))
 
 rm(rT)
 rm(rE)
@@ -400,7 +401,7 @@ for (i in 1:length(start1)){
   }
   
   print(paste0("Area for ",start1[i]," to ",end1[i]," is ",
-               round(global(maskF, sum, na.rm = T)*(30*30/10000),2),
+               round((global(maskF, sum, na.rm = T)*(30*30/10000)),2),
                " ha"))
   
   if (i %in% c(1,2)){
@@ -460,7 +461,7 @@ print(paste0("NECB for all is ",
 
 print(paste0("NECB for all is ",
              round(global(rE,sum, na.rm = T),2),
-             " tons C"))
+             " tons CO2-eq"))
 
 
 # Net Changes in Land Cover
