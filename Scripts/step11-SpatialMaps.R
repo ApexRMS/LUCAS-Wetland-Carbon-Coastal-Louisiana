@@ -82,13 +82,13 @@ for (j in 1:length(keepStocksSpatial)){
   r1 <- rast(listStocksSub)
   
   png(filename = paste0(pathOutMaps,gsub(" ","",stockName),"_stock.png"),
-      width = 4,
-      height = 2.7,
+      width = 3.5,
+      height = 2.5,
       units = "in",
       res = 600)
   plot(r1, 
        plg=list(title=as.expression(bquote("tons C"~ha^-1)), 
-                title.cex=0.7),
+                title.cex=0.65),
        type = "continuous",
        axes = FALSE,
        main = paste0("e. ", stockName),
@@ -96,10 +96,10 @@ for (j in 1:length(keepStocksSpatial)){
        cex.main = 0.8,
        maxcell = 10000000)
   # north(type = 1, cex = 0.7, "bottomleft")
-  # sbar(40000, xy=c(500000,694000),
-  #      divs=2, cex=0.8, 
-  #      type = "bar", below = "km",
-  #      label = c(0,20,40))
+  sbar(40000, xy=c(500000,694000),
+       divs=2, cex=0.8,
+       type = "bar", below = "km",
+       label = c(0,20,40))
   dev.off()
   
   rm(stockId,listStocksSub,stockName,r1)
@@ -149,13 +149,13 @@ for (k in 1:length(keepFluxesSpatial)){
   r1 <- rast(listFluxesSub)
   
   png(filename = paste0(pathOutMaps,gsub(" ","",fluxName),"_flux.png"),
-      width = 4,
-      height = 2.7,
+      width = 3.5,
+      height = 2.5,
       units = "in",
       res = 600)
   plot(r1, 
        plg=list(title=as.expression(bquote("tons "~CO[2-eq]~ha^-1~y^-1)), 
-                title.cex=0.7),
+                title.cex=0.65),
        type = "continuous",
        axes = FALSE,
        main = paste0(fluxNameLetters[k],fluxName),
@@ -163,10 +163,10 @@ for (k in 1:length(keepFluxesSpatial)){
        cex.main = 0.8,
        maxcell = 10000000)
   # north(type =1,cex = 0.7, "bottomleft")
-  # sbar(40000, xy=c(500000,694000), 
-  #      divs=2, cex=0.8, 
-  #      type = "bar", below = "km",
-  #      label = c(0,20,40))
+  sbar(40000, xy=c(500000,694000),
+       divs=2, cex=0.8,
+       type = "bar", below = "km",
+       label = c(0,20,40))
   dev.off()
   
   rm(fluxId,listFluxesSub,fluxName,r1)
@@ -197,26 +197,26 @@ for (k in 1:length(keepFluxesSpatialDiff)){
   max2 <- max(c(abs(min1),abs(max1)))
   
   png(filename = paste0(pathOutMaps,gsub(" ","",fluxName),"_flux.png"),
-      width = 4,
-      height = 2.7,
+      width = 3.5,
+      height = 2.5,
       units = "in",
       res = 600)
   plot(r1, 
        plg=list(title=as.expression(bquote("tons "~CO[2-eq]~ha^-1~y^-1)), 
-                title.cex=0.7),
+                title.cex=0.65),
        type = "continuous",
        axes = FALSE,
        main = paste0("d. ", fluxName),
-       range = c(-(max2-50),(max2-50)),
-       col = rev(turbo(n = 100)),
+       range = c(-(max2-60),(max2-60)),
+       col = rev(viridis(100)),
        cex.main = 0.8,
        fill_range = T,
        maxcell = 10000000)
   # north(type =1,cex = 0.7, "bottomleft")
-  # sbar(40000, xy=c(500000,694000), 
-  #      divs=2, cex=0.8, 
-  #      type = "bar", below = "km",
-  #      label = c(0,20,40))
+  sbar(40000, xy=c(500000,694000),
+       divs=2, cex=0.8,
+       type = "bar", below = "km",
+       label = c(0,20,40))
   dev.off()
   
   rm(fluxId,listFluxesSub,fluxName,r1)
@@ -273,52 +273,60 @@ col1 <- data.frame(value = c(82,
 
 coltab(r1) <- col1
 
-cls <- data.frame(id=c(82,
-                       23,
-                       71,
-                       54,
-                       96,
-                       95,
-                       90,
-                       97,
-                       11,
-                       140,
+cls <- data.frame(id=c(140,
                        400,
                        500,
-                       700),
-                  cover=c("Agriculture",
-                          "Developed",
-                          "Grassland",
-                          "Shrubland",
-                          "Estuarine Emergent Wetland",
-                          "Palustrine Emergent Wetland",
-                          "Palustrine Forested Wetland",
-                          "Unconsolidated Shore",
-                          "Water",
-                          "Longleaf/Slash Pine Forest",
+                       700,
+                       90,
+                       95,
+                       96,
+                       97,
+                       11,
+                       82,
+                       23,
+                       71,
+                       54),
+                  cover=c("Longleaf/Slash Pine Forest",
                           "Oak/Pine Forest",
                           "Oak/Hickory Forest",
-                          "Elm/Ash/Cottonwood Forest"))
+                          "Elm/Ash/Cottonwood Forest",
+                          "Palustrine Forested Wetland",
+                          "Palustrine Emergent Wetland",
+                          "Estuarine Emergent Wetland",
+                          "Unconsolidated Shore",
+                          "Water",
+                          "Agriculture",
+                          "Developed",
+                          "Grassland",
+                          "Shrubland"))
+
+
 
 levels(r1) <- cls
 
+clsCol <- cls %>%
+  rename(value = id) %>%
+  left_join(col1, by = join_by(value))
+
 png(filename = paste0(pathOutMaps,"LandCover.png"),
-    width = 4,
-    height = 2.7,
+    width = 3.5,
+    height = 2.5,
     units = "in",
     res = 600)
 plot(r1, 
-     plg=list(x = "bottomleft", cex = 0.55),
+     #plg=list(x = "bottomleft", cex = 0.51),
      axes = FALSE,
      main = "f. Land Cover",
      cex.main = 0.8,
-     maxcell = 10000000)
-# add_legend("bottomleft", 
-#            legend = cls$cover, 
-#            fill = col1$col, cex = 0.4,
-#            bty = "n",
-#            x.intersp = 0.5,
-#            y.intersp = 0.5)
+     maxcell = 10000000,
+     legend = F)
+add_legend(x = 472000,
+           y = 755000,
+           legend = clsCol$cover,
+           fill = clsCol$col, cex = 0.3,
+           bty = "n",
+           y.intersp = 0.5,
+           seg.len = 1.2)
 north(type =1,cex = 0.6, xy = c(640000,684000))
 sbar(40000, xy=c(590000,684000), 
      divs=2, cex=0.6, 
