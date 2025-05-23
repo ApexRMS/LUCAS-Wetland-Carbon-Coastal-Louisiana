@@ -143,8 +143,7 @@ for (s in 1:length(scen)){
                  values_to = "Area") %>%
     left_join(lookupChart, by = join_by(LandClass))
   
-  col <- as.character(landSdiff$Color)
-  names(col) <- as.character(landSdiff$LandClass)
+  
   
   landSdiff$Timestep <- as.factor(landSdiff$Timestep)
   landSdiff$LandClass2 <- factor(landSdiff$LandClass, levels = c("Upland Forest",
@@ -154,6 +153,9 @@ for (s in 1:length(scen)){
                                                                  "Water and Unconsolidated Shore",
                                                                  "Agriculture and Developed",
                                                                  "Grassland and Shrubland"))
+  
+  col <- as.character(landSdiff$Color)
+  names(col) <- as.character(landSdiff$LandClass2)
   
   p3 <- ggplot(landSdiff, aes(x = Timestep, y = Area, fill = LandClass2, group = LandClass2)) + 
     geom_bar(stat="identity", position = "dodge") +
@@ -214,12 +216,7 @@ for (i in 2:length(years)){
     summarize(Area_ha = sum(Amount)) %>%
     ungroup()
   
-  landClasses <- c("Estuarine Emergent Wetland",
-                   "Palustrine Emergent Wetland",
-                   "Palustrine Forested Wetland",
-                   "Water & Shore",
-                   "Crop & Urban",
-                   "Forest, Grass, & Shrub")
+  landClasses <- unique(lookupLC$LandClass)
   
   subTabTransitionBlank <- data.frame(LandClassStart = landClasses,
                                       LandClassEnd = landClasses,
@@ -231,6 +228,8 @@ for (i in 2:length(years)){
     bind_rows(subTabTransitionBlank) %>%
     mutate(Area_haR = round(Area_ha,0))
   
+  print(max(subTabTransition$Area_haR,na.rm=T))
+  
   pT <- ggplot(data = subTabTransition, aes(x=LandClassEnd, y=LandClassStart, fill=Area_ha)) + 
     geom_tile() +
     theme_bw() + 
@@ -239,7 +238,7 @@ for (i in 2:length(years)){
           panel.grid.minor = element_blank(), 
           axis.line = element_line(colour = "black"),
           legend.position="right",
-          legend.title=element_blank(),
+          #legend.title=element_blank(),
           axis.text.x = element_text(angle = 45, hjust = 1)) +
     scale_fill_gradient2(low = "#d6ebe4", high = "#297c60", 
                          limit = c(0,4300),#min(subTabTransition$Area_ha) #max(subTabTransition$Area_ha)
@@ -331,6 +330,8 @@ for (i in 1:length(scenList)){
     bind_rows(subTabTransitionBlank) %>%
     mutate(Area_haR = round(Area_ha,0))
   
+  print(max(lcF$Area_haR,na.rm = T))
+  
   pT <- ggplot(data = lcF, aes(x=LandClassEnd, y=LandClassStart, fill=Area_haR)) + 
     geom_tile() +
     theme_bw() + 
@@ -339,7 +340,7 @@ for (i in 1:length(scenList)){
           panel.grid.minor = element_blank(), 
           axis.line = element_line(colour = "black"),
           legend.position="right",
-          legend.title=element_blank(),
+          #legend.title=element_blank(),
           axis.text.x = element_text(angle = 45, hjust = 1)) +
     scale_fill_gradient2(low = "#d6ebe4", high = "#297c60", 
                          limit = c(0,4300),#c(min(lcF$Area_haR),max(lcF$Area_haR)),
