@@ -234,6 +234,10 @@ for (i in 2:length(years)){
   
   print(max(subTabTransition$Area_haR,na.rm=T))
   
+  write.csv(subTabTransition,
+            paste0(pathOutManuscript,"/LandCoverT_",years[i],".csv"),
+            row.names = F)
+  
   subTabTransition$LandClassEnd2 <- factor(subTabTransition$LandClassEnd, levels = rev(c("Upland Forest",
                                                                  "Palustrine Forested Wetland",
                                                                  "Palustrine Emergent Wetland",
