@@ -497,11 +497,11 @@ myDataS$GHG <- factor(myDataS$FlowGroupId, levels = c("Annual Emissions: CH4 (to
 
 
 p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
-  geom_bar(position="stack", stat="identity") +
+  geom_bar(position="stack", stat="identity", alpha = 0.75) +
   geom_errorbar(aes(x=ScenarioO, ymin=lowT, ymax=highT), colour = "black", width = 0.25)+
   theme_bw() + 
-  scale_fill_manual(values = c("Annual Emissions: CH4 (tons CO2-eq per year)" = "gray40",
-                               "Annual Emissions: CO2 (tons CO2-eq per year)" = "gray80"),
+  scale_fill_manual(values = c("Annual Emissions: CH4 (tons CO2-eq per year)" = "#46337E",
+                               "Annual Emissions: CO2 (tons CO2-eq per year)" = "#9FDA3A"),
                     labels = c(expression("CH"[4]),expression("CO"[2]))) +
   #scale_fill_viridis(discrete = T, begin = 0.5, end = 0.8) +
   theme(panel.border = element_blank(),
