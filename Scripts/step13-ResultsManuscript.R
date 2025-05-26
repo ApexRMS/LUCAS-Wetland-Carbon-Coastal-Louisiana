@@ -60,11 +60,24 @@ scenariosTimeStep <- c(2100,
 
 stateClassTable <- datasheet(myProject, name = "stsim_StateClass")
 scForest <- grep("Forest:",stateClassTable$Name,value = T)
+scWater <- c("Water: All",
+             "Water: Previously Emergent Wetland",
+             "Water: Previously Forested Wetland")
+scShore <- c("Wetland: Unconsolidated Shore",
+             "Wetland: Unvegetated Emergent",
+             "Wetland: Unvegetated Forested")
+scOther <- stateClassTable$Name[!(stateClassTable$Name %in% c(scForest,
+                                                              "Wetland: Palustrine Forested",
+                                                              "Wetland: Palustrine Emergent",
+                                                              "Wetland: Estuarine Emergent",
+                                                              scWater,
+                                                              scShore))]
 
-stateClassKeep <- c(scForest,
-                    "Wetland: Palustrine Forested",
-                    "Wetland: Palustrine Emergent",
-                    "Wetland: Estuarine Emergent")
+# stateClassKeep <- c(scForest,
+#                     "Wetland: Palustrine Forested",
+#                     "Wetland: Palustrine Emergent",
+#                     "Wetland: Estuarine Emergent",
+#                     scOther)
 
 # Summarize Total Ecosystem Carbon
 
@@ -95,7 +108,7 @@ for (i in 1:length(scenariosTable)){
   myDataStock1 <- datasheet(myScenario1, "stsim_OutputStock")
   
   myDataStock1s <- myDataStock1 %>%
-    filter(StateClassId %in% stateClassKeep) %>%
+    #filter(StateClassId %in% stateClassKeep) %>%
     filter(StockGroupId %in% stocksKeep) %>%
     filter(Timestep == scenariosTimeStep[i]) %>%
     group_by(StockGroupId,StateClassId) %>%
@@ -106,7 +119,10 @@ for (i in 1:length(scenariosTable)){
                                      StockGroupId == "Ecosystem Carbon Storage (tons C)"~"Ecosystem",
                                      StockGroupId == "Aquatic [Type]"~"Aquatic")) %>%
     mutate(StateClass = case_when(StateClassId %in% scForest ~ "Upland Forest",
-                                  !(StateClassId %in% scForest) ~ StateClassId)) %>%
+                                  StateClassId %in% scOther ~ "Other Land",
+                                  StateClassId %in% scWater ~ "Water",
+                                  StateClassId %in% scShore ~ "Shore",
+                                  !(StateClassId %in% c(scForest,scOther,scWater,scShore)) ~ StateClassId)) %>%
     group_by(StockGroup,StateClass) %>%
     summarize(AmountT = round(sum(AmountI,na.rm = T),2)) %>%
     ungroup() %>%
@@ -121,6 +137,17 @@ for (i in 1:length(scenariosTable)){
 }
 
 stockTable <- stockTable[-1,]
+
+stockTable <- stockTable %>%
+  rename(AmountTonsC = AmountT) %>%
+  mutate(ScenarioName = case_when(Scenario == "Original Oak Gum Cypress Forest"~"Oak Gum Cypress Forest",
+                                  Scenario == "Palustrine Forested Wetland: Add Uncertainty"~"Palustrine Forested Wetland",
+                                  Scenario == "Palustrine Emergent Wetland: Add Uncertainty"~"Palustrine Emergent Wetland",
+                                  Scenario == "Estuarine Emergent Wetland: Add Uncertainty"~"Estuarine Emergent Wetland",
+                                  Scenario == "2 Land Cover Change and Climate"~"Baseline",
+                                  Scenario == "4 Land Cover Change, Climate, and No Forested Wetland"~"No Palustrine Forested Wetland",
+                                  Scenario == "3 Land Cover Change, Climate, Erosion"~"IPCC")) %>%
+  select(ScenarioName,StateClass,StockGroup,AmountTonsC)
 
 stockTable
 
@@ -285,6 +312,7 @@ for (i in 1:length(start1)){
       mask3 <- ifel(r1 == 95 & r2 == 13,1,0)
       
       maskF <- mask1+mask2+mask3
+      maskKeep <- maskF
       
     } else if (i > 1){
       
@@ -296,14 +324,11 @@ for (i in 1:length(start1)){
       mask3 <- ifel(r1 == 95 & r2 == 13,1,0)
       
       maskF <- mask0+mask1+mask2+mask3
+      maskKeep <- c(maskKeep,maskF)
       
       rm(mask0)
       
     }
-    
-    print(paste0("Area for ",start1[i]," to ",end1[i]," is ",
-          round((global(maskF, sum, na.rm = T)*(30*30/10000)),2),
-          " ha"))
  
     if (i %in% c(1,2)){
       
@@ -321,7 +346,7 @@ for (i in 1:length(start1)){
       listFluxesSub1R <- grep(paste0("ts",timeAll[k]),listFluxesSub1, value = T)
       listFluxesSub2R <- grep(paste0("ts",timeAll[k]),listFluxesSub2, value = T)
       
-      if (i == 1){
+      if (i == 1 & k == 1){
         
         r3 <- rast(listFluxesSub1R)
         r4 <- rast(listFluxesSub2R)
@@ -334,8 +359,8 @@ for (i in 1:length(start1)){
         r3 <- rast(listFluxesSub1R)
         r4 <- rast(listFluxesSub2R)
         
-        rT <- rT + r3*maskF
-        rE <- rE + r4*maskF
+        rT <- c(rT,r3*maskF)
+        rE <- c(rE,r4*maskF)
         
       }
       
@@ -343,32 +368,78 @@ for (i in 1:length(start1)){
       
     }
     
-    print(paste0("NECB for ",start1[i]," to ",end1[i]," is ",
+    print(paste0("Area for ",timeAll[1]," to ",timeAll[length(timeAll)]," is ",
+                 round((global(maskF, sum, na.rm = T)*(30*30/10000)),2),
+                 " ha"))
+    
+    print(paste0("NECB for 2006 to ",timeAll[length(timeAll)]," is ",
                  round(global(rT,sum, na.rm = T),2),
                  " tons C"))
     
-    print(paste0("NECB for ",start1[i]," to ",end1[i]," is ",
+    print(paste0("NECB for 2006 to ",timeAll[length(timeAll)]," is ",
                  round(global(rE,sum, na.rm = T),2),
                  " tons CO2-eq"))
     
     rm(sub1,sub2,r1,r2,mask1,mask2,mask3,
        timeAll)
+    gc()
   
 }
 
 print(paste0("NECB for all is ",
-             round(global(rT,sum, na.rm = T),2),
+             round(global(app(rT,sum,na.rm = T),sum, na.rm = T),2),
              " tons C"))
 
 print(paste0("NECB for all is ",
-             round(global(rE,sum, na.rm = T),2),
+             round(global(app(rE,sum,na.rm = T),sum, na.rm = T),2),
              " tons CO2eq"))
+
+NECBsummary <- global(rT,sum, na.rm = T)
+areaVect <- global(maskKeep, sum, na.rm = T)$sum*30*30/10000
+NECBsummary$area <- c(rep(areaVect[1],4),
+                    rep(areaVect[2],6),
+                    areaVect[3])
+
+NECBsummary$NECBperHa <- NECBsummary$sum/NECBsummary$area
+NECBsummary$Year <- as.numeric(substr(row.names(NECBsummary),(as.numeric(nchar(row.names(NECBsummary))-3)),as.numeric(nchar(row.names(NECBsummary)))))
+
+sum(NECBsummary$sum, na.rm = T)
+sum(NECBsummary$sum[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+sum(NECBsummary$NECBperHa, na.rm = T)
+sum(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+mean(NECBsummary$NECBperHa, na.rm = T)
+mean(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+NECBsummary
+rm(NECBsummary,areaVect)
+
+NECBsummary <- global(rE,sum, na.rm = T)
+areaVect <- global(maskKeep, sum, na.rm = T)$sum*30*30/10000
+NECBsummary$area <- c(rep(areaVect[1],4),
+                      rep(areaVect[2],6),
+                      areaVect[3])
+
+NECBsummary$NECBperHa <- NECBsummary$sum/NECBsummary$area
+NECBsummary$Year <- as.numeric(substr(row.names(NECBsummary),(as.numeric(nchar(row.names(NECBsummary))-3)),as.numeric(nchar(row.names(NECBsummary)))))
+
+sum(NECBsummary$sum, na.rm = T)
+sum(NECBsummary$sum[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+sum(NECBsummary$NECBperHa, na.rm = T)
+sum(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+mean(NECBsummary$NECBperHa, na.rm = T)
+mean(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+NECBsummary
+rm(NECBsummary,areaVect)
 
 rm(rT)
 rm(rE)
 gc()
 
-# For changes in NECB associated with transitions of water to wetland
 for (i in 1:length(start1)){
   
   sub1 <- grep(paste0("ts",start1[i]),listLandCover, value = T)
@@ -385,6 +456,8 @@ for (i in 1:length(start1)){
     
     maskF <- mask1+mask2+mask3
     
+    maskKeep <- maskF
+    
   } else if (i > 1){
     
     mask0 <- ifel(maskF == 1 & r2 %in% c(90,96,95),1,0)
@@ -396,13 +469,11 @@ for (i in 1:length(start1)){
     
     maskF <- mask0+mask1+mask2+mask3
     
+    maskKeep <- c(maskKeep,maskF)
+    
     rm(mask0)
     
   }
-  
-  print(paste0("Area for ",start1[i]," to ",end1[i]," is ",
-               round((global(maskF, sum, na.rm = T)*(30*30/10000)),2),
-               " ha"))
   
   if (i %in% c(1,2)){
     
@@ -420,7 +491,7 @@ for (i in 1:length(start1)){
     listFluxesSub1R <- grep(paste0("ts",timeAll[k]),listFluxesSub1, value = T)
     listFluxesSub2R <- grep(paste0("ts",timeAll[k]),listFluxesSub2, value = T)
     
-    if (i == 1){
+    if (i == 1 & k == 1){
       
       r3 <- rast(listFluxesSub1R)
       r4 <- rast(listFluxesSub2R)
@@ -433,8 +504,8 @@ for (i in 1:length(start1)){
       r3 <- rast(listFluxesSub1R)
       r4 <- rast(listFluxesSub2R)
       
-      rT <- rT + r3*maskF
-      rE <- rE + r4*maskF
+      rT <- c(rT,r3*maskF)
+      rE <- c(rE,r4*maskF)
       
     }
     
@@ -442,26 +513,79 @@ for (i in 1:length(start1)){
     
   }
   
-  print(paste0("NECB for ",start1[i]," to ",end1[i]," is ",
+  print(paste0("Area for ",timeAll[1]," to ",timeAll[length(timeAll)]," is ",
+               round((global(maskF, sum, na.rm = T)*(30*30/10000)),2),
+               " ha"))
+  
+  print(paste0("NECB for 2006 to ",timeAll[length(timeAll)]," is ",
                round(global(rT,sum, na.rm = T),2),
                " tons C"))
   
-  print(paste0("NECB for ",start1[i]," to ",end1[i]," is ",
+  print(paste0("NECB for 2006 to ",timeAll[length(timeAll)]," is ",
                round(global(rE,sum, na.rm = T),2),
                " tons CO2-eq"))
   
   rm(sub1,sub2,r1,r2,mask1,mask2,mask3,
      timeAll)
+  gc()
   
 }
 
 print(paste0("NECB for all is ",
-             round(global(rT,sum, na.rm = T),2),
+             round(global(app(rT,sum,na.rm = T),sum, na.rm = T),2),
              " tons C"))
 
 print(paste0("NECB for all is ",
-             round(global(rE,sum, na.rm = T),2),
-             " tons CO2-eq"))
+             round(global(app(rE,sum,na.rm = T),sum, na.rm = T),2),
+             " tons CO2eq"))
+
+NECBsummary <- global(rT,sum, na.rm = T)
+areaVect <- global(maskKeep, sum, na.rm = T)$sum*30*30/10000
+NECBsummary$area <- c(rep(areaVect[1],4),
+                      rep(areaVect[2],6),
+                      areaVect[3])
+
+NECBsummary$NECBperHa <- NECBsummary$sum/NECBsummary$area
+NECBsummary$Year <- as.numeric(substr(row.names(NECBsummary),(as.numeric(nchar(row.names(NECBsummary))-3)),as.numeric(nchar(row.names(NECBsummary)))))
+
+sum(NECBsummary$sum, na.rm = T)
+sum(NECBsummary$sum[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+sum(NECBsummary$NECBperHa, na.rm = T)
+sum(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+mean(NECBsummary$NECBperHa, na.rm = T)
+mean(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+NECBsummary
+rm(NECBsummary,areaVect)
+
+NECBsummary <- global(rE,sum, na.rm = T)
+areaVect <- global(maskKeep, sum, na.rm = T)$sum*30*30/10000
+NECBsummary$area <- c(rep(areaVect[1],4),
+                      rep(areaVect[2],6),
+                      areaVect[3])
+
+NECBsummary$NECBperHa <- NECBsummary$sum/NECBsummary$area
+NECBsummary$Year <- as.numeric(substr(row.names(NECBsummary),(as.numeric(nchar(row.names(NECBsummary))-3)),as.numeric(nchar(row.names(NECBsummary)))))
+
+sum(NECBsummary$sum, na.rm = T)
+sum(NECBsummary$sum[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+sum(NECBsummary$NECBperHa, na.rm = T)
+sum(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+mean(NECBsummary$NECBperHa, na.rm = T)
+mean(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+
+NECBsummary
+rm(NECBsummary,areaVect)
+
+rm(rT)
+rm(rE)
+gc()
+
+
 
 
 # Net Changes in Land Cover
