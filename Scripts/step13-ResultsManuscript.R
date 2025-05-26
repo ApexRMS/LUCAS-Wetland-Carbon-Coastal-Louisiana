@@ -394,47 +394,93 @@ print(paste0("NECB for all is ",
              round(global(app(rE,sum,na.rm = T),sum, na.rm = T),2),
              " tons CO2eq"))
 
-NECBsummary <- global(rT,sum, na.rm = T)
-areaVect <- global(maskKeep, sum, na.rm = T)$sum*30*30/10000
-NECBsummary$area <- c(rep(areaVect[1],4),
-                    rep(areaVect[2],6),
-                    areaVect[3])
+years <- 2006:2016
 
-NECBsummary$NECBperHa <- NECBsummary$sum/NECBsummary$area
-NECBsummary$Year <- as.numeric(substr(row.names(NECBsummary),(as.numeric(nchar(row.names(NECBsummary))-3)),as.numeric(nchar(row.names(NECBsummary)))))
+NECBsummary <- data.frame(year = years,
+                          area = NA,
+                          NECBperHa = NA)
 
-sum(NECBsummary$sum, na.rm = T)
-sum(NECBsummary$sum[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+for (y in 1:length(years)){
+  
+  if (years[y] <= 2009){
+    
+    maskYear <- 1
+    
+  } else if (years[y] >= 2010 & years[y] < 2016){
+    
+    maskYear <- 2
+    
+  } else if (years[y] >16){
+    
+    maskYear <- 3
+    
+  }
+  
+  rTsub <- mask(rT[[y]],maskKeep[[maskYear]], maskvalue = 1, inverse = T)
+  NECBsummary$year[y] <- years[y]
+  NECBsummary$NECBperHa[y] <- global(rTsub, mean, na.rm = T)$mean
+  NECBsummary$area[y] <- global(maskKeep[[maskYear]], sum, na.rm = T)$sum*30*30/10000
+  
+  rm(maskYear,rTsub)
+  
+}
+
+NECBsummary$NECBtotal <- NECBsummary$NECBperHa*NECBsummary$area
+NECBsummary
+
+sum(NECBsummary$NECBtotal, na.rm = T)
+sum(NECBsummary$NECBtotal[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
 sum(NECBsummary$NECBperHa, na.rm = T)
-sum(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+sum(NECBsummary$NECBperHa[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
 mean(NECBsummary$NECBperHa, na.rm = T)
-mean(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+mean(NECBsummary$NECBperHa[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
+rm(NECBsummary)
+
+NECBsummary <- data.frame(year = years,
+                          area = NA,
+                          NECBperHa = NA)
+
+for (y in 1:length(years)){
+  
+  if (years[y] <= 2009){
+    
+    maskYear <- 1
+    
+  } else if (years[y] >= 2010 & years[y] < 2016){
+    
+    maskYear <- 2
+    
+  } else if (years[y] >16){
+    
+    maskYear <- 3
+    
+  }
+  
+  rEsub <- mask(rE[[y]],maskKeep[[maskYear]], maskvalue = 1, inverse = T)
+  NECBsummary$year[y] <- years[y]
+  NECBsummary$NECBperHa[y] <- global(rEsub, mean, na.rm = T)$mean
+  NECBsummary$area[y] <- global(maskKeep[[maskYear]], sum, na.rm = T)$sum*30*30/10000
+  
+  rm(maskYear,rEsub)
+  
+}
+
+NECBsummary$NECBtotal <- NECBsummary$NECBperHa*NECBsummary$area
 NECBsummary
-rm(NECBsummary,areaVect)
 
-NECBsummary <- global(rE,sum, na.rm = T)
-areaVect <- global(maskKeep, sum, na.rm = T)$sum*30*30/10000
-NECBsummary$area <- c(rep(areaVect[1],4),
-                      rep(areaVect[2],6),
-                      areaVect[3])
-
-NECBsummary$NECBperHa <- NECBsummary$sum/NECBsummary$area
-NECBsummary$Year <- as.numeric(substr(row.names(NECBsummary),(as.numeric(nchar(row.names(NECBsummary))-3)),as.numeric(nchar(row.names(NECBsummary)))))
-
-sum(NECBsummary$sum, na.rm = T)
-sum(NECBsummary$sum[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+sum(NECBsummary$NECBtotal, na.rm = T)
+sum(NECBsummary$NECBtotal[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
 sum(NECBsummary$NECBperHa, na.rm = T)
-sum(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+sum(NECBsummary$NECBperHa[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
 mean(NECBsummary$NECBperHa, na.rm = T)
-mean(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+mean(NECBsummary$NECBperHa[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
-NECBsummary
-rm(NECBsummary,areaVect)
+rm(NECBsummary)
 
 rm(rT)
 rm(rE)
@@ -539,91 +585,195 @@ print(paste0("NECB for all is ",
              round(global(app(rE,sum,na.rm = T),sum, na.rm = T),2),
              " tons CO2eq"))
 
-NECBsummary <- global(rT,sum, na.rm = T)
-areaVect <- global(maskKeep, sum, na.rm = T)$sum*30*30/10000
-NECBsummary$area <- c(rep(areaVect[1],4),
-                      rep(areaVect[2],6),
-                      areaVect[3])
+years <- 2006:2016
 
-NECBsummary$NECBperHa <- NECBsummary$sum/NECBsummary$area
-NECBsummary$Year <- as.numeric(substr(row.names(NECBsummary),(as.numeric(nchar(row.names(NECBsummary))-3)),as.numeric(nchar(row.names(NECBsummary)))))
+NECBsummary <- data.frame(year = years,
+                          area = NA,
+                          NECBperHa = NA)
 
-sum(NECBsummary$sum, na.rm = T)
-sum(NECBsummary$sum[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+for (y in 1:length(years)){
+  
+  if (years[y] <= 2009){
+    
+    maskYear <- 1
+    
+  } else if (years[y] >= 2010 & years[y] < 2016){
+    
+    maskYear <- 2
+    
+  } else if (years[y] >16){
+    
+    maskYear <- 3
+    
+  }
+  
+  rTsub <- mask(rT[[y]],maskKeep[[maskYear]], maskvalue = 1, inverse = T)
+  NECBsummary$year[y] <- years[y]
+  NECBsummary$NECBperHa[y] <- global(rTsub, mean, na.rm = T)$mean
+  NECBsummary$area[y] <- global(maskKeep[[maskYear]], sum, na.rm = T)$sum*30*30/10000
+  
+  rm(maskYear,rTsub)
+  
+}
+
+NECBsummary$NECBtotal <- NECBsummary$NECBperHa*NECBsummary$area
+NECBsummary
+
+sum(NECBsummary$NECBtotal, na.rm = T)
+sum(NECBsummary$NECBtotal[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
 sum(NECBsummary$NECBperHa, na.rm = T)
-sum(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+sum(NECBsummary$NECBperHa[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
 mean(NECBsummary$NECBperHa, na.rm = T)
-mean(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+mean(NECBsummary$NECBperHa[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
+rm(NECBsummary)
+
+NECBsummary <- data.frame(year = years,
+                          area = NA,
+                          NECBperHa = NA)
+
+for (y in 1:length(years)){
+  
+  if (years[y] <= 2009){
+    
+    maskYear <- 1
+    
+  } else if (years[y] >= 2010 & years[y] < 2016){
+    
+    maskYear <- 2
+    
+  } else if (years[y] >16){
+    
+    maskYear <- 3
+    
+  }
+  
+  rEsub <- mask(rE[[y]],maskKeep[[maskYear]], maskvalue = 1, inverse = T)
+  NECBsummary$year[y] <- years[y]
+  NECBsummary$NECBperHa[y] <- global(rEsub, mean, na.rm = T)$mean
+  NECBsummary$area[y] <- global(maskKeep[[maskYear]], sum, na.rm = T)$sum*30*30/10000
+  
+  rm(maskYear,rEsub)
+  
+}
+
+NECBsummary$NECBtotal <- NECBsummary$NECBperHa*NECBsummary$area
 NECBsummary
-rm(NECBsummary,areaVect)
 
-NECBsummary <- global(rE,sum, na.rm = T)
-areaVect <- global(maskKeep, sum, na.rm = T)$sum*30*30/10000
-NECBsummary$area <- c(rep(areaVect[1],4),
-                      rep(areaVect[2],6),
-                      areaVect[3])
-
-NECBsummary$NECBperHa <- NECBsummary$sum/NECBsummary$area
-NECBsummary$Year <- as.numeric(substr(row.names(NECBsummary),(as.numeric(nchar(row.names(NECBsummary))-3)),as.numeric(nchar(row.names(NECBsummary)))))
-
-sum(NECBsummary$sum, na.rm = T)
-sum(NECBsummary$sum[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+sum(NECBsummary$NECBtotal, na.rm = T)
+sum(NECBsummary$NECBtotal[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
 sum(NECBsummary$NECBperHa, na.rm = T)
-sum(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+sum(NECBsummary$NECBperHa[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
 mean(NECBsummary$NECBperHa, na.rm = T)
-mean(NECBsummary$NECBperHa[NECBsummary$Year %in% c(2006:2010)], na.rm = T)
+mean(NECBsummary$NECBperHa[NECBsummary$year %in% c(2006:2010)], na.rm = T)
 
-NECBsummary
-rm(NECBsummary,areaVect)
+rm(NECBsummary)
 
 rm(rT)
 rm(rE)
 gc()
 
+# # Net Changes in Land Cover
+# 
+# timeStepPair <- c(2001,2016)
+# 
+# stateClassTable <- datasheet(myProject, name = "stsim_StateClass") %>%
+#   select(Name,Id)
+# 
+# scenList <- c("2 Land Cover Change and Climate")
+# 
+# for (i in 1:length(scenList)){
+#   
+#   scenID <- scenarioList$ScenarioId[grep(scenList[i],scenarioList$Name)]
+#   
+#   myScenario <- scenario(myProject, scenario=max(scenID))
+#   
+#   listLandCover <- list.files(paste0(rootPath,"/Models/",
+#                                      modelName,"/",
+#                                      modelName,".ssim.data/Scenario-",
+#                                      scenarioId(myScenario),
+#                                      "/stsim_OutputSpatialState"),
+#                               pattern = ".tif",
+#                               full.names = T)
+#   
+#   sub1 <- grep(paste0("ts",timeStepPair[1]),listLandCover, value = T)
+#   sub2 <- grep(paste0("ts",timeStepPair[2]),listLandCover, value = T)
+#   
+#   r1 <- rast(sub1)
+#   r2 <- rast(sub2)
+#   
+#   rW1 <- ifel(r1 %in% c(90,96,95),1,0)
+#   rW2 <- ifel(r2 %in% c(90,96,95),1,0)
+#   
+#   area1 <- global(rW1,sum, na.rm = T)*30*30/10000
+#   area2 <- global(rW2,sum, na.rm = T)*30*30/10000
+#     
+#   print(area1-area2)
+# 
+# }
 
 
 
-# Net Changes in Land Cover
+# Summarize land cover changes
 
-timeStepPair <- c(2001,2016)
+# Net changes from 2001-2016. Would not include an area transitioning from wetland to water and back to wetland
 
-stateClassTable <- datasheet(myProject, name = "stsim_StateClass") %>%
-  select(Name,Id)
+tabT <- read.csv(paste0(pathOutManuscript,"/LandCoverT_2001_2016.csv"))
 
-scenList <- c("2 Land Cover Change and Climate")
+tabTwet <- tabT %>%
+  filter(LandClassStart == "Water") %>%
+  filter(LandClassEnd %in% c("Estuarine Emergent Wetland",
+                               "Palustrine Emergent Wetland",
+                               "Palustrine Forested Wetland")) %>%
+  summarize(sum = sum(Area_ha, na.rm = T)) %>%
+  pull(sum)
 
-for (i in 1:length(scenList)){
+tabTwet
+
+tabTwat <- tabT %>%
+  filter(LandClassEnd == "Water") %>%
+  filter(LandClassStart %in% c("Estuarine Emergent Wetland",
+                             "Palustrine Emergent Wetland",
+                             "Palustrine Forested Wetland")) %>%
+  summarize(sum = sum(Area_ha, na.rm = T)) %>%
+  pull(sum)
+
+tabTwat
+
+rm(tabT,tabTwet,TabTwat)
+
+yearsL <- c("2006","2010","2016")
+
+for (i in 1:length(yearsL)){
   
-  scenID <- scenarioList$ScenarioId[grep(scenList[i],scenarioList$Name)]
+  tabT <- read.csv(paste0(pathOutManuscript,"/LandCoverT_",yearsL[i],".csv"))
   
-  myScenario <- scenario(myProject, scenario=max(scenID))
+  print(yearsL[i])
   
-  listLandCover <- list.files(paste0(rootPath,"/Models/",
-                                     modelName,"/",
-                                     modelName,".ssim.data/Scenario-",
-                                     scenarioId(myScenario),
-                                     "/stsim_OutputSpatialState"),
-                              pattern = ".tif",
-                              full.names = T)
+  tabTwet <- tabT %>%
+    filter(LandClassStart == "Water") %>%
+    filter(LandClassEnd %in% c("Estuarine Emergent Wetland",
+                               "Palustrine Emergent Wetland",
+                               "Palustrine Forested Wetland")) %>%
+    summarize(sum = sum(Area_ha, na.rm = T)) %>%
+    pull(sum)
   
-  sub1 <- grep(paste0("ts",timeStepPair[1]),listLandCover, value = T)
-  sub2 <- grep(paste0("ts",timeStepPair[2]),listLandCover, value = T)
+  print(tabTwet)
   
-  r1 <- rast(sub1)
-  r2 <- rast(sub2)
+  tabTwat <- tabT %>%
+    filter(LandClassEnd == "Water") %>%
+    filter(LandClassStart %in% c("Estuarine Emergent Wetland",
+                                 "Palustrine Emergent Wetland",
+                                 "Palustrine Forested Wetland")) %>%
+    summarize(sum = sum(Area_ha, na.rm = T)) %>%
+    pull(sum)
   
-  rW1 <- ifel(r1 %in% c(90,96,95),1,0)
-  rW2 <- ifel(r2 %in% c(90,96,95),1,0)
+  print(tabTwat)
   
-  area1 <- global(rW1,sum, na.rm = T)*30*30/10000
-  area2 <- global(rW2,sum, na.rm = T)*30*30/10000
-    
-  print(area1-area2)
-
 }
+
 
