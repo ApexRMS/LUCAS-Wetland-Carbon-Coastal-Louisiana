@@ -91,7 +91,8 @@ lookupLC <- data.frame(StateClassId = c("Wetland: Estuarine Emergent",
                        LandClass = c("Estuarine Emergent Wetland",
                                      "Palustrine Emergent Wetland",
                                      "Palustrine Forested Wetland",
-                                     rep("Water and Unconsolidated Shore",6),
+                                     rep("Water",3),
+                                     rep("Unconsolidated Shore",3),
                                      rep("Agriculture and Developed",8),
                                      rep("Upland Forest",length(scForest)),
                                      rep("Grassland and Shrubland",length(scOther))))
@@ -101,14 +102,16 @@ lookupLC <- data.frame(StateClassId = c("Wetland: Estuarine Emergent",
 lookupChart <- data.frame(LandClass = c("Estuarine Emergent Wetland",
                                         "Palustrine Emergent Wetland",
                                         "Palustrine Forested Wetland",
-                                        "Water and Unconsolidated Shore",
+                                        "Water",
+                                        "Unconsolidated Shore",
                                         "Agriculture and Developed",
                                         "Upland Forest",
                                         "Grassland and Shrubland"),
                           Color = c("#A91EAC",
                                     "#EA2DEE",
                                     "#145A5A",
-                                    "#6677D7",
+                                    "#000974",
+                                    "#46F1F1",
                                     "#C3CB48",
                                     "#2E9E40",
                                     "#6D6C14"
@@ -150,7 +153,8 @@ for (s in 1:length(scen)){
                                                                  "Palustrine Forested Wetland",
                                                                  "Palustrine Emergent Wetland",
                                                                  "Estuarine Emergent Wetland",
-                                                                 "Water and Unconsolidated Shore",
+                                                                 "Water",
+                                                                 "Unconsolidated Shore",
                                                                  "Agriculture and Developed",
                                                                  "Grassland and Shrubland"))
   
@@ -168,13 +172,13 @@ for (s in 1:length(scen)){
           panel.grid.minor = element_blank(), 
           axis.line = element_line(colour = "black"),
           legend.position="right") +
-    guides(fill = guide_legend(nrow = 7,
+    guides(fill = guide_legend(nrow = 8,
                                  keywidth=0.2,
                                  keyheight=0.2,
                                  default.unit="inch",
                                  title = "Land Cover Class")) +
     xlab("\nYear") + 
-    ylab("Change in Area (hectares)\n")
+    ylab("Net Land Cover Change (hectares)\n")
   
   p3
   
@@ -230,7 +234,25 @@ for (i in 2:length(years)){
   
   print(max(subTabTransition$Area_haR,na.rm=T))
   
-  pT <- ggplot(data = subTabTransition, aes(x=LandClassEnd, y=LandClassStart, fill=Area_ha)) + 
+  subTabTransition$LandClassEnd2 <- factor(subTabTransition$LandClassEnd, levels = rev(c("Upland Forest",
+                                                                 "Palustrine Forested Wetland",
+                                                                 "Palustrine Emergent Wetland",
+                                                                 "Estuarine Emergent Wetland",
+                                                                 "Water",
+                                                                 "Unconsolidated Shore",
+                                                                 "Agriculture and Developed",
+                                                                 "Grassland and Shrubland")))
+  
+  subTabTransition$LandClassStart2 <- factor(subTabTransition$LandClassStart, levels = rev(c("Upland Forest",
+                                                                               "Palustrine Forested Wetland",
+                                                                               "Palustrine Emergent Wetland",
+                                                                               "Estuarine Emergent Wetland",
+                                                                               "Water",
+                                                                               "Unconsolidated Shore",
+                                                                               "Agriculture and Developed",
+                                                                               "Grassland and Shrubland")))
+  
+  pT <- ggplot(data = subTabTransition, aes(x=LandClassEnd2, y=LandClassStart2, fill=Area_ha)) + 
     geom_tile() +
     theme_bw() + 
     theme(panel.border = element_blank(), 
@@ -247,7 +269,7 @@ for (i in 2:length(years)){
                          na.value="gray70") +
     xlab(paste0("\n",years[i])) + 
     ylab(paste0(years[i-1],"\n")) +
-    geom_text(aes(x=LandClassEnd, y=LandClassStart, label = Area_haR), color = "black", size = 4)
+    geom_text(aes(x=LandClassEnd2, y=LandClassStart2, label = Area_haR), color = "black", size = 4)
   
   ggsave(paste0(pathOutManuscript,"/LandCoverT_",years[i],".png"), pT, width = 6, height = 4, dpi = 600)
   
@@ -332,7 +354,26 @@ for (i in 1:length(scenList)){
   
   print(max(lcF$Area_haR,na.rm = T))
   
-  pT <- ggplot(data = lcF, aes(x=LandClassEnd, y=LandClassStart, fill=Area_haR)) + 
+  lcF$LandClassEnd2 <- factor(lcF$LandClassEnd, levels = rev(c("Upland Forest",
+                                                               "Palustrine Forested Wetland",
+                                                               "Palustrine Emergent Wetland",
+                                                               "Estuarine Emergent Wetland",
+                                                               "Water",
+                                                               "Unconsolidated Shore",
+                                                               "Agriculture and Developed",
+                                                               "Grassland and Shrubland")))
+  
+  lcF$LandClassStart2 <- factor(lcF$LandClassStart, levels = rev(c("Upland Forest",
+                                                                   "Palustrine Forested Wetland",
+                                                                   "Palustrine Emergent Wetland",
+                                                                   "Estuarine Emergent Wetland",
+                                                                   "Water",
+                                                                   "Unconsolidated Shore",
+                                                                   "Agriculture and Developed",
+                                                                   "Grassland and Shrubland")))
+  
+  
+  pT <- ggplot(data = lcF, aes(x=LandClassEnd2, y=LandClassStart2, fill=Area_haR)) + 
     geom_tile() +
     theme_bw() + 
     theme(panel.border = element_blank(), 
@@ -349,7 +390,7 @@ for (i in 1:length(scenList)){
                          na.value="gray70") +
     xlab(paste0("\n",timeStepPair[2])) + 
     ylab(paste0(timeStepPair[1],"\n")) +
-    geom_text(aes(x=LandClassEnd, y=LandClassStart, label = Area_haR), color = "black", size = 4)
+    geom_text(aes(x=LandClassEnd2, y=LandClassStart2, label = Area_haR), color = "black", size = 4)
   
   ggsave(paste0(pathOutManuscript,"/LandCoverT_",gsub(" ","",scenList[i]),".png"), pT, width = 6, height = 4, dpi = 600)
   
