@@ -97,7 +97,7 @@ lookupLC <- data.frame(StateClassId = c("Wetland: Estuarine Emergent",
                                      rep("Upland Forest",length(scForest)),
                                      rep("Grassland and Shrubland",length(scOther))))
 
-#lookupLC
+lookupLC
 
 lookupChart <- data.frame(LandClass = c("Estuarine Emergent Wetland",
                                         "Palustrine Emergent Wetland",

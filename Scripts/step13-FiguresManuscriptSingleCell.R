@@ -205,9 +205,10 @@ for (i in 1:length(scenarios)){
 # Summarize Flows
 
 plotFlows <- c("Annual Lateral Flux (tons CO2-eq per year)",
-              "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
+              "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+              "Annual Net Growth (tons CO2-eq per year)")
 
-for (i in 1:length(plotFlows)){
+for (i in 2:length(plotFlows)){
   
   plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
   

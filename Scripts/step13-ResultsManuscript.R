@@ -50,10 +50,10 @@ scenariosTable <- c("Original Oak Gum Cypress Forest",
                     "4 Land Cover Change, Climate, and No Forested Wetland",
                     "3 Land Cover Change, Climate, Erosion")
 
-scenariosTimeStep <- c(2100,
-                       2100,
-                       2100,
-                       2100,
+scenariosTimeStep <- c(2016,
+                       2016,
+                       2016,
+                       2016,
                        2016,
                        2016,
                        2016)
@@ -149,11 +149,77 @@ stockTable <- stockTable %>%
                                   Scenario == "3 Land Cover Change, Climate, Erosion"~"IPCC")) %>%
   select(ScenarioName,StateClass,StockGroup,AmountTonsC)
 
-stockTable
-
 write.csv(stockTable,
           paste0(pathOutManuscript,"/stockTable.csv"),
           row.names = F)
+
+stockTableSingleCell <- stockTable %>%
+  filter(ScenarioName %in% c("Oak Gum Cypress Forest",
+                            "Palustrine Forested Wetland",
+                            "Palustrine Emergent Wetland",
+                            "Estuarine Emergent Wetland"))
+
+stockTableSingleCell
+
+AtmValue <- abs(min(stockTableSingleCell$AmountTonsC[stockTableSingleCell$StockGroup == "Atmosphere"]))
+
+ScenarioNames <- c("Oak Gum Cypress Forest",
+                  "Palustrine Forested Wetland",
+                  "Palustrine Emergent Wetland",
+                  "Estuarine Emergent Wetland")
+
+for (i in 1:length(ScenarioNames)){
+  
+  print(ScenarioNames[i])
+  
+  stockTableSingleCell1 <- stockTableSingleCell %>%
+    filter(ScenarioName == ScenarioNames[i]) %>%
+    filter(StockGroup %in% c("Atmosphere",
+                            "Aquatic",
+                            "Ecosystem"))
+  
+  stockTableSingleCell1$AmountTonsC[stockTableSingleCell1$StockGroup == "Atmosphere"] <- stockTableSingleCell1$AmountTonsC[stockTableSingleCell1$StockGroup == "Atmosphere"] + AtmValue
+  
+  totalC <- sum(stockTableSingleCell1$AmountTonsC)
+  lateralC <- stockTableSingleCell1$AmountTonsC[stockTableSingleCell1$StockGroup == "Aquatic"]
+  
+  print(round((lateralC/totalC)*100,2))
+  
+  rm(stockTableSingleCell1,totalC,lateralC)
+  
+}
+
+
+stockTableBasin <- stockTable %>%
+  filter(ScenarioName == "Baseline") %>%
+  filter(StockGroup %in% c("Atmosphere",
+                          "Aquatic",
+                          "Ecosystem"))
+
+# need to add AtmValue*Area of Atm above each class
+
+# id1 <- scenarioList$ScenarioId[grep("2 Land Cover Change and Climate",scenarioList$Name)]
+# myScenario1 <- scenario(myProject, scenario=max(id1))
+# myDataLandS <- datasheet(myScenario1, "stsim_OutputStratumState")
+# 
+# myDataLandS <- myDataLandS %>%
+#   filter(Timestep == 2016)
+# 
+# totalHa <- sum(myDataLandS$Amount)
+# AtmValue <- abs(min(stockTableSingleCell$AmountTonsC[stockTableSingleCell$StockGroup == "Atmosphere"]))
+# AtmValueHa <- totalHa*AtmValue
+
+totalBasin <- sum(stockTableBasin$AmountTonsC)
+
+round((stockTableBasin$AmountTonsC[stockTableBasin$StateClass == "Wetland: Palustrine Emergent" &
+                              stockTableBasin$StockGroup == "Aquatic"]/totalBasin)*100,2)
+
+round((stockTableBasin$AmountTonsC[stockTableBasin$StateClass == "Wetland: Estuarine Emergent" &
+                              stockTableBasin$StockGroup == "Aquatic"]/totalBasin)*100,2)
+
+round((stockTableBasin$AmountTonsC[stockTableBasin$StateClass == "Wetland: Palustrine Forested" &
+                              stockTableBasin$StockGroup == "Aquatic"]/totalBasin)*100,2)
+
 
 # NECB
 
@@ -161,12 +227,13 @@ plotFlows<- c("Annual Net Ecosystem Carbon Balance (tons C per year)",
               "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
 
 timePeriod <- c(2001,2016)
-
-# scenariosDiff <- c("2 Land Cover Change and Climate",
-#                    "4 Land Cover Change, Climate, and No Forested Wetland")
+#timePeriod <- c(2006,2010)
 
 scenariosDiff <- c("2 Land Cover Change and Climate",
-                   "3 Land Cover Change, Climate, Erosion")
+                   "4 Land Cover Change, Climate, and No Forested Wetland")
+
+# scenariosDiff <- c("2 Land Cover Change and Climate",
+#                    "3 Land Cover Change, Climate, Erosion")
 
 for (i in 1:length(plotFlows)){
   
@@ -214,11 +281,11 @@ plotStocks<- c("Ecosystem Carbon Storage (tons C)")
 timePeriod <- c(2001,2016)
 #timePeriod <- c(2006,2010)
 
-# scenariosDiff <- c("2 Land Cover Change and Climate",
-#                    "4 Land Cover Change, Climate, and No Forested Wetland")
-# 
 scenariosDiff <- c("2 Land Cover Change and Climate",
-                   "3 Land Cover Change, Climate, Erosion")
+                   "4 Land Cover Change, Climate, and No Forested Wetland")
+
+# scenariosDiff <- c("2 Land Cover Change and Climate",
+#                    "3 Land Cover Change, Climate, Erosion")
 
 for (i in 1:length(plotStocks)){
   
@@ -410,7 +477,7 @@ for (y in 1:length(years)){
     
     maskYear <- 2
     
-  } else if (years[y] >16){
+  } else if (years[y] >= 2016){
     
     maskYear <- 3
     
@@ -453,7 +520,7 @@ for (y in 1:length(years)){
     
     maskYear <- 2
     
-  } else if (years[y] >16){
+  } else if (years[y] >= 2016){
     
     maskYear <- 3
     
@@ -484,6 +551,7 @@ rm(NECBsummary)
 
 rm(rT)
 rm(rE)
+rm(maskKeep)
 gc()
 
 for (i in 1:length(start1)){
@@ -601,7 +669,7 @@ for (y in 1:length(years)){
     
     maskYear <- 2
     
-  } else if (years[y] >16){
+  } else if (years[y] >= 2016){
     
     maskYear <- 3
     
@@ -644,7 +712,7 @@ for (y in 1:length(years)){
     
     maskYear <- 2
     
-  } else if (years[y] >16){
+  } else if (years[y] >= 2016){
     
     maskYear <- 3
     
@@ -744,7 +812,7 @@ tabTwat <- tabT %>%
 
 tabTwat
 
-rm(tabT,tabTwet,TabTwat)
+rm(tabT,tabTwet,tabTwat)
 
 yearsL <- c("2006","2010","2016")
 
