@@ -206,18 +206,20 @@ for (i in 1:length(scenarios)){
 
 plotFlows <- c("Annual Lateral Flux (tons CO2-eq per year)",
               "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
-              "Annual Net Growth (tons CO2-eq per year)")
+              "Annual Net Growth (tons CO2-eq per year)",
+              "Annual Emissions: CH4 (tons CO2-eq per year)")
 
-for (i in 2:length(plotFlows)){
+for (i in 4:length(plotFlows)){
   
   plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
   
   plotFlowsName <- gsub("Annual Net Ecosystem Carbon Balance","Annual NECB",
                     gsub(" (tons CO2-eq per year)","",plotFlows[i], fixed = T))
+  plotFlowsName <- gsub(": CH4"," ",plotFlowsName, fixed = T)
   
   myDataFlux1 <- read.csv(paste0(pathOutSingleCell,"/",gsub(":","",gsub(" ","",scenarios[1]),fixed = T),".csv"))
   
-  if (i == 1){
+  if (i %in% c(1,4)){
     
     myDataFlux1necb <- data.frame(mean = 0,
                                   low = NA,
@@ -324,6 +326,55 @@ for (i in 2:length(plotFlows)){
   p5
   
   ggsave(paste0(pathOutSingleCell,"/",plotName,".png"), p5, width = 3.5, height = 3.5, dpi = 600)
+  
+  if (i == 4){
+    
+    p5 <- ggplot(myDataNECB, aes(x = ScenarioO, y = mean, colour = ScenarioO, fill = ScenarioO)) +
+      geom_errorbar(aes(x=ScenarioO, ymin=low, ymax=high), colour = "black", width = 0.25)+
+      geom_point(shape = 23, size = 3) +
+      theme_bw() +
+      scale_colour_manual(values=col,
+                          aesthetics = c("colour", "fill")) +
+      theme(panel.border = element_blank(),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            axis.line = element_line(colour = "black"),
+            legend.position="none",
+            legend.title=element_blank()) +
+      xlab("\nLand Cover Class") + 
+      ylab(as.expression(bquote(atop(.(plotFlowsName)~CH[4],"tons "~CO[2-eq]~ha^-1~y^-1)))) +
+      ylim(minVal,maxVal)
+    
+    p5
+    
+    ggsave(paste0(pathOutSingleCell,"/",plotName,".png"), p5, width = 3.5, height = 3.5, dpi = 600)
+    
+    myDataNECB$FlowGroupId <- "Annual Emissions: CH4 (tons CO2-eq per year)"
+    
+    myDataNECB$GHG <- factor(myDataNECB$FlowGroupId, levels = c("Annual Emissions: CH4 (tons CO2-eq per year)"))
+    
+    p6 <- ggplot(myDataNECB, aes(x = ScenarioO, y = mean, fill = GHG)) +
+      geom_bar(position="stack", stat="identity", alpha = 0.75) +
+      geom_errorbar(aes(x=ScenarioO, ymin=low, ymax=high), colour = "black", width = 0.25)+
+      theme_bw() + 
+      scale_fill_manual(values = c("Annual Emissions: CH4 (tons CO2-eq per year)" = "#46337E"),
+                        labels = c(expression("CH"[4]))) +
+      #scale_fill_viridis(discrete = T, begin = 0.5, end = 0.8) +
+      theme(panel.border = element_blank(),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            axis.line = element_line(colour = "black"),
+            legend.position.inside=c(0.2, 0.8),
+            legend.position = "inside") +
+      xlab("\nLand Cover Class") + 
+      ylab(as.expression(bquote(atop(.("Annual Emissions"),"tons "~CO[2-eq]~ha^-1~y^-1)))) +
+      ylim(minVal,maxVal)
+    
+    p6
+    
+    ggsave(paste0(pathOutSingleCell,"/",plotName,"Option2.png"), p6, width = 3.5, height = 3.5, dpi = 600)
+    
+  }
   
   rm(plotName,plotFlowsName,myDataFlux1,myDataFlux1necb,
      myDataFlux2,myDataFlux2necb,
@@ -519,4 +570,186 @@ p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
   
 ggsave(paste0(pathOutSingleCell,"/",plotEName,".png"), p6, width = 3.5, height = 3.5, dpi = 600)
 
+# Summarize methane emissions
+
+plotE <- c("Annual Emissions: CH4 (tons CO2-eq per year)")
+plotEs <- c("Annual Emissions: CH4 (tons CO2-eq per year)")
+
+plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotE), fixed = T),fixed = T))
+
+plotEName <- gsub(": CO2 and CH4 (tons CO2-eq per year)","",plotE, fixed = T)
+
+myDataFlux1 <- read.csv(paste0(pathOutSingleCell,"/",gsub(":","",gsub(" ","",scenarios[1]),fixed = T),".csv"))
+
+myDataFlux1all <- myDataFlux1 %>%
+  filter(FlowGroupId == plotE) %>%
+  group_by(Iteration) %>%
+  summarize(totalC = sum(Amount, na.rm = T)) %>%
+  ungroup() %>%
+  summarize(mean = mean(totalC, na.rm = T),
+            low = NA,
+            high = NA) %>%
+  ungroup() %>%
+  mutate(Scenario = "Upland \nForest",
+         Color = "#2E9E40")
+
+myDataFlux2 <- read.csv(paste0(pathOutSingleCell,"/",gsub(":","",gsub(" ","",scenarios[2]),fixed = T),".csv"))
+
+myDataFlux2all <- myDataFlux2 %>%
+  filter(FlowGroupId == plotE) %>%
+  group_by(Iteration) %>%
+  summarize(totalC = sum(Amount, na.rm = T)) %>%
+  ungroup() %>%
+  summarize(mean = mean(totalC, na.rm = T),
+            low = quantile(totalC,0.025, na.rm = T),
+            high = quantile(totalC,0.975, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(Scenario = "Palustrine \nForested \nWetland",
+         Color = "#145A5A")
+
+myDataFlux3 <- read.csv(paste0(pathOutSingleCell,"/",gsub(":","",gsub(" ","",scenarios[3]),fixed = T),".csv"))
+
+myDataFlux3all <- myDataFlux3 %>%
+  filter(FlowGroupId == plotE) %>%
+  group_by(Iteration) %>%
+  summarize(totalC = sum(Amount, na.rm = T)) %>%
+  ungroup() %>%
+  summarize(mean = mean(totalC, na.rm = T),
+            low = quantile(totalC,0.025, na.rm = T),
+            high = quantile(totalC,0.975, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(Scenario = "Palustrine \nEmergent \nWetland",
+         Color = "#EA2DEE")
+
+myDataFlux4 <- read.csv(paste0(pathOutSingleCell,"/",gsub(":","",gsub(" ","",scenarios[4]),fixed = T),".csv"))
+
+myDataFlux4all <- myDataFlux4 %>%
+  filter(FlowGroupId == plotE) %>%
+  group_by(Iteration) %>%
+  summarize(totalC = sum(Amount, na.rm = T)) %>%
+  ungroup() %>%
+  summarize(mean = mean(totalC, na.rm = T),
+            low = quantile(totalC,0.025, na.rm = T),
+            high = quantile(totalC,0.975, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(Scenario = "Estuarine \nEmergent \nWetland",
+         Color = "#A91EAC")
+
+myDataAll <- myDataFlux1all %>%
+  bind_rows(myDataFlux2all) %>%
+  bind_rows(myDataFlux3all) %>%
+  bind_rows(myDataFlux4all)
+
+myDataAll <- myDataAll %>%
+  rename(lowT = low,
+         highT = high) %>%
+  select(Scenario,lowT,highT)
+
+minVal <- min(myDataAll$lowT, na.rm = T)
+maxVal <- max(myDataAll$highT, na.rm = T)
+
+if(minVal > 0 & maxVal >0){
+  minVal = 0
+} else if (minVal < 0 & maxVal < 0){
+  maxVal = 0
+}
+
+myDataFlux1s <- myDataFlux1 %>%
+  filter(FlowGroupId %in% plotEs) %>%
+  group_by(Iteration,FlowGroupId) %>%
+  summarize(totalC = sum(Amount, na.rm = T)) %>%
+  ungroup() %>%
+  group_by(FlowGroupId) %>%
+  summarize(mean = mean(totalC, na.rm = T),
+            low = NA,
+            high = NA) %>%
+  ungroup() %>%
+  mutate(Scenario = "Upland \nForest",
+         Color = "#2E9E40") %>%
+  add_row(data.frame(FlowGroupId = "Annual Emissions: CH4 (tons CO2-eq per year)",
+                     mean = 0,
+                     low = NA,
+                     high = NA,
+                     Scenario = "Upland \nForest",
+                     Color = "#2E9E40"))
+
+myDataFlux2s <- myDataFlux2 %>%
+  filter(FlowGroupId %in% plotEs) %>%
+  group_by(Iteration,FlowGroupId) %>%
+  summarize(totalC = sum(Amount, na.rm = T)) %>%
+  ungroup() %>%
+  group_by(FlowGroupId) %>%
+  summarize(mean = mean(totalC, na.rm = T),
+            low = quantile(totalC,0.025, na.rm = T),
+            high = quantile(totalC,0.975, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(Scenario = "Palustrine \nForested \nWetland",
+         Color = "#145A5A")
+
+myDataFlux3s <- myDataFlux3 %>%
+  filter(FlowGroupId %in% plotEs) %>%
+  group_by(Iteration,FlowGroupId) %>%
+  summarize(totalC = sum(Amount, na.rm = T)) %>%
+  ungroup() %>%
+  group_by(FlowGroupId) %>%
+  summarize(mean = mean(totalC, na.rm = T),
+            low = quantile(totalC,0.025, na.rm = T),
+            high = quantile(totalC,0.975, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(Scenario = "Palustrine \nEmergent \nWetland",
+         Color = "#EA2DEE")
+
+myDataFlux4s <- myDataFlux4 %>%
+  filter(FlowGroupId %in% plotEs) %>%
+  group_by(Iteration,FlowGroupId) %>%
+  summarize(totalC = sum(Amount, na.rm = T)) %>%
+  ungroup() %>%
+  group_by(FlowGroupId) %>%
+  summarize(mean = mean(totalC, na.rm = T),
+            low = quantile(totalC,0.025, na.rm = T),
+            high = quantile(totalC,0.975, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(Scenario = "Estuarine \nEmergent \nWetland",
+         Color = "#A91EAC")
+
+myDataS <- myDataFlux1s %>%
+  bind_rows(myDataFlux2s) %>%
+  bind_rows(myDataFlux3s) %>%
+  bind_rows(myDataFlux4s) %>%
+  left_join(myDataAll,by = join_by(Scenario))
+
+
+# col <- as.character(myDataS$Color)
+# names(col) <- as.character(myDataS$Scenario)
+
+myDataS$ScenarioO <- factor(myDataS$Scenario, levels = c("Upland \nForest",
+                                                         "Palustrine \nForested \nWetland",
+                                                         "Palustrine \nEmergent \nWetland",
+                                                         "Estuarine \nEmergent \nWetland"))
+
+myDataS$GHG <- factor(myDataS$FlowGroupId, levels = c("Annual Emissions: CH4 (tons CO2-eq per year)",
+                                                      "Annual Emissions: CO2 (tons CO2-eq per year)"))
+
+
+p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
+  geom_bar(position="stack", stat="identity", alpha = 0.75) +
+  geom_errorbar(aes(x=ScenarioO, ymin=lowT, ymax=highT), colour = "black", width = 0.25)+
+  theme_bw() + 
+  scale_fill_manual(values = c("Annual Emissions: CH4 (tons CO2-eq per year)" = "#46337E",
+                               "Annual Emissions: CO2 (tons CO2-eq per year)" = "#9FDA3A"),
+                    labels = c(expression("CH"[4]),expression("CO"[2]))) +
+  #scale_fill_viridis(discrete = T, begin = 0.5, end = 0.8) +
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        legend.position.inside=c(0.2, 0.8),
+        legend.position = "inside") +
+  xlab("\nLand Cover Class") + 
+  ylab(as.expression(bquote(atop(.(plotEName),"tons "~CO[2-eq]~ha^-1~y^-1)))) +
+  ylim(minVal,maxVal)
+
+p6
+
+ggsave(paste0(pathOutSingleCell,"/",plotEName,".png"), p6, width = 3.5, height = 3.5, dpi = 600)
 
