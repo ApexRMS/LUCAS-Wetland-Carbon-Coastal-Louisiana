@@ -6,7 +6,6 @@
 library(rsyncrosim)
 library(tidyverse)
 library(terra)
-library(viridis)
 
 # Specify file paths, library, and project
 
@@ -27,6 +26,15 @@ myLibrary <- ssimLibrary(name = paste0(modelFullPath, "/", modelName, ".ssim"),
 
 myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
+scenariosBasin <- c("Baseline",
+                    "No Palustrine Forested Wetland",
+                    "IPCC")
+
+scenariosSingleCell <- c("Original Oak Gum Cypress Forest",
+                         "Palustrine Forested Wetland: Add Uncertainty",
+                         "Palustrine Emergent Wetland: Add Uncertainty",
+                         "Estuarine Emergent Wetland: Add Uncertainty")
+
 pathOut <- paste0(rootPath,"Models/",modelName,"/Output Data Release/")
 
 
@@ -46,9 +54,7 @@ if(!dir.exists(pathOutTabular)){
   dir.create(pathOutTabular)
 }
 
-pathOutSpatialSub <- paste0(pathOutSpatial,c("Land Cover Area",
-                                             "Carbon Stocks",
-                                             "Carbon Fluxes"))
+pathOutSpatialSub <- paste0(pathOutSpatial,scenariosBasin)
 
 for (i in 1:length(pathOutSpatialSub)){
   if(!dir.exists(pathOutSpatialSub[i])){
@@ -56,172 +62,287 @@ for (i in 1:length(pathOutSpatialSub)){
   }
 }
 
-
 # Extract ID names for Spatial Data
 
 stockGroupIDs <- datasheet(myProject, name = "stsim_StockGroup", includeKey = T)
 flowGroupIDs <- datasheet(myProject, name = "stsim_FlowGroup", includeKey = T)
-transitionGroupIDs <- datasheet(myProject, name = "stsim_TransitionGroup", includeKey = T)
 
-# Loop through all Scenarios
+keepStocks1 <- c("Biomass: Aboveground",
+                 "Biomass: Belowground",
+                 "DOM: Deadwood",
+                 "DOM: Litter",
+                 "DOM: Soil")
 
-scenList <- c("1 No Land Cover Change and Climate",
-              "2 Land Cover Change and Climate",
-              "3 Land Cover Change, Climate, Erosion",
-              "4 Land Cover Change, Climate, and No Forested Wetland")
+keepStocks2 <- c("Biomass: Coarse Root [Type]",
+                 "Biomass: Fine Root [Type]",
+                 "Biomass: Foliage [Type]",
+                 "Biomass: Merchantable [Type]",
+                 "Biomass: Other Wood [Type]",
+                 "Deep Soil [Type]",
+                 "DOM: Aboveground Fast [Type]",
+                 "DOM: Aboveground Medium [Type]",
+                 "DOM: Aboveground Slow [Type]",
+                 "DOM: Aboveground Very Fast [Type]",
+                 "DOM: Belowground Fast [Type]",
+                 "DOM: Belowground Slow [Type]",
+                 "DOM: Belowground Very Fast [Type]",
+                 "DOM: Snag Branch [Type]",
+                 "DOM: Snag Stem [Type]",
+                 "Ecosystem Carbon Storage (tons C)")
 
-scenNames <- c("NoLandCoverChange",
-               "LandCoverChangeSchoolmaster",
-               "LandCoverChangeIPCC",
-               "LandCoverChangeNoForestedWetland")
+keepStocks2NoType <- gsub(" [Type]","",keepStocks2, fixed = T)
 
-for (i in 1:length(scenList)){
+keepFluxes <- c("Annual Emissions: CO2 (tons C per year)",             
+                "Annual Emissions: CO2 (tons CO2-eq per year)",        
+                "Annual Emissions: CO2 and CH4 (tons C per year)",     
+                "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
+                "Annual Net Growth (tons C per year)",                
+                "Annual Net Growth (tons CO2-eq per year)",            
+                "Annual Emissions: CH4 (tons C per year)",             
+                "Annual Emissions: CH4 (tons CO2-eq per year)",        
+                "Annual Lateral Flux (tons C per year)",               
+                "Annual Lateral Flux (tons CO2-eq per year)",
+                "Annual Net Ecosystem Carbon Balance (tons C per year)",
+                "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
+
+lookupName <- data.frame(Name = c("Ecosystem Carbon Storage (tons C)",
+                                  "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+                                  "Annual Net Ecosystem Carbon Balance (tons C per year)",
+                                  "Annual Emissions: CH4 (tons CO2-eq per year)",
+                                  "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
+                                  "Annual Net Growth (tons CO2-eq per year)",
+                                  "Annual Emissions: CO2 (tons CO2-eq per year)",
+                                  "Annual Lateral Flux (tons CO2-eq per year)"),
+                         NameShort = c("EcoStorage",
+                                       "AnnNECBCO2e",
+                                       "AnnNECBtons",
+                                       "AnnCH4CO2e",
+                                       "AnnTotEmissCO2e",
+                                       "AnnGrowCO2e",
+                                       "AnnCO2CO2e",
+                                       "AnnLatCO2e"))
+
+landToChange <- c("Agriculture: Cropland",
+                  "Developed: Medium Intensity",
+                  "Water: All",
+                  "Water: Previously Emergent Wetland",
+                  "Water: Previously Forested Wetland",
+                  "Wetland: Unvegetated Emergent",
+                  "Wetland: Unvegetated Forested",
+                  "Grassland: Annual",
+                  "Shrubland: Non-sage")
+
+keepFluxesSpatial <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+                       "Annual Net Ecosystem Carbon Balance (tons C per year)",
+                       "Annual Emissions: CH4 (tons CO2-eq per year)",
+                       "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
+                       "Annual Net Growth (tons CO2-eq per year)",
+                       "Annual Emissions: CO2 (tons CO2-eq per year)",
+                       "Annual Lateral Flux (tons CO2-eq per year)")
+
+keepStocksSpatial <- c("Ecosystem Carbon Storage (tons C)")
+
+scenarioListAll <- scenario(myProject, summary = T, results = T)
+
+# Loop through all Basin Scenarios
+
+for (i in 1:length(scenariosBasin)){
   
-  scenID <- scenarioListAll$ScenarioId[grep(scenList[i],scenarioListAll$Name)]
+  scenID <- scenarioListAll$ScenarioId[grep(paste0("Basin ",scenariosBasin[i]),scenarioListAll$Name)]
   
   myScenario <- scenario(myProject, scenario=max(scenID))
   
-  # Tabular Data
-  
-  # Load Land Cover Data
-  tabLand <- datasheet(myScenario, "stsim_OutputStratumState")
-  
-  tabLandSub <- tabLand %>%
-    select(-c(Iteration,StateLabelXId,StateLabelYId,AgeMin,AgeMax,AgeClass,StratumId,SecondaryStratumId)) %>%
-    rename(Year = Timestep,
-           StateClass = StateClassId) %>% 
-    group_by(Year,StateClass) %>%
-    summarize(Area_ha = sum(Amount)) %>%
-    ungroup()
-  
-  write.csv(tabLandSub,paste0(pathOutTabular,"LandCoverArea_",
-                              scenNames[i],".csv"),
-            row.names = F)
-  
-  rm(tabLand,tabLandSub)
-  
-  # Load Stock Data
-  tabStock <- datasheet(myScenario, "stsim_OutputStock")
-  
-  keepStocks1 <- c("Biomass: Aboveground",
-                   "Biomass: Belowground",
-                   "DOM: Deadwood",
-                   "DOM: Litter",
-                   "DOM: Soil")
-  
-  keepStocks2 <- c("Biomass: Coarse Root [Type]",
-                   "Biomass: Fine Root [Type]",
-                   "Biomass: Foliage [Type]",
-                   "Biomass: Merchantable [Type]",
-                   "Biomass: Other Wood [Type]",
-                   "Deep Soil [Type]",
-                   "DOM: Aboveground Fast [Type]",
-                   "DOM: Aboveground Medium [Type]",
-                   "DOM: Aboveground Slow [Type]",
-                   "DOM: Aboveground Very Fast [Type]",
-                   "DOM: Belowground Fast [Type]",
-                   "DOM: Belowground Slow [Type]",
-                   "DOM: Belowground Very Fast [Type]",
-                   "DOM: Snag Branch [Type]",
-                   "DOM: Snag Stem [Type]",
-                   "Ecosystem Carbon Storage (tons C)")
-  
-  keepStocks2NoType <- gsub(" [Type]","",keepStocks2, fixed = T)
-  
-  tabStockSub <- tabStock %>%
-    select(-c(Iteration,StratumId,SecondaryStratumId)) %>%
-    filter(StockGroupId %in% c(keepStocks1,keepStocks2)) %>%
-    rename(Year = Timestep,
-           StateClass = StateClassId,
-           StockGroup = StockGroupId) %>%
-    mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
-    group_by(Year,StateClass,StockGroup) %>%
-    summarize(Amount_tonsC = sum(Amount)) %>%
-    ungroup()
-  
-  tabStockSubIPCC <- tabStockSub %>%
-    filter(StockGroup %in% c(keepStocks1))
-  
-  tabStockSubLUCAS <- tabStockSub %>%
-    filter(StockGroup %in% c(keepStocks2NoType))
-  
-  write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_",
-                                   scenNames[i],".csv"),
-            row.names = F)
-  
-  write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_",
-                                    scenNames[i],".csv"),
-            row.names = F)
-  
-  rm(tabStock,tabStockSub,tabStockSubIPCC,tabStockSubLUCAS)
-  
-  # Load Flux Data
-  tabFlux <- datasheet(myScenario, "stsim_OutputFlow")
-  
-  keepFluxes <- c("Annual Emissions: CO2 (tons C per year)",             
-                  "Annual Emissions: CO2 (tons CO2-eq per year)",        
-                  "Annual Emissions: CO2 and CH4 (tons C per year)",     
-                  "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
-                  "Annual Net Growth (tons C per year)",                
-                  "Annual Net Growth (tons CO2-eq per year)",            
-                  "Annual Emissions: CH4 (tons C per year)",             
-                  "Annual Emissions: CH4 (tons CO2-eq per year)",        
-                  "Annual Lateral Flux (tons C per year)",               
-                  "Annual Lateral Flux (tons CO2-eq per year)",
-                  "Annual Net Ecosystem Carbon Balance (tons C per year)",
-                  "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
-  
-  tabFluxSub <- tabFlux %>%
-    select(-c(Iteration,FromStateClassId,FromStockTypeId,TransitionTypeId,
-              ToStratumId,ToStateClassId,ToStockTypeId,EndStratumId,
-              EndSecondaryStratumId,EndStateClassId,EndMinAge,FromSecondaryStratumId,FromStratumId)) %>%
-    filter((FlowGroupId %in% keepFluxes)) %>%
-    rename(Year = Timestep,
-           FlowGroup = FlowGroupId,
-           Amount1 = Amount) %>%
-    group_by(Year,FlowGroup) %>%
-    summarize(Amount = sum(Amount1)) %>%
-    ungroup()
-  
-  
-  write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_",
-                              scenNames[i],".csv"),
-            row.names = F)
-  
-  rm(tabFlux,tabFluxSub)
-  
-  # Load Transition Data
-  tabTransition <- datasheet(myScenario, "stsim_OutputStratumTransition")
-  
-  # keepTransitions <- c("Restoration Wetland: Palustrine Forested [Type]",
-  #                      "Urbanization",
-  #                      "Intensification",
-  #                      "Forest Harvest",
-  #                      "Ag Expansion",
-  #                      "Ag Contraction")
-  
-  tabTransitionSub <- tabTransition %>%
-    select(-c(Iteration,AgeMin,AgeMax,AgeClass,SizeClassId,EventId,SecondaryStratumId,StratumId)) %>%
-    #filter(TransitionGroupId %in% keepTransitions) %>%
-    rename(Year = Timestep,
-           TransitionGroup = TransitionGroupId) %>%
-    mutate(TransitionGroup = gsub(" [Type]","",TransitionGroup, fixed = T)) %>%
-    group_by(Year,TransitionGroup) %>%
-    summarize(Area_ha = sum(Amount)) %>%
-    ungroup()
-  
-  write.csv(tabTransitionSub,paste0(pathOutTabular,"LandCoverTransitions_",
-                                    scenNames[i],".csv"),
-            row.names = F)
-  
-  rm(tabTransition,tabTransitionSub)
-  
+  if (i == 1){
+    
+    # Tabular Data
+    
+    # Load Land Cover Data
+    tabLand <- datasheet(myScenario, "stsim_OutputStratumState")
+    
+    tabLandSub <- tabLand %>%
+      select(-c(Iteration,StateLabelXId,StateLabelYId,AgeMin,
+                AgeMax,AgeClass,StratumId,SecondaryStratumId,ResolutionId)) %>%
+      rename(Year = Timestep) %>%
+      mutate(StateClass = case_when(StateClassId == "Agriculture: Cropland"~"Agriculture",
+                                    StateClassId == "Developed: Medium Intensity"~"Developed",
+                                    StateClassId == "Grassland: Annual"~"Grassland",
+                                    StateClassId == "Shrubland: Non-sage"~"Shrubland",
+                                    StateClassId == "Water: All"~"Water",
+                                    StateClassId == "Water: Previously Emergent Wetland"~"Water",
+                                    StateClassId == "Water: Previously Forested Wetland"~"Water",
+                                    StateClassId == "Wetland: Unvegetated Emergent"~"Wetland: Unconsolidated Shore",
+                                    StateClassId == "Wetland: Unvegetated Forested"~"Wetland: Unconsolidated Shore",
+                                    !(StateClassId %in% landToChange)~StateClassId)) %>%
+      select(-StateClassId) %>%
+      group_by(Year,StateClass) %>%
+      summarize(Area_ha = sum(Amount)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosBasin[i])
+    
+    rm(tabLand)
+    
+    # Load Stock Data
+    tabStock <- datasheet(myScenario, "stsim_OutputStock")
+    
+    tabStockSub <- tabStock %>%
+      select(-c(Iteration,StratumId,SecondaryStratumId,ResolutionId)) %>%
+      filter(StockGroupId %in% c(keepStocks1,keepStocks2)) %>%
+      rename(Year = Timestep,
+             StockGroup = StockGroupId) %>%
+      mutate(StateClass = case_when(StateClassId == "Agriculture: Cropland"~"Agriculture",
+                                    StateClassId == "Developed: Medium Intensity"~"Developed",
+                                    StateClassId == "Grassland: Annual"~"Grassland",
+                                    StateClassId == "Shrubland: Non-sage"~"Shrubland",
+                                    StateClassId == "Water: All"~"Water",
+                                    StateClassId == "Water: Previously Emergent Wetland"~"Water",
+                                    StateClassId == "Water: Previously Forested Wetland"~"Water",
+                                    StateClassId == "Wetland: Unvegetated Emergent"~"Wetland: Unconsolidated Shore",
+                                    StateClassId == "Wetland: Unvegetated Forested"~"Wetland: Unconsolidated Shore",
+                                    !(StateClassId %in% landToChange)~StateClassId)) %>%
+      select(-StateClassId) %>%
+      mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
+      group_by(Year,StateClass,StockGroup) %>%
+      summarize(Amount_tonsC = sum(Amount)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosBasin[i])
+    
+    rm(tabStock)
+    
+    # Load Flux Data
+    tabFlux <- datasheet(myScenario, "stsim_OutputFlow")
+    
+    # should be true
+    table(tabFlux$ToStateClassId == tabFlux$FromStateClassId)
+    
+    tabFluxSub <- tabFlux %>%
+      select(-c(Iteration,FromStockTypeId,TransitionTypeId,
+                ToStratumId,ToStateClassId,ToStockTypeId,EndStratumId,
+                EndSecondaryStratumId,EndStateClassId,EndMinAge,FromSecondaryStratumId,FromStratumId,
+                ResolutionId)) %>%
+      filter((FlowGroupId %in% keepFluxes)) %>%
+      rename(Year = Timestep,
+             FlowGroup = FlowGroupId,
+             Amount1 = Amount) %>%
+      mutate(StateClass = case_when(FromStateClassId == "Agriculture: Cropland"~"Agriculture",
+                                    FromStateClassId == "Developed: Medium Intensity"~"Developed",
+                                    FromStateClassId == "Grassland: Annual"~"Grassland",
+                                    FromStateClassId == "Shrubland: Non-sage"~"Shrubland",
+                                    FromStateClassId == "Water: All"~"Water",
+                                    FromStateClassId == "Water: Previously Emergent Wetland"~"Water",
+                                    FromStateClassId == "Water: Previously Forested Wetland"~"Water",
+                                    FromStateClassId == "Wetland: Unvegetated Emergent"~"Wetland: Unconsolidated Shore",
+                                    FromStateClassId == "Wetland: Unvegetated Forested"~"Wetland: Unconsolidated Shore",
+                                    !(FromStateClassId %in% landToChange)~FromStateClassId)) %>%
+      select(-FromStateClassId) %>%
+      group_by(Year,StateClass,FlowGroup) %>%
+      summarize(Amount = sum(Amount1)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosBasin[i])
+    
+    rm(tabFlux)
+    
+  } else {
+    
+    # Tabular Data
+    
+    # Load Land Cover Data
+    tabLand <- datasheet(myScenario, "stsim_OutputStratumState")
+    
+    tabLandSub2 <- tabLand %>%
+      select(-c(Iteration,StateLabelXId,StateLabelYId,AgeMin,
+                AgeMax,AgeClass,StratumId,SecondaryStratumId,ResolutionId)) %>%
+      rename(Year = Timestep) %>%
+      mutate(StateClass = case_when(StateClassId == "Agriculture: Cropland"~"Agriculture",
+                                    StateClassId == "Developed: Medium Intensity"~"Developed",
+                                    StateClassId == "Grassland: Annual"~"Grassland",
+                                    StateClassId == "Shrubland: Non-sage"~"Shrubland",
+                                    StateClassId == "Water: All"~"Water",
+                                    StateClassId == "Water: Previously Emergent Wetland"~"Water",
+                                    StateClassId == "Water: Previously Forested Wetland"~"Water",
+                                    StateClassId == "Wetland: Unvegetated Emergent"~"Wetland: Unconsolidated Shore",
+                                    StateClassId == "Wetland: Unvegetated Forested"~"Wetland: Unconsolidated Shore",
+                                    !(StateClassId %in% landToChange)~StateClassId)) %>%
+      select(-StateClassId) %>%
+      group_by(Year,StateClass) %>%
+      summarize(Area_ha = sum(Amount)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosBasin[i])
+    
+    tabLandSub <- tabLandSub %>%
+      addRow(tabLandSub2)
+    
+    rm(tabLand,tabLandSub2)
+    
+    # Load Stock Data
+    tabStock <- datasheet(myScenario, "stsim_OutputStock")
+    
+    tabStockSub2 <- tabStock %>%
+      select(-c(Iteration,StratumId,SecondaryStratumId,ResolutionId)) %>%
+      filter(StockGroupId %in% c(keepStocks1,keepStocks2)) %>%
+      rename(Year = Timestep,
+             StockGroup = StockGroupId) %>%
+      mutate(StateClass = case_when(StateClassId == "Agriculture: Cropland"~"Agriculture",
+                                    StateClassId == "Developed: Medium Intensity"~"Developed",
+                                    StateClassId == "Grassland: Annual"~"Grassland",
+                                    StateClassId == "Shrubland: Non-sage"~"Shrubland",
+                                    StateClassId == "Water: All"~"Water",
+                                    StateClassId == "Water: Previously Emergent Wetland"~"Water",
+                                    StateClassId == "Water: Previously Forested Wetland"~"Water",
+                                    StateClassId == "Wetland: Unvegetated Emergent"~"Wetland: Unconsolidated Shore",
+                                    StateClassId == "Wetland: Unvegetated Forested"~"Wetland: Unconsolidated Shore",
+                                    !(StateClassId %in% landToChange)~StateClassId)) %>%
+      select(-StateClassId) %>%
+      mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
+      group_by(Year,StateClass,StockGroup) %>%
+      summarize(Amount_tonsC = sum(Amount)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosBasin[i])
+    
+    rm(tabStock,tabStockSub2)
+    
+    # Load Flux Data
+    tabFlux <- datasheet(myScenario, "stsim_OutputFlow")
+    
+    tabFluxSub2 <- tabFlux %>%
+      select(-c(Iteration,FromStockTypeId,TransitionTypeId,
+                ToStratumId,ToStateClassId,ToStockTypeId,EndStratumId,
+                EndSecondaryStratumId,EndStateClassId,EndMinAge,FromSecondaryStratumId,FromStratumId,
+                ResolutionId)) %>%
+      filter((FlowGroupId %in% keepFluxes)) %>%
+      rename(Year = Timestep,
+             FlowGroup = FlowGroupId,
+             Amount1 = Amount) %>%
+      mutate(StateClass = case_when(FromStateClassId == "Agriculture: Cropland"~"Agriculture",
+                                    FromStateClassId == "Developed: Medium Intensity"~"Developed",
+                                    FromStateClassId == "Grassland: Annual"~"Grassland",
+                                    FromStateClassId == "Shrubland: Non-sage"~"Shrubland",
+                                    FromStateClassId == "Water: All"~"Water",
+                                    FromStateClassId == "Water: Previously Emergent Wetland"~"Water",
+                                    FromStateClassId == "Water: Previously Forested Wetland"~"Water",
+                                    FromStateClassId == "Wetland: Unvegetated Emergent"~"Wetland: Unconsolidated Shore",
+                                    FromStateClassId == "Wetland: Unvegetated Forested"~"Wetland: Unconsolidated Shore",
+                                    !(FromStateClassId %in% landToChange)~FromStateClassId)) %>%
+      select(-FromStateClassId) %>%
+      group_by(Year,StateClass,FlowGroup) %>%
+      summarize(Amount = sum(Amount1)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosBasin[i])
+    
+    tabFluxSub <- tabFluxSub %>%
+      addRow(tabFluxSub2)
+    
+    rm(tabFlux,tabFluxSub2)
+    
+  }
   
   # Spatial Data
   
+  pathOutSpatialAll <- paste0(pathOutSpatial,scenariosBasin[i])
+  
   # Land Cover Area
   
-  listLandCover <- list.files(paste0(rootPath,"/Models/",
+  
+  listLandCover <- list.files(paste0(rootPath,"Models/",
                                      modelName,"/",
                                      modelName,".ssim.data/Scenario-",
                                      scenarioId(myScenario),
@@ -229,18 +350,14 @@ for (i in 1:length(scenList)){
                               pattern = ".tif",
                               full.names = T)
   
-  pathOutLandCover <- paste0(pathOutSpatial,"Land Cover Area/",scenList[i])
-  
-  if(!dir.exists(pathOutLandCover)){
-    dir.create(pathOutLandCover)
-  }
-  
   file.copy(listLandCover,
-            pathOutLandCover)
+            pathOutSpatialAll)
+  
+  rm(listLandCover)
   
   # Carbon Stocks
   
-  listStocks <- list.files(paste0(rootPath,"/Models/",
+  listStocks <- list.files(paste0(rootPath,"Models/",
                                   modelName,"/",
                                   modelName,".ssim.data/Scenario-",
                                   scenarioId(myScenario),
@@ -248,14 +365,11 @@ for (i in 1:length(scenList)){
                            pattern = ".tif",
                            full.names = T)
   
-  keepStocksSpatial <- c("Biomass: Aboveground",
-                         "Biomass: Belowground",
-                         "DOM: Deadwood",
-                         "DOM: Litter",
-                         "DOM: Soil",
-                         "Ecosystem Carbon Storage (tons C)")
+  
   
   for (j in 1:length(keepStocksSpatial)){
+    
+    outName <- lookupName$NameShort[lookupName$Name == keepStocksSpatial[j]]
     
     stockId <- stockGroupIDs %>%
       filter(Name == keepStocksSpatial[j]) %>%
@@ -263,30 +377,26 @@ for (i in 1:length(scenList)){
     
     listStocksSub <- grep(stockId,listStocks, value = T)
     
-    stockName <- gsub(")","",gsub("(","",gsub(": "," ",keepStocksSpatial[j]), fixed = T),fixed = T)
+    listStocksSubFiles <- gsub(paste0(rootPath,"Models/",
+                                      modelName,"/",
+                                      modelName,".ssim.data/Scenario-",
+                                      scenarioId(myScenario),
+                                      "/stsim_OutputAverageSpatialStockGroup/"),"",listStocksSub)
     
-    pathOutStocks1 <- paste0(pathOutSpatial,"Carbon Stocks/",
-                             stockName,"/")
-    pathOutStocks2 <- paste0(pathOutStocks1,scenList[i])
-    
-    if(!dir.exists(pathOutStocks1)){
-      dir.create(pathOutStocks1)
-    }
-    
-    if(!dir.exists(pathOutStocks2)){
-      dir.create(pathOutStocks2)
-    }
+    listStocksSubFiles <- gsub(stockId,outName,listStocksSubFiles)
     
     file.copy(listStocksSub,
-              pathOutStocks2)
+              paste0(pathOutSpatialAll,"/",listStocksSubFiles))
     
-    rm(stockId,listStocksSub,stockName,pathOutStocks1,pathOutStocks2)
+    rm(stockId,listStocksSub,outName,listStocksSubFiles)
     
   }
   
+  rm(listStocks)
+  
   # Carbon Fluxes
   
-  listFluxes <- list.files(paste0(rootPath,"/Models/",
+  listFluxes <- list.files(paste0(rootPath,"Models/",
                                   modelName,"/",
                                   modelName,".ssim.data/Scenario-",
                                   scenarioId(myScenario),
@@ -294,14 +404,9 @@ for (i in 1:length(scenList)){
                            pattern = ".tif",
                            full.names = T)
   
-  keepFluxesSpatial <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
-                         "Annual Emissions: CH4 (tons CO2-eq per year)",
-                         "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
-                         "Annual Net Growth (tons CO2-eq per year)",
-                         "Annual Emissions: CO2 (tons CO2-eq per year)",
-                         "Annual Lateral Flux (tons CO2-eq per year)")
-  
   for (k in 1:length(keepFluxesSpatial)){
+    
+    outName <- lookupName$NameShort[lookupName$Name == keepFluxesSpatial[k]]
     
     fluxId <- flowGroupIDs %>%
       filter(Name == keepFluxesSpatial[k]) %>%
@@ -309,37 +414,45 @@ for (i in 1:length(scenList)){
     
     listFluxesSub <- grep(fluxId,listFluxes, value = T)
     
-    fluxName <- gsub(")","",gsub("(","",keepFluxesSpatial[k], fixed = T),fixed = T)
-    fluxName <- gsub(": "," ",fluxName)
-    fluxName <- gsub("-"," ",fluxName)
+    listFluxesSubFiles <- gsub(paste0(rootPath,"Models/",
+                                      modelName,"/",
+                                      modelName,".ssim.data/Scenario-",
+                                      scenarioId(myScenario),
+                                      "/stsim_OutputAverageSpatialFlowGroup/"),"",listFluxesSub)
     
-    pathOutFluxes1 <- paste0(pathOutSpatial,"Carbon Fluxes/",
-                             fluxName,"/")
-    pathOutFluxes2 <- paste0(pathOutFluxes1,scenList[i])
-    
-    if(!dir.exists(pathOutFluxes1)){
-      dir.create(pathOutFluxes1)
-    }
-    
-    if(!dir.exists(pathOutFluxes2)){
-      dir.create(pathOutFluxes2)
-    }
+    listFluxesSubFiles <- gsub(fluxId,outName,listFluxesSubFiles)
     
     file.copy(listFluxesSub,
-              pathOutFluxes2)
+              paste0(pathOutSpatialAll,"/",listFluxesSubFiles))
     
-    rm(fluxId,listFluxesSub,fluxName,pathOutFluxes1,pathOutFluxes2)
+    rm(fluxId,listFluxesSub,outName,listFluxesSubFiles)
     
   }
   
-  
-  rm(scenID,myScenario)
-  
-  rm(listLandCover,pathOutLandCover,
-     listHarvest,harvestId,pathOutHarvest,
-     listStocks,listFluxes)
+  rm(listFluxes)
   
 }
+
+
+write.csv(tabLandSub,paste0(pathOutTabular,"LandCoverArea_Basin.csv"),
+          row.names = F)
+
+tabStockSubIPCC <- tabStockSub %>%
+  filter(StockGroup %in% c(keepStocks1))
+
+tabStockSubLUCAS <- tabStockSub %>%
+  filter(StockGroup %in% c(keepStocks2NoType))
+
+write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_Basin.csv"),
+          row.names = F)
+
+write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_Basin.csv"),
+          row.names = F)
+
+write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_Basin.csv"),
+          row.names = F)
+
+rm(tabFluxSub,tabStockSubLUCAS,tabStockSubIPCC,tabLandSub)
 
 stockGroupIDs %>% 
   filter(Name %in% keepStocksSpatial) %>%
@@ -351,12 +464,154 @@ flowGroupIDs %>%
 
 # Extent, Project, Spatial Resolution
 
-scenID <- scenarioListAll$ScenarioId[grep(scenList[1],scenarioListAll$Name)]
+scenID <- scenarioListAll$ScenarioId[grep(paste0("Basin ",scenariosBasin[1]),scenarioListAll$Name)]
 
-r1 <- rast(paste0(rootPath,"/Models/",
+r1 <- rast(paste0(rootPath,"Models/",
                   modelName,"/",
                   modelName,".ssim.data/Scenario-",
                   scenID,
                   "/stsim_OutputSpatialState/sc.it1.ts2001.tif"))
 
 r1
+
+
+# Loop through single cell scenarios
+
+for (i in 1:length(scenariosSingleCell)){
+  
+  print(i)
+  
+  scenID <- scenarioListAll$ScenarioId[grep(scenariosSingleCell[i],scenarioListAll$Name)]
+  
+  myScenario <- scenario(myProject, scenario=max(scenID))
+  
+  if (i == 1){
+    
+    # Load Stock Data
+    tabStock <- datasheet(myScenario, "stsim_OutputStock")
+    
+    tabStockSub <- tabStock %>%
+      select(-c(StratumId,SecondaryStratumId,Iteration,ResolutionId)) %>%
+      filter(StockGroupId %in% c(keepStocks1,keepStocks2)) %>%
+      rename(Year = Timestep,
+             StateClass = StateClassId,
+             StockGroup = StockGroupId) %>%
+      mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
+      group_by(Year,StateClass,StockGroup) %>%
+      summarize(Mean_tonsC = mean(Amount, na.rm = T),
+                Low = quantile(Amount,0.025, na.rm = T),
+                High = quantile(Amount,0.975, na.rm = T)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosSingleCell[i])
+    
+    rm(tabStock)
+    gc()
+    
+    # Load Flux Data
+    tabFlux <- datasheet(myScenario, "stsim_OutputFlow")
+    
+    tabFluxSub <- tabFlux %>%
+      select(-c(FromStockTypeId,TransitionTypeId,
+                ToStratumId,ToStateClassId,ToStockTypeId,EndStratumId,
+                EndSecondaryStratumId,EndStateClassId,EndMinAge,
+                FromSecondaryStratumId,FromStratumId,
+                ResolutionId)) %>%
+      filter((FlowGroupId %in% keepFluxes)) %>%
+      rename(Year = Timestep,
+             FlowGroup = FlowGroupId,
+             StateClass = FromStateClassId) %>%
+      group_by(Year,StateClass,FlowGroup,Iteration) %>%
+      summarize(totalC = sum(Amount, na.rm = T)) %>%
+      ungroup() %>%
+      group_by(Year,StateClass,FlowGroup) %>%
+      summarize(Mean = mean(totalC, na.rm = T),
+                Low = quantile(totalC,0.025, na.rm = T),
+                High = quantile(totalC,0.975, na.rm = T)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosSingleCell[i])
+    
+    rm(tabFlux)
+    gc()
+    
+  } else {
+    
+    # Tabular Data
+    
+    # Load Stock Data
+    tabStock <- datasheet(myScenario, "stsim_OutputStock")
+    
+    tabStockSub2 <- tabStock %>%
+      select(-c(StratumId,SecondaryStratumId,Iteration,ResolutionId)) %>%
+      filter(StockGroupId %in% c(keepStocks1,keepStocks2)) %>%
+      rename(Year = Timestep,
+             StateClass = StateClassId,
+             StockGroup = StockGroupId) %>%
+      mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
+      group_by(Year,StateClass,StockGroup) %>%
+      summarize(Mean_tonsC = mean(Amount, na.rm = T),
+                Low = quantile(Amount,0.025, na.rm = T),
+                High = quantile(Amount,0.975, na.rm = T)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosSingleCell[i])
+    
+    tabStockSub <- tabStockSub %>%
+      addRow(tabStockSub2)
+    
+    rm(tabStock,tabStockSub2)
+    gc()
+    
+    # Load Flux Data
+    tabFlux <- datasheet(myScenario, "stsim_OutputFlow")
+    
+    tabFluxSub2 <- tabFlux %>%
+      select(-c(FromStockTypeId,TransitionTypeId,
+                ToStratumId,ToStateClassId,ToStockTypeId,EndStratumId,
+                EndSecondaryStratumId,EndStateClassId,EndMinAge,
+                FromSecondaryStratumId,FromStratumId,
+                ResolutionId)) %>%
+      filter((FlowGroupId %in% keepFluxes)) %>%
+      rename(Year = Timestep,
+             FlowGroup = FlowGroupId,
+             StateClass = FromStateClassId) %>%
+      group_by(Year,StateClass,FlowGroup,Iteration) %>%
+      summarize(totalC = sum(Amount, na.rm = T)) %>%
+      ungroup() %>%
+      group_by(Year,StateClass,FlowGroup) %>%
+      summarize(Mean = mean(totalC, na.rm = T),
+                Low = quantile(totalC,0.025, na.rm = T),
+                High = quantile(totalC,0.975, na.rm = T)) %>%
+      ungroup() %>%
+      mutate(Scenario = scenariosSingleCell[i])
+    
+    tabFluxSub <- tabFluxSub %>%
+      addRow(tabFluxSub2)
+    
+    rm(tabFlux,tabFluxSub2)
+    gc()
+    
+  }
+  
+  rm(scenID,myScenario)
+  
+}
+
+tabStockSub$low[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabStockSub$high[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+
+tabStockSubIPCC <- tabStockSub %>%
+  filter(StockGroup %in% c(keepStocks1))
+
+tabStockSubLUCAS <- tabStockSub %>%
+  filter(StockGroup %in% c(keepStocks2NoType))
+
+write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv"),
+          row.names = F)
+
+write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.csv"),
+          row.names = F)
+
+tabFluxSub$low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabFluxSub$high[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+
+write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"),
+          row.names = F)
