@@ -344,7 +344,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [2001-2100; 1 MC]",
+dependency(myScenario) <- c("Run Control [2001-2124; 1 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "SF Output Options [All]",
                             "Initial Conditions: Single Cell - Wetland: Estuarine Emergent",
@@ -363,7 +363,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [2001-2100; 1 MC]",
+dependency(myScenario) <- c("Run Control [2001-2124; 1 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "SF Output Options [All]",
                             "Initial Conditions: Single Cell - Wetland: Palustrine Emergent",
@@ -383,7 +383,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [2001-2100; 1000 MC]",
+dependency(myScenario) <- c("Run Control [2001-2124; 1000 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "SF Output Options [All]",
                             "Initial Conditions: Single Cell - Wetland: Estuarine Emergent",
@@ -402,7 +402,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [2001-2100; 1000 MC]",
+dependency(myScenario) <- c("Run Control [2001-2124; 1000 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "SF Output Options [All]",
                             "Initial Conditions: Single Cell - Wetland: Palustrine Emergent",
@@ -441,7 +441,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [2001-2100; 1 MC]",
+dependency(myScenario) <- c("Run Control [2001-2124; 1 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "SF Output Options [All]",
                             "Initial Conditions: Single Cell - Wetland: Palustrine Forested [Age 1]",
