@@ -45,10 +45,10 @@ if(!dir.exists(pathOutManuscript)){
 
 scenarioList <- scenario(myProject, summary = T, results = T)
 
-id1 <- scenarioList$ScenarioId[grep("1 No Land Cover Change and Climate",scenarioList$Name)]
-id2 <- scenarioList$ScenarioId[grep("2 Land Cover Change and Climate",scenarioList$Name)]
-id3 <- scenarioList$ScenarioId[grep("3 Land Cover Change, Climate, Erosion",scenarioList$Name)]
-id4 <- scenarioList$ScenarioId[grep("4 Land Cover Change, Climate, and No Forested Wetland",scenarioList$Name)]
+id1 <- scenarioList$ScenarioId[grep("Basin Climate and No Land Cover Change",scenarioList$Name)]
+id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
+id3 <- scenarioList$ScenarioId[grep("Basin IPCC",scenarioList$Name)]
+id4 <- scenarioList$ScenarioId[grep("Basin No Palustrine Forested Wetland",scenarioList$Name)]
 
 myScenario1 <- scenario(myProject, scenario=max(id1))
 myScenario2 <- scenario(myProject, scenario=max(id2))

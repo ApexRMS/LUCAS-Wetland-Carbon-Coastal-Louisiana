@@ -280,7 +280,7 @@ saveDatasheet(myScenario, fileNamesTable, sheetName)
 
 # Create new transition table 
 myScenario <- scenario(myProject, 
-                       scenario = "4 Land Cover Change, Climate, and No Forested Wetland",
+                       scenario = "Basin No Palustrine Forested Wetland",
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F

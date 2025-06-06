@@ -793,7 +793,7 @@ folder(ssimObject = myProject,
 
 # No LULC, Climate
 myScenario <- scenario(myProject, 
-                       scenario = "1 No Land Cover Change and Climate",
+                       scenario = "Basin Climate and No Land Cover Change",
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -813,7 +813,7 @@ rm(myScenario)
 
 # LULC, Climate
 myScenario <- scenario(myProject, 
-                       scenario = "2 Land Cover Change and Climate",
+                       scenario = "Basin Baseline",
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -835,7 +835,7 @@ rm(myScenario)
 
 # LULC, Climate
 myScenario <- scenario(myProject, 
-                       scenario = "3 Land Cover Change, Climate, Erosion",
+                       scenario = "Basin IPCC",
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -857,7 +857,7 @@ rm(myScenario)
 
 # LULC, Climate
 myScenario <- scenario(myProject, 
-                       scenario = "5 Uncertainty: Land Cover Change and Climate",
+                       scenario = "Basin Uncertainty Baseline",
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F

@@ -59,10 +59,10 @@ if(!dir.exists(pathOutCarbonFluxes)){
 # Land Cover Change over time
 scenarioList <- scenario(myProject, summary = T, results = T)
 
-id1 <- scenarioList$ScenarioId[grep("1 No Land Cover Change and Climate",scenarioList$Name)]
-id2 <- scenarioList$ScenarioId[grep("2 Land Cover Change and Climate",scenarioList$Name)]
-id3 <- scenarioList$ScenarioId[grep("3 Land Cover Change, Climate, Erosion",scenarioList$Name)]
-id4 <- scenarioList$ScenarioId[grep("4 Land Cover Change, Climate, and No Forested Wetland",scenarioList$Name)]
+id1 <- scenarioList$ScenarioId[grep("Basin Climate and No Land Cover Change",scenarioList$Name)]
+id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
+id3 <- scenarioList$ScenarioId[grep("Basin IPCC",scenarioList$Name)]
+id4 <- scenarioList$ScenarioId[grep("Basin No Palustrine Forested Wetland",scenarioList$Name)]
 
 myScenario1 <- scenario(myProject, scenario=max(id1))
 myScenario2 <- scenario(myProject, scenario=max(id2))
@@ -439,7 +439,7 @@ scOther <- stateClassTable$Name[!(stateClassTable$Name %in% c("Wetland: Estuarin
 
 #scOther
 
-scen <- c("2 Land Cover Change and Climate")
+scen <- c("Basin Baseline")
 
 lookupLC <- data.frame(StateClassId = c("Wetland: Estuarine Emergent",
                                         "Wetland: Palustrine Emergent",

@@ -46,9 +46,9 @@ scenariosTable <- c("Original Oak Gum Cypress Forest",
                     "Palustrine Forested Wetland: Add Uncertainty",
                     "Palustrine Emergent Wetland: Add Uncertainty",
                     "Estuarine Emergent Wetland: Add Uncertainty",
-                    "2 Land Cover Change and Climate",
-                    "4 Land Cover Change, Climate, and No Forested Wetland",
-                    "3 Land Cover Change, Climate, Erosion")
+                    "Basin Baseline",
+                    "Basin No Palustrine Forested Wetland",
+                    "Basin IPCC")
 
 scenariosTimeStep <- c(2016,
                        2016,
@@ -144,9 +144,9 @@ stockTable <- stockTable %>%
                                   Scenario == "Palustrine Forested Wetland: Add Uncertainty"~"Palustrine Forested Wetland",
                                   Scenario == "Palustrine Emergent Wetland: Add Uncertainty"~"Palustrine Emergent Wetland",
                                   Scenario == "Estuarine Emergent Wetland: Add Uncertainty"~"Estuarine Emergent Wetland",
-                                  Scenario == "2 Land Cover Change and Climate"~"Baseline",
-                                  Scenario == "4 Land Cover Change, Climate, and No Forested Wetland"~"No Palustrine Forested Wetland",
-                                  Scenario == "3 Land Cover Change, Climate, Erosion"~"IPCC")) %>%
+                                  Scenario == "Basin Baseline"~"Baseline",
+                                  Scenario == "Basin No Palustrine Forested Wetland"~"No Palustrine Forested Wetland",
+                                  Scenario == "Basin IPCC"~"IPCC")) %>%
   select(ScenarioName,StateClass,StockGroup,AmountTonsC)
 
 write.csv(stockTable,
@@ -198,7 +198,7 @@ stockTableBasin <- stockTable %>%
 
 # need to add AtmValue*Area of Atm above each class
 
-# id1 <- scenarioList$ScenarioId[grep("2 Land Cover Change and Climate",scenarioList$Name)]
+# id1 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
 # myScenario1 <- scenario(myProject, scenario=max(id1))
 # myDataLandS <- datasheet(myScenario1, "stsim_OutputStratumState")
 # 
@@ -229,11 +229,11 @@ plotFlows<- c("Annual Net Ecosystem Carbon Balance (tons C per year)",
 timePeriod <- c(2001,2016)
 #timePeriod <- c(2006,2010)
 
-scenariosDiff <- c("2 Land Cover Change and Climate",
-                   "4 Land Cover Change, Climate, and No Forested Wetland")
+scenariosDiff <- c("Basin Baseline",
+                   "Basin No Palustrine Forested Wetland")
 
-# scenariosDiff <- c("2 Land Cover Change and Climate",
-#                    "3 Land Cover Change, Climate, Erosion")
+# scenariosDiff <- c("Basin Baseline",
+#                    "Basin IPCC")
 
 for (i in 1:length(plotFlows)){
   
@@ -281,11 +281,11 @@ plotStocks<- c("Ecosystem Carbon Storage (tons C)")
 timePeriod <- c(2001,2016)
 #timePeriod <- c(2006,2010)
 
-scenariosDiff <- c("2 Land Cover Change and Climate",
-                   "4 Land Cover Change, Climate, and No Forested Wetland")
+scenariosDiff <- c("Basin Baseline",
+                   "Basin No Palustrine Forested Wetland")
 
-# scenariosDiff <- c("2 Land Cover Change and Climate",
-#                    "3 Land Cover Change, Climate, Erosion")
+# scenariosDiff <- c("Basin Baseline",
+#                    "Basin IPCC")
 
 for (i in 1:length(plotStocks)){
   
@@ -328,7 +328,7 @@ for (i in 1:length(plotStocks)){
 
 # For changes in NECB associated with transitions of wetland to water
 
-id2 <- scenarioList$ScenarioId[grep("2 Land Cover Change and Climate",scenarioList$Name)]
+id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
 myScenario2 <- scenario(myProject, scenario=max(id2))
 
 start1 <- c("2001","2006","2010")
@@ -752,7 +752,7 @@ gc()
 # stateClassTable <- datasheet(myProject, name = "stsim_StateClass") %>%
 #   select(Name,Id)
 # 
-# scenList <- c("2 Land Cover Change and Climate")
+# scenList <- c("Basin Baseline")
 # 
 # for (i in 1:length(scenList)){
 #   

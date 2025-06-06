@@ -67,7 +67,7 @@ scOther <- stateClassTable$Name[!(stateClassTable$Name %in% c("Wetland: Estuarin
 scForest <- grep("Forest:",scOther,value = T)
 scOther <- scOther[!(scOther %in% scForest)]
 
-scen <- c("2 Land Cover Change and Climate")
+scen <- c("Basin Baseline")
 
 lookupLC <- data.frame(StateClassId = c("Wetland: Estuarine Emergent",
                                         "Wetland: Palustrine Emergent",
@@ -186,7 +186,7 @@ for (s in 1:length(scen)){
   
 }
 
-id2 <- scenarioList$ScenarioId[grep("2 Land Cover Change and Climate",scenarioList$Name)]
+id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
 
 myScenario2 <- scenario(myProject, scenario=max(id2))
 
@@ -302,7 +302,7 @@ lookupE <- lookupLC %>%
          LandClassEnd = LandClass) %>%
   select(End,LandClassEnd)
 
-scenList <- c("2 Land Cover Change and Climate")
+scenList <- c("Basin Baseline")
 
 for (i in 1:length(scenList)){
   

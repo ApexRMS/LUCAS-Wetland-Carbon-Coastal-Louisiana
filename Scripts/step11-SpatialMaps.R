@@ -47,7 +47,7 @@ transitionGroupIds <- datasheet(myProject, name = "stsim_TransitionGroup", inclu
 
 scenarioList <- scenario(myProject, summary = T, results = T)
 
-scenID <- scenarioList$ScenarioId[grep("2 Land Cover Change and Climate",scenarioList$Name)]
+scenID <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
 
 myScenario <- scenario(myProject, scenario=max(scenID))
 
