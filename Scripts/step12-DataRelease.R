@@ -298,6 +298,9 @@ for (i in 1:length(scenariosBasin)){
       ungroup() %>%
       mutate(Scenario = scenariosBasin[i])
     
+    tabStockSub <- tabStockSub %>%
+      addRow(tabStockSub2)
+    
     rm(tabStock,tabStockSub2)
     
     # Load Flux Data
@@ -336,12 +339,12 @@ for (i in 1:length(scenariosBasin)){
   }
   
   # Spatial Data
-  
+
   pathOutSpatialAll <- paste0(pathOutSpatial,scenariosBasin[i])
-  
+
   # Land Cover Area
-  
-  
+
+
   listLandCover <- list.files(paste0(rootPath,"Models/",
                                      modelName,"/",
                                      modelName,".ssim.data/Scenario-",
@@ -349,14 +352,14 @@ for (i in 1:length(scenariosBasin)){
                                      "/stsim_OutputSpatialState"),
                               pattern = ".tif",
                               full.names = T)
-  
+
   file.copy(listLandCover,
             pathOutSpatialAll)
-  
+
   rm(listLandCover)
-  
+
   # Carbon Stocks
-  
+
   listStocks <- list.files(paste0(rootPath,"Models/",
                                   modelName,"/",
                                   modelName,".ssim.data/Scenario-",
@@ -364,38 +367,38 @@ for (i in 1:length(scenariosBasin)){
                                   "/stsim_OutputAverageSpatialStockGroup"),
                            pattern = ".tif",
                            full.names = T)
-  
-  
-  
+
+
+
   for (j in 1:length(keepStocksSpatial)){
-    
+
     outName <- lookupName$NameShort[lookupName$Name == keepStocksSpatial[j]]
-    
+
     stockId <- stockGroupIDs %>%
       filter(Name == keepStocksSpatial[j]) %>%
       pull(StockGroupId)
-    
+
     listStocksSub <- grep(stockId,listStocks, value = T)
-    
+
     listStocksSubFiles <- gsub(paste0(rootPath,"Models/",
                                       modelName,"/",
                                       modelName,".ssim.data/Scenario-",
                                       scenarioId(myScenario),
                                       "/stsim_OutputAverageSpatialStockGroup/"),"",listStocksSub)
-    
+
     listStocksSubFiles <- gsub(stockId,outName,listStocksSubFiles)
-    
+
     file.copy(listStocksSub,
               paste0(pathOutSpatialAll,"/",listStocksSubFiles))
-    
+
     rm(stockId,listStocksSub,outName,listStocksSubFiles)
-    
+
   }
-  
+
   rm(listStocks)
-  
+
   # Carbon Fluxes
-  
+
   listFluxes <- list.files(paste0(rootPath,"Models/",
                                   modelName,"/",
                                   modelName,".ssim.data/Scenario-",
@@ -403,32 +406,32 @@ for (i in 1:length(scenariosBasin)){
                                   "/stsim_OutputAverageSpatialFlowGroup"),
                            pattern = ".tif",
                            full.names = T)
-  
+
   for (k in 1:length(keepFluxesSpatial)){
-    
+
     outName <- lookupName$NameShort[lookupName$Name == keepFluxesSpatial[k]]
-    
+
     fluxId <- flowGroupIDs %>%
       filter(Name == keepFluxesSpatial[k]) %>%
       pull(FlowGroupId)
-    
+
     listFluxesSub <- grep(fluxId,listFluxes, value = T)
-    
+
     listFluxesSubFiles <- gsub(paste0(rootPath,"Models/",
                                       modelName,"/",
                                       modelName,".ssim.data/Scenario-",
                                       scenarioId(myScenario),
                                       "/stsim_OutputAverageSpatialFlowGroup/"),"",listFluxesSub)
-    
+
     listFluxesSubFiles <- gsub(fluxId,outName,listFluxesSubFiles)
-    
+
     file.copy(listFluxesSub,
               paste0(pathOutSpatialAll,"/",listFluxesSubFiles))
-    
+
     rm(fluxId,listFluxesSub,outName,listFluxesSubFiles)
-    
+
   }
-  
+
   rm(listFluxes)
   
 }
@@ -595,8 +598,8 @@ for (i in 1:length(scenariosSingleCell)){
   
 }
 
-tabStockSub$low[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-tabStockSub$high[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabStockSub$Low[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabStockSub$High[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 
 tabStockSubIPCC <- tabStockSub %>%
   filter(StockGroup %in% c(keepStocks1))
@@ -610,8 +613,37 @@ write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv
 write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.csv"),
           row.names = F)
 
-tabFluxSub$low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-tabFluxSub$high[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 
 write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"),
           row.names = F)
+
+
+# Fix original error
+
+tabStockSubIPCC <- read.csv(paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv"))
+
+tabStockSubLUCAS <- read.csv(paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.csv"))
+
+tabFluxSub <- read.csv(paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"))
+
+tabStockSubIPCC$Low[tabStockSubIPCC$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabStockSubIPCC$High[tabStockSubIPCC$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+
+tabStockSubLUCAS$Low[tabStockSubLUCAS$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabStockSubLUCAS$High[tabStockSubLUCAS$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+
+tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+
+
+write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv"),
+          row.names = F)
+
+write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.csv"),
+          row.names = F)
+
+write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"),
+          row.names = F)
+
