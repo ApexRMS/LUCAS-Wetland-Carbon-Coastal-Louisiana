@@ -571,8 +571,8 @@ for (i in 1:length(plotFlows)){
     ylab(paste0(gsub("Annual Net Ecosystem Carbon Balance","Annual NECB",
                      gsub(")"," per ha)",
                           gsub("(","\n(",plotFlows[i], fixed = T), fixed = T)),"\n"))+
-    #ylim(minVal,maxVal)
-    ylim(-50,10)
+    ylim(minVal,maxVal)
+    #ylim(-50,10)
     #ylim(-10,5)
   
   p5
