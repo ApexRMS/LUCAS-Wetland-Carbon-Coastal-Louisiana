@@ -662,6 +662,9 @@ myData <- data.frame(SummaryOutputST	= "Yes",
 
 saveDatasheet(myScenario, myData, sheetName)
 
+# Calculate new GWP for methane
+GWPmethane <- round((16.043/12.011)*27,2)
+
 # Update stock flow group membership
 myScenario <- scenario(myProject, 
                        scenario="SF Stock and Flow Group Membership [Add Methane]",
@@ -671,14 +674,28 @@ myScenario <- scenario(myProject,
 sheetName <- "stsim_FlowTypeGroupMembership"
 myData <- datasheet(myScenario, name = sheetName)
 
+myData[myData$Value %in% c(33.5,-33.5),]
+
+myData$Value[myData$FlowTypeId %in% c("LULC: Emission DOM CH4",
+                                      "LULC: Emission Live CH4") &
+             myData$Value %in% c(33.5)] <- GWPmethane
+
+myData$Value[myData$FlowTypeId %in% c("LULC: Emission DOM CH4",
+                                      "LULC: Emission Live CH4") &
+               myData$Value %in% c(-33.5)] <- -GWPmethane
+
+saveDatasheet(myScenario, myData, "stsim_FlowTypeGroupMembership", append = FALSE)
+
+myData <- datasheet(myScenario, name = sheetName)
+
 myDataEmissionsCH4forest <- myData %>%
   filter(FlowTypeId %in% c("Emission: AG Very Fast -> Atmosphere")) %>%
   filter(!FlowGroupId %in% c("AG Very Fast ->","Q10 Fast Flows",
                              "Emission: Total Rh","Emission: Total Rh (CO2e)")) %>%
   mutate(FlowTypeId = case_when(FlowTypeId == "Emission: AG Very Fast -> Atmosphere" ~ "Emission: Atmosphere Temp -> Atmosphere: CH4")) %>%
   mutate(Value = case_when(Value == 1 ~ 1,
-                           Value == 3.67 ~ 33.5,
-                           Value == -3.67 ~ -33.5,
+                           Value == 3.67 ~ GWPmethane,
+                           Value == -3.67 ~ -GWPmethane,
                            Value == -1 ~ -1))
 
 myDataEmissionsCO2forest <- myData %>%
@@ -857,7 +874,7 @@ myStocksLat <- tibble(StockTypeId = "Aquatic",
 myStocksCH4 <- tibble(StockTypeId = "Atmosphere: CH4",
                       StockGroupId = c("Cumulative Emissions: CH4 (tons C)",
                                        "Cumulative Emissions: CH4 (tons CO2-eq)"),
-                      Value = c(1,33.5))
+                      Value = c(1,GWPmethane))
 
 myStocksCO2 <- tibble(StockTypeId = rep(c("Atmosphere: CO2",
                                           "Atmosphere"),each = 2),
@@ -871,7 +888,7 @@ myStocksAll <- tibble(StockTypeId = rep(c("Atmosphere",
                                           "Atmosphere: CO2"),each = 2),
                       StockGroupId = rep(c("Cumulative Emissions (tons C)",
                                            "Cumulative Emissions (tons CO2-eq)"),4),
-                      Value = c(1,3.67,1,33.50,1,4.66,1,3.67))
+                      Value = c(1,3.67,1,GWPmethane,1,4.66,1,3.67))
 
 myDataAll <- myStocksAll %>%
   addRow(myStocksLat) %>%
