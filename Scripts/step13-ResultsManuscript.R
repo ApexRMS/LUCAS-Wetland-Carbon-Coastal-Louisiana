@@ -1,3 +1,8 @@
+# Created by Amanda Schwantes, ApexRMS
+# Updated 2025-03-25
+# Run after step13-FiguresManuscriptSpatial.R
+# This script extracts values for the results section
+
 library(rsyncrosim)
 library(tidyverse)
 library(ggplot2)

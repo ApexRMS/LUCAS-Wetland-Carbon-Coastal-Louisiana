@@ -1,6 +1,6 @@
 # Created by Amanda Schwantes, ApexRMS
 # Updated 2025-03-25
-# Run after step9-SingleCellTransitions.R
+# Run after step13-FiguresManuscriptSingleCell.R
 # This script creates figures for spatial scenario results
 
 library(rsyncrosim)
