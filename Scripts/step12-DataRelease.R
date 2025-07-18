@@ -620,30 +620,30 @@ write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"),
           row.names = F)
 
 
-# Fix original error
-
-tabStockSubIPCC <- read.csv(paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv"))
-
-tabStockSubLUCAS <- read.csv(paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.csv"))
-
-tabFluxSub <- read.csv(paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"))
-
-tabStockSubIPCC$Low[tabStockSubIPCC$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-tabStockSubIPCC$High[tabStockSubIPCC$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-
-tabStockSubLUCAS$Low[tabStockSubLUCAS$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-tabStockSubLUCAS$High[tabStockSubLUCAS$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-
-tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-
-
-write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv"),
-          row.names = F)
-
-write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.csv"),
-          row.names = F)
-
-write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"),
-          row.names = F)
-
+# # Fix original error
+# 
+# tabStockSubIPCC <- read.csv(paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv"))
+# 
+# tabStockSubLUCAS <- read.csv(paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.csv"))
+# 
+# tabFluxSub <- read.csv(paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"))
+# 
+# tabStockSubIPCC$Low[tabStockSubIPCC$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+# tabStockSubIPCC$High[tabStockSubIPCC$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+# 
+# tabStockSubLUCAS$Low[tabStockSubLUCAS$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+# tabStockSubLUCAS$High[tabStockSubLUCAS$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+# 
+# tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+# tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+# 
+# 
+# write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv"),
+#           row.names = F)
+# 
+# write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.csv"),
+#           row.names = F)
+# 
+# write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"),
+#           row.names = F)
+# 
