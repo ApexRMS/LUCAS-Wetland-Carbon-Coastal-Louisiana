@@ -229,7 +229,7 @@ for (i in 1:length(plotFlows)){
                                    default.unit="inch")) +
       xlab("\nYear") + 
       ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","million metric tons C"~y^-1))))+
-      ylim(-5,4) +
+      ylim(-5.1,4) +
       ggtitle("a.")
     
   } else if (i == 2){
@@ -255,7 +255,7 @@ for (i in 1:length(plotFlows)){
                                    default.unit="inch")) +
       xlab("\nYear") + 
       ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","million metric tons "~CO[2-eq]~y^-1))))+
-      ylim(-5,4)+
+      ylim(-5.1,4)+
       ggtitle("b.")
   }
   
