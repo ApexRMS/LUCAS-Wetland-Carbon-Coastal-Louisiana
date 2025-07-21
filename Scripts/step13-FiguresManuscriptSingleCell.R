@@ -209,7 +209,7 @@ plotFlows <- c("Annual Lateral Flux (tons CO2-eq per year)",
               "Annual Net Growth (tons CO2-eq per year)",
               "Annual Emissions: CH4 (tons CO2-eq per year)")
 
-for (i in 4:length(plotFlows)){
+for (i in 1:length(plotFlows)){
   
   plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
   
