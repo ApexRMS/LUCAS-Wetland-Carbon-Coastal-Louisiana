@@ -234,11 +234,11 @@ plotFlows<- c("Annual Net Ecosystem Carbon Balance (tons C per year)",
 timePeriod <- c(2001,2016)
 #timePeriod <- c(2006,2010)
 
-scenariosDiff <- c("Basin Baseline",
-                   "Basin No Palustrine Forested Wetland")
-
 # scenariosDiff <- c("Basin Baseline",
-#                    "Basin IPCC")
+#                    "Basin No Palustrine Forested Wetland")
+
+scenariosDiff <- c("Basin Baseline",
+                   "Basin IPCC")
 
 for (i in 1:length(plotFlows)){
   
@@ -283,14 +283,14 @@ for (i in 1:length(plotFlows)){
 
 plotStocks<- c("Ecosystem Carbon Storage (tons C)")
 
-timePeriod <- c(2001,2016)
-#timePeriod <- c(2006,2010)
-
-scenariosDiff <- c("Basin Baseline",
-                   "Basin No Palustrine Forested Wetland")
+#timePeriod <- c(2001,2016)
+timePeriod <- c(2006,2010)
 
 # scenariosDiff <- c("Basin Baseline",
-#                    "Basin IPCC")
+#                    "Basin No Palustrine Forested Wetland")
+
+scenariosDiff <- c("Basin Baseline",
+                   "Basin IPCC")
 
 for (i in 1:length(plotStocks)){
   
