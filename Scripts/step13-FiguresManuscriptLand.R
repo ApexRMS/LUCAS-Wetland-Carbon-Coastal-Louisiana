@@ -5,6 +5,7 @@
 library(rsyncrosim)
 library(tidyverse)
 library(ggplot2)
+library(terra)
 
 options(scipen = 999)
 old <- options(pillar.sigfig = 10)
@@ -219,7 +220,17 @@ for (i in 2:length(years)){
   
   subTabTransition <- subTabTransition %>%
     left_join(lookupS, by = join_by(Start)) %>%
-    left_join(lookupE, by = join_by(End)) %>%
+    left_join(lookupE, by = join_by(End)) 
+  
+  allTransitions <- expand.grid(LandClassStart = unique(c(subTabTransition$LandClassStart,subTabTransition$LandClassEnd)),
+                                LandClassEnd = unique(c(subTabTransition$LandClassStart,subTabTransition$LandClassEnd)))
+  
+  allTransitions <- allTransitions %>%
+    mutate(Amount = 0,
+           Timestep = years[i])
+  
+  subTabTransition <- subTabTransition %>%
+    addRow(allTransitions) %>%
     group_by(Timestep,LandClassStart,LandClassEnd) %>%
     summarize(Area_ha = sum(Amount)) %>%
     ungroup()
@@ -229,7 +240,7 @@ for (i in 2:length(years)){
   subTabTransitionBlank <- data.frame(LandClassStart = landClasses,
                                       LandClassEnd = landClasses,
                                       Area_ha = NA,
-                                      TimeStep = years[i])
+                                      Timestep = years[i])
   
   subTabTransition <- subTabTransition %>%
     filter(!(LandClassStart == LandClassEnd)) %>%
@@ -339,7 +350,16 @@ for (i in 1:length(scenList)){
   
   lcF <- lcF %>%
     left_join(lookupS, by = join_by(Start)) %>%
-    left_join(lookupE, by = join_by(End)) %>%
+    left_join(lookupE, by = join_by(End))
+    
+  allTransitions <- expand.grid(LandClassStart = unique(c(lcF$LandClassStart,lcF$LandClassEnd)),
+                                LandClassEnd = unique(c(lcF$LandClassStart,lcF$LandClassEnd)))
+    
+  allTransitions <- allTransitions %>%
+    mutate(count = 0)
+    
+  lcF <- lcF %>%
+    addRow(allTransitions) %>%
     select(count,LandClassStart,LandClassEnd) %>%
     group_by(LandClassStart,LandClassEnd) %>%
     summarize(countT = sum(count, na.rm = T)) %>%
