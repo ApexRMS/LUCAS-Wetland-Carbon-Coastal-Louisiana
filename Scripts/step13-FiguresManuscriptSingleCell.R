@@ -213,7 +213,7 @@ for (i in 1:length(plotFlows)){
   
   plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
   
-  plotFlowsName <- gsub("Annual Net Ecosystem Carbon Balance","Annual NECB",
+  plotFlowsName <- gsub("Annual Net Ecosystem Carbon Balance","Net Radiative Balance",
                     gsub(" (tons CO2-eq per year)","",plotFlows[i], fixed = T))
   plotFlowsName <- gsub(": CH4"," ",plotFlowsName, fixed = T)
   
