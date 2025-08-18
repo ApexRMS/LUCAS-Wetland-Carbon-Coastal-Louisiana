@@ -105,7 +105,7 @@ for (i in 1:length(scenarios)){
               legend.position="right",
               legend.title=element_blank()) +
         xlab("\nYear") +
-        ylab(as.expression(bquote(atop("DOM: Soil","tons C"~ha^-1)))) +
+        ylab(as.expression(bquote(atop("DOM: Soil","tonnes C"~ha^-1)))) +
         ggtitle(scenarioLetters[i]) +
         ylim(0,850)
   
@@ -136,7 +136,7 @@ for (i in 1:length(scenarios)){
             legend.position="right",
             legend.title=element_blank()) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("DOM: Soil","tons C"~ha^-1)))) +
+      ylab(as.expression(bquote(atop("DOM: Soil","tonnes C"~ha^-1)))) +
       ggtitle(scenarioLetters[i]) +
       ylim(0,1800)
     
@@ -154,7 +154,7 @@ for (i in 1:length(scenarios)){
             legend.position="right",
             legend.title=element_blank()) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("DOM: Soil","tons C"~ha^-1)))) +
+      ylab(as.expression(bquote(atop("DOM: Soil","tonnes C"~ha^-1)))) +
       ggtitle(scenarioLetters[i]) +
       ylim(0,1800)
     
@@ -320,7 +320,7 @@ for (i in 1:length(plotFlows)){
           legend.position="none",
           legend.title=element_blank()) +
     xlab("\nLand Cover Class") + 
-    ylab(as.expression(bquote(atop(.(plotFlowsName),"tons "~CO[2-eq]~ha^-1~y^-1)))) +
+    ylab(as.expression(bquote(atop(.(plotFlowsName),"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
     ylim(minVal,maxVal)
   
   p5
@@ -342,7 +342,7 @@ for (i in 1:length(plotFlows)){
             legend.position="none",
             legend.title=element_blank()) +
       xlab("\nLand Cover Class") + 
-      ylab(as.expression(bquote(atop(.(plotFlowsName)~CH[4],"tons "~CO[2-eq]~ha^-1~y^-1)))) +
+      ylab(as.expression(bquote(atop(.(plotFlowsName)~CH[4],"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
       ylim(minVal,maxVal)
     
     p5
@@ -367,7 +367,7 @@ for (i in 1:length(plotFlows)){
             legend.position.inside=c(0.2, 0.8),
             legend.position = "inside") +
       xlab("\nLand Cover Class") + 
-      ylab(as.expression(bquote(atop(.("Annual Emissions"),"tons "~CO[2-eq]~ha^-1~y^-1)))) +
+      ylab(as.expression(bquote(atop(.("Annual Emissions"),"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
       ylim(minVal,maxVal)
     
     p6
@@ -563,7 +563,7 @@ p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
           legend.position.inside=c(0.2, 0.8),
           legend.position = "inside") +
   xlab("\nLand Cover Class") + 
-  ylab(as.expression(bquote(atop(.(plotEName),"tons "~CO[2-eq]~ha^-1~y^-1)))) +
+  ylab(as.expression(bquote(atop(.(plotEName),"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
   ylim(minVal,maxVal)
   
   p6
@@ -746,7 +746,7 @@ p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
         legend.position.inside=c(0.2, 0.8),
         legend.position = "inside") +
   xlab("\nLand Cover Class") + 
-  ylab(as.expression(bquote(atop(.(plotEName),"tons "~CO[2-eq]~ha^-1~y^-1)))) +
+  ylab(as.expression(bquote(atop(.(plotEName),"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
   ylim(minVal,maxVal)
 
 p6
