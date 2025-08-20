@@ -183,7 +183,7 @@ for (s in 1:length(scen)){
                                  default.unit="inch",
                                  title = "Land Cover Class")) +
     xlab("\nYear") + 
-    ylab("Net Land Cover Change (hectares)\n")
+    ylab("Net Land Cover Change (ha)\n")
   
   p3
   
@@ -284,7 +284,7 @@ for (i in 2:length(years)){
     scale_fill_gradient2(low = "#d6ebe4", high = "#297c60", 
                          limit = c(0,4300),#min(subTabTransition$Area_ha) #max(subTabTransition$Area_ha)
                          space = "Lab", 
-                         name="Area (Ha)",
+                         name="Area (ha)",
                          na.value="gray70") +
     xlab(paste0("\n",years[i])) + 
     ylab(paste0(years[i-1],"\n")) +
@@ -414,7 +414,7 @@ for (i in 1:length(scenList)){
     scale_fill_gradient2(low = "#d6ebe4", high = "#297c60", 
                          limit = c(0,4300),#c(min(lcF$Area_haR),max(lcF$Area_haR)),
                          space = "Lab", 
-                         name="Area (Ha)",
+                         name="Area (ha)",
                          na.value="gray70") +
     xlab(paste0("\n",timeStepPair[2])) + 
     ylab(paste0(timeStepPair[1],"\n")) +

@@ -105,7 +105,7 @@ for (i in 1:length(scenarios)){
               legend.position="right",
               legend.title=element_blank()) +
         xlab("\nYear") +
-        ylab(as.expression(bquote(atop("DOM: Soil","tonnes C"~ha^-1)))) +
+        ylab(as.expression(bquote(atop("DOM: Soil","(tonnes C"~ha^-1*")")))) +
         ggtitle(scenarioLetters[i]) +
         ylim(0,850)
   
@@ -136,7 +136,7 @@ for (i in 1:length(scenarios)){
             legend.position="right",
             legend.title=element_blank()) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("DOM: Soil","tonnes C"~ha^-1)))) +
+      ylab(as.expression(bquote(atop("DOM: Soil","(tonnes C"~ha^-1*")")))) +
       ggtitle(scenarioLetters[i]) +
       ylim(0,1800)
     
@@ -154,7 +154,7 @@ for (i in 1:length(scenarios)){
             legend.position="right",
             legend.title=element_blank()) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("DOM: Soil","tonnes C"~ha^-1)))) +
+      ylab(as.expression(bquote(atop("DOM: Soil","(tonnes C"~ha^-1*")")))) +
       ggtitle(scenarioLetters[i]) +
       ylim(0,1800)
     
@@ -175,7 +175,7 @@ for (i in 1:length(scenarios)){
 scenariosForest <- c("Original Oak Gum Cypress Forest",
                      "Palustrine Forested Wetland: Add Uncertainty")
 
-for (i in 1:length(scenarios)){
+for (i in 3:length(scenarios)){
 
   sId <- scenarioList$ScenarioId[grep(scenarios[i],scenarioList$Name)]
 
@@ -187,7 +187,7 @@ for (i in 1:length(scenarios)){
 
   } else{
 
-    yr <- 2100
+    yr <- 2124
   }
 
   myDataFlux1 <- datasheet(myScenario1, "stsim_OutputFlow",
@@ -213,7 +213,7 @@ for (i in 1:length(plotFlows)){
   
   plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
   
-  plotFlowsName <- gsub("Annual Net Ecosystem Carbon Balance","Net Radiative Balance",
+  plotFlowsName <- gsub("Annual Net Ecosystem Carbon Balance","Net Ecosystem Carbon Balance",
                     gsub(" (tons CO2-eq per year)","",plotFlows[i], fixed = T))
   plotFlowsName <- gsub(": CH4"," ",plotFlowsName, fixed = T)
   
@@ -320,7 +320,7 @@ for (i in 1:length(plotFlows)){
           legend.position="none",
           legend.title=element_blank()) +
     xlab("\nLand Cover Class") + 
-    ylab(as.expression(bquote(atop(.(plotFlowsName),"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
+    ylab(as.expression(bquote(atop(.(plotFlowsName),"(tonnes "~CO[2-eq]~ha^-1~y^-1*")")))) +
     ylim(minVal,maxVal)
   
   p5
@@ -342,7 +342,7 @@ for (i in 1:length(plotFlows)){
             legend.position="none",
             legend.title=element_blank()) +
       xlab("\nLand Cover Class") + 
-      ylab(as.expression(bquote(atop(.(plotFlowsName)~CH[4],"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
+      ylab(as.expression(bquote(atop(.(plotFlowsName)~CH[4],"(tonnes "~CO[2-eq]~ha^-1~y^-1*")")))) +
       ylim(minVal,maxVal)
     
     p5
@@ -367,7 +367,7 @@ for (i in 1:length(plotFlows)){
             legend.position.inside=c(0.2, 0.8),
             legend.position = "inside") +
       xlab("\nLand Cover Class") + 
-      ylab(as.expression(bquote(atop(.("Annual Emissions"),"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
+      ylab(as.expression(bquote(atop(.("Annual Emissions"),"(tonnes "~CO[2-eq]~ha^-1~y^-1*")")))) +
       ylim(minVal,maxVal)
     
     p6
@@ -386,7 +386,7 @@ for (i in 1:length(plotFlows)){
 }
 
 
-# Summarize Emissions
+# Summarize Emissions (Not used in paper)
 
 plotE <- c("Annual Emissions: CO2 and CH4 (tons CO2-eq per year)")
 plotEs <- c("Annual Emissions: CO2 (tons CO2-eq per year)",
@@ -563,7 +563,7 @@ p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
           legend.position.inside=c(0.2, 0.8),
           legend.position = "inside") +
   xlab("\nLand Cover Class") + 
-  ylab(as.expression(bquote(atop(.(plotEName),"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
+  ylab(as.expression(bquote(atop(.(plotEName),"(tonnes "~CO[2-eq]~ha^-1~y^-1*")")))) +
   ylim(minVal,maxVal)
   
   p6
@@ -746,7 +746,7 @@ p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
         legend.position.inside=c(0.2, 0.8),
         legend.position = "inside") +
   xlab("\nLand Cover Class") + 
-  ylab(as.expression(bquote(atop(.(plotEName),"tonnes "~CO[2-eq]~ha^-1~y^-1)))) +
+  ylab(as.expression(bquote(atop(.(plotEName),"(tonnes "~CO[2-eq]~ha^-1~y^-1*")")))) +
   ylim(minVal,maxVal)
 
 p6
