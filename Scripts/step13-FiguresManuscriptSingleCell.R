@@ -175,7 +175,7 @@ for (i in 1:length(scenarios)){
 scenariosForest <- c("Original Oak Gum Cypress Forest",
                      "Palustrine Forested Wetland: Add Uncertainty")
 
-for (i in 3:length(scenarios)){
+for (i in 1:length(scenarios)){
 
   sId <- scenarioList$ScenarioId[grep(scenarios[i],scenarioList$Name)]
 
