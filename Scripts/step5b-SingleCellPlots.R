@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-25
 # Run after step5a-SingleCellPlots.R
 # This script creates figures for single-cell models without transitions

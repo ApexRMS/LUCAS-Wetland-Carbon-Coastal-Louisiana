@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-25
 # Run after step3c-AddUncertaintyForestedWetland.R
 # This script adds scenarios for a transition from emergent wetland to water

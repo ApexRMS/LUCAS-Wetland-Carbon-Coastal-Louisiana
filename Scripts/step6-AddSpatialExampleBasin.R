@@ -1,8 +1,12 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-04
 # Run after step5-SingleCellPlots.R
 # This script pre-processes spatial data
-# Run on AWS instance and set path to "Data Sources" Folder
+# Download spatial data and update file paths
+# CCAP (2001-2016)
+# LandFire EVT (2016 & 2001)
+# NASA CMS stand age (https://doi.org/10.3334/ORNLDAAC/1829)
+# PRISM climate data (2000-2022)
 # Adapted from Ben Sleeter's Build LUCAS Model.rmd script
 
 library(tidyverse)

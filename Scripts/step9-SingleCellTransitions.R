@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-04
 # Run after step8-AddUplandForestScenario.R
 # This script creates single-cell models for all transitions observed in the study area

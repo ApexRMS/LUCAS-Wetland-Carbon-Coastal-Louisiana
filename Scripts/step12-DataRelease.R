@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-04-16
 # Run after step11-SpatialMaps.R
 # This script creates data release files
