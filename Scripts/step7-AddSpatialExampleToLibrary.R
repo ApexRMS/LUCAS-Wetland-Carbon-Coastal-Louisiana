@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-04
 # Run after step6-AddSpatialExample.R
 # This script creates the four spatial scenarios

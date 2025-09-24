@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-25
 # Run after step2c-AddUncertainty.R
 # This script runs spinups for two forested wetland sites, mean, and an oak gum cypress forest

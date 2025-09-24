@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-25
 # Run after step2d-ForestSpinups.R
 # This script adds the lateral flux multipliers for the mean model and uncertainty models

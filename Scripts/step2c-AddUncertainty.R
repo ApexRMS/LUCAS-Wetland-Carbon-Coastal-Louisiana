@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-25
 # Run after step2b-ScenarioCreationWetland.R
 # This script adds uncertainty scenarios for emergent wetland model

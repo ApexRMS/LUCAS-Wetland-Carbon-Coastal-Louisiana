@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-03-25
 # Run after step9-SingleCellTransitions.R
 # This script creates figures for spatial scenario results

@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-03-06
 # This script adds scenarios to the step1-LibraryCreation.R
 # to update emergent and forested wetland parameters

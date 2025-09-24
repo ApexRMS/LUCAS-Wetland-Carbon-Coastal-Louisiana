@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-25
 # Run after step3d-AddWaterPrevWetland.R
 # This script creates final single-cell wetland scenarios with no transitions

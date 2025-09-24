@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-04
 # Run after step7-AddSpatialExampleToLibrary.R
 # This script creates a spatial scenario 

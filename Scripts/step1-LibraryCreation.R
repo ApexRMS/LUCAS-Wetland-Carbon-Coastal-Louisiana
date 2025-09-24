@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-03-06
 # This script creates a LUCAS library using definitions from USGS model
 # Adapted from Ben Sleeter's Build LUCAS Model.rmd script

@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-02-25
 # Run after step3b-AgSpinups.R
 # This script adds uncertainty scenarios for the forested wetland model

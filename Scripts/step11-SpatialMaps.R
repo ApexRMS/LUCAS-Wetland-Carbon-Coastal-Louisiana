@@ -1,4 +1,4 @@
-# Created by Amanda Schwantes, ApexRMS
+# ApexRMS
 # Updated 2025-03-26
 # Run after step10-SpatialFigures.R
 # This script creates maps for spatial scenario results
