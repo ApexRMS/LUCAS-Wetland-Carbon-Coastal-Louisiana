@@ -47,7 +47,7 @@ cover/
 
 
 #### R Files to Ignore
- History files
+# History files
 .Rhistory
 .Rapp.history
 
