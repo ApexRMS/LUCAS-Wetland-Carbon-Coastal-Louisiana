@@ -9,4 +9,5 @@ The scripts in this repository were built using SyncroSim v3.1.12, with the foll
 1. __Download SyncroSim:__ SyncroSim v3.1.12 software can be downloaded at: https://syncrosim.com/download/.
 2. __Download R:__ Once R is installed, v2.1.4 of rsyncrosim can be downloaded from the GitHub site, following this tutorial: https://syncrosim.github.io/rsyncrosim/articles/a06_rsyncrosim_install_github.html.
 3. __Update file paths:__ At the top of each script in the "Scripts" folder, the rootPath will need to be updated.
+4. __Download spatial data__: These scripts rely on publically available CCAP (2001-2016), LandFire EVT (2016 & 2001), NASA CMS stand age (https://doi.org/10.3334/ORNLDAAC/1829) and PRISM climate data (2000-2022). Once these data files have been downloaded update the file paths in the step 6 R script.
 4. __Run all scripts__: Run each script in order from step 1 to step 13. An ST-Sim SyncroSim library will be saved in the "Models" folder. Model inputs and outputs can be viewed within the SyncroSim desktop by following Step 5 of this tutorial: https://docs.syncrosim.com/getting_started/quickstart.html.
