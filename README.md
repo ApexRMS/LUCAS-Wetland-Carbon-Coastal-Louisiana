@@ -7,6 +7,6 @@ The scripts in this repository were built using SyncroSim v3.1.12, with the foll
 
 ## Suggested Workflow
 1. __Download SyncroSim:__ SyncroSim v3.1.12 software can be downloaded at: https://syncrosim.com/download/.
-2. __Download R:__ Once R is installed, v2.1.4 of rsyncrosim can be downloaded from the github site, following this tutorial: https://syncrosim.github.io/rsyncrosim/articles/a06_rsyncrosim_install_github.html
+2. __Download R:__ Once R is installed, v2.1.4 of rsyncrosim can be downloaded from the GitHub site, following this tutorial: https://syncrosim.github.io/rsyncrosim/articles/a06_rsyncrosim_install_github.html.
 3. __Update file paths:__ At the top of each script in the "Scripts" folder, the rootPath will need to be updated.
-4. __Run all scripts__. Then run the scripts in order from step 1 to step 13. An ST-Sim SyncroSim library will be saved in the model folder. Model inputs and outputs can be viewed within the SyncroSim desktop by following Step 5 of this tutorial: https://docs.syncrosim.com/getting_started/quickstart.html
+4. __Run all scripts__: Run each script in order from step 1 to step 13. An ST-Sim SyncroSim library will be saved in the "Models" folder. Model inputs and outputs can be viewed within the SyncroSim desktop by following Step 5 of this tutorial: https://docs.syncrosim.com/getting_started/quickstart.html.
