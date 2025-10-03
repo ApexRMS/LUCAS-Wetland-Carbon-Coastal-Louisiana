@@ -703,6 +703,16 @@ initialCarbonExternalDistnLatFlux <- siteSummaryLatFlux %>%
          ExternalVariableMin = ExternalVariableID, 
          ExternalVariableMax = ExternalVariableID,
          ValueDistributionRelativeFrequency = 1) %>%
+  select(DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency,StateClassID,Distribution)
+
+# State Attribute Value Distributions
+initialCarbonSite <- initialCarbonExternalDistnLatFlux %>%
+  select(StateClassID,Distribution,DistributionTypeID) %>%
+  rename(StateAttributeTypeID = Distribution,
+         DistributionType = DistributionTypeID) %>%
+  distinct()
+
+initialCarbonExternalDistnLatFlux <- initialCarbonExternalDistnLatFlux %>%
   select(DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency)
 
 # Save csv
@@ -724,6 +734,16 @@ NPPExternalDistnLatFlux <- siteSummaryLatFlux %>%
          ExternalVariableMin = ExternalVariableID, 
          ExternalVariableMax = ExternalVariableID,
          ValueDistributionRelativeFrequency = 1) %>%
+  select(Site.ID,DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency,StateClassID)
+
+# State Attribute Value Distributions
+NPPSite <- ungroup(NPPExternalDistnLatFlux) %>%
+  select(StateClassID,DistributionTypeID) %>%
+  rename(DistributionType = DistributionTypeID) %>%
+  mutate(StateAttributeTypeID = "Net Growth") %>% 
+  distinct()
+
+NPPExternalDistnLatFlux <- NPPExternalDistnLatFlux %>%
   select(Site.ID,DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency)
 
 # Save csv
@@ -778,6 +798,16 @@ flowExternalDistnLatFlux <- siteSummaryLatFlux %>%
          ExternalVariableMin = ExternalVariableID, 
          ExternalVariableMax = ExternalVariableID,
          ValueDistributionRelativeFrequency = 1) %>%
+  select(DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency,StateClassID,Distribution)
+
+# Flow Multiplier Value Distributions
+flowMultiplierValueSite <- flowExternalDistnLatFlux %>%
+  select(StateClassID,Distribution,DistributionTypeID) %>%
+  rename(FlowGroupID = Distribution,
+         DistributionType = DistributionTypeID) %>%
+  distinct()
+
+flowExternalDistnLatFlux <- flowExternalDistnLatFlux %>%
   select(DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency)
 
 # Save csv
@@ -786,6 +816,25 @@ flowExternalDistnLatFlux %>%
   #mutate_if(is.numeric, round, digits=sig_figs) %>%
   write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
                       paste0(datasheetName, " Flow Multipliers Wetland Emergent Site Lat IPCC.csv")))
+
+# Save csv
+datasheetName <- "stsim_StateAttributeValue"
+initialCarbonSite %>%
+  #mutate_if(is.numeric, round, digits=sig_figs) %>%
+  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
+                      paste0(datasheetName, " Initial C Wetland Emergent Site.csv")))
+
+NPPSite %>%
+  #mutate_if(is.numeric, round, digits=sig_figs) %>%
+  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
+                      paste0(datasheetName, " NPP Wetland Emergent Site.csv")))
+
+# Save csv
+datasheetName <- "stsimsf_FlowMultiplier"
+flowMultiplierValueSite %>%
+  #mutate_if(is.numeric, round, digits=sig_figs) %>%
+  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
+                      paste0(datasheetName, " Wetland Emergent Site.csv")))
 
 # Wetland subclass level summary -------------------------------------------------------------------
 #Mean Lateral Transport Est and Pal g C m-2 yr-1
