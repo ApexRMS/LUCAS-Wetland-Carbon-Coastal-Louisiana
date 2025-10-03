@@ -16,18 +16,23 @@ dateStamp <- "2025_05_16"
 
 # Set directory paths
 #baseDir <- 'C:/gitprojects/a275/'
-baseDir <- 'C:/Users/AmandaSchwantes/Documents/GitHub/a275/'
-cleanDataDir <- paste0(baseDir, "Data/CONUS/Carbon/Tabular/")
-RScriptDir <- paste0(baseDir, "Scripts/CONUS/Carbon Preprocessing/Wetland Emergent/")
-outDir <- paste0(RScriptDir, "Results/")
-stsimDir <- paste0(outDir, "libraries/datasheets/Distributions/")
+baseDir <- 'E:/gitprojects/A329-LucasBarataria/'
+cleanDataDir <- paste0(baseDir, "Data/Datasheets Wetland/FieldData/")
+outDir <- paste0(baseDir, "Data/Datasheets Wetland/")
 
-modelDir <- paste(outDir, "libraries", sep="/")
-subscenariosDir <- paste(modelDir, "subscenarios", "updatedMay2025",sep="/")
+subscenariosDir <- paste0(baseDir,"Data/Datasheets Wetland/Emergent/")
 # Create directories for initial conditions and transition targets
-dir.create(file.path(subscenariosDir, "stsimsf_FlowMultiplier"), showWarnings = F)
-dir.create(file.path(subscenariosDir, "stsim_StateAttributeValue"), showWarnings = F)
-dir.create(file.path(subscenariosDir, "stsim_DistributionValue"), showWarnings = F)
+if (!dir.exists(file.path(subscenariosDir, "stsimsf_FlowMultiplier"))){
+  dir.create(file.path(subscenariosDir, "stsimsf_FlowMultiplier"), showWarnings = F)
+}
+if (!dir.exists(file.path(subscenariosDir, "stsim_StateAttributeValue"))){
+  dir.create(file.path(subscenariosDir, "stsim_StateAttributeValue"), showWarnings = F)
+}
+if (!dir.exists(file.path(subscenariosDir, "stsim_DistributionValue"))){
+  dir.create(file.path(subscenariosDir, "stsim_DistributionValue"), showWarnings = F)
+}
+
+
 
 # Set parameters
 # Number significant digits
@@ -623,144 +628,6 @@ funFluxCalc <- function(SummaryTab) {
   
 }
 
-
-siteSummary <- siteSummary0 %>%
-  select(Site.ID,`Wetland Subclass LUCAS`, FoliageStock, RootStock, AGVFStock, BGVFStock, BGSStock,
-         FoliageNPP, RootNPP, BGVFPercentLoss, `Burial210Pb TC.g.m.2`,TotalLatTrans_Amount, MethaneFlux, ExternalVariableValue,
-         AGVFPercentLoss)
-
-siteSummary <- funFluxCalc(SummaryTab = siteSummary)
-
-#siteSummary %>% group_by(`Wetland Subclass LUCAS`) %>% summarise_all(list(min, max))
-
-# Save site summary raw
-siteSummary %>%
-  mutate_if(is.numeric, round, digits=sig_figs) %>%
-  write_csv(paste0(outDir, "siteSummary_StockBasedEquilibrium_", dateStamp, ".csv"))
-
-# Format site-level carbon parameters for STSim-SF
-# Distributions for state attributes. Rename to match state attribute type. Separate initial conditions, npp, and sediment transport state attributes
-# Initial Carbon - with external variable
-initialCarbonExternalDistn <- siteSummary %>%
-  select(Site.ID,
-         'StateClassID' = `Wetland Subclass LUCAS`, 
-         'ExternalVariableID'=ExternalVariableValue, 
-         'Carbon Initial Conditions: Foliage' = FoliageStock, 
-         'Carbon Initial Conditions: Fine Roots' = RootStock, 
-         'Carbon Initial Conditions: Aboveground Very Fast' = AGVFStock, 
-         'Carbon Initial Conditions: Belowground Very Fast' = BGVFStock, 
-         'Carbon Initial Conditions: Belowground Slow' = BGSStock) %>%
-  gather('Distribution', 'Value', 4:8) %>%
-  mutate(DistributionTypeID = paste(StateClassID, Distribution),
-         ExternalVariableTypeID = paste("Site ID", StateClassID),
-         ExternalVariableMin = ExternalVariableID, 
-         ExternalVariableMax = ExternalVariableID,
-         ValueDistributionRelativeFrequency = 1) %>%
-  select(DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency,StateClassID,Distribution)
-
-# Save csv
-datasheetName <- "stsim_DistributionValue"
-
-initialCarbonExternalDistn %>%
-  select(DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency) %>%
-  #mutate_if(is.numeric, round, digits=sig_figs) %>%
-  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
-                                      paste0(datasheetName, " Initial C Wetland Emergent Site.csv")))
-
-# NPP - with external variable
-NPPExternalDistn <- siteSummary %>%
-  select(Site.ID,
-         'StateClassID'=`Wetland Subclass LUCAS`, 
-         'ExternalVariableID'=ExternalVariableValue, 
-         'Value'=TotalNPP_Amount) %>%
-  mutate(DistributionTypeID = paste(StateClassID, "Net Growth"),
-         ExternalVariableTypeID = paste("Site ID", StateClassID),
-         ExternalVariableMin = ExternalVariableID, 
-         ExternalVariableMax = ExternalVariableID,
-         ValueDistributionRelativeFrequency = 1) %>%
-  select(Site.ID,DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency,StateClassID)
-
-# Save csv
-datasheetName <- "stsim_DistributionValue"
-NPPExternalDistn %>%
-  select(Site.ID,DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency) %>%
-  #mutate_if(is.numeric, round, digits=sig_figs) %>%
-  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
-                      paste0(datasheetName, " NPP Wetland Emergent Site", ".csv")))
-
-# Distributions for flow multiplier values
-# Rename to match flow type/group.
-flowExternalDistn <- siteSummary %>%
-  select(Site.ID,
-         'StateClassID'=`Wetland Subclass LUCAS`, 
-         'ExternalVariableID'=ExternalVariableValue, 
-         'Net Growth Wetland Emergent: Atmosphere -> Foliage'=FoliageGrowth_PropTotalNPP, 
-         'Net Growth Wetland Emergent: Atmosphere -> Fine Roots'=RootGrowth_PropTotalNPP, 
-         'Biomass Turnover: Foliage -> AG Very Fast'=FoliageMortality_PropMaxStock, 
-         'Biomass Turnover: Fine Roots -> BG Very Fast'=RootMortality_PropMaxStock,
-         'Emission: AG Very Fast -> Atmosphere Temp'=AGVFEmission_PropMaxStock, 
-         'Emission: BG Very Fast -> Atmosphere Temp'=BGVFEmission_PropMaxStock, 
-         'Emission: BG Slow -> Atmosphere Temp'=BGSEmission_PropMaxStock,
-         'Lateral Transport: AG Very Fast -> Aquatic'=AGVFLatTrans_PropMaxStock, 
-         'Lateral Transport: BG Very Fast -> Aquatic'=BGVFLatTrans_PropMaxStock, 
-         'Lateral Transport: BG Slow -> Aquatic'=BGSLatTrans_PropMaxStock, 
-         'Decay: BG Very Fast -> BG Slow'=BGVFStabilization_PropMaxStock,
-         'Decay: AG Very Fast -> BG Slow'=AGVFStabilization_PropMaxStock,
-         'Stabilization: BG Slow -> Deep Soil'=BGSStabilization_PropMaxStock) %>%
-  gather('Distribution', 'Value', 4:16) %>%
-  mutate(DistributionTypeID = paste(StateClassID, Distribution),
-         ExternalVariableTypeID = paste("Site ID", StateClassID),
-         ExternalVariableMin = ExternalVariableID, 
-         ExternalVariableMax = ExternalVariableID,
-         ValueDistributionRelativeFrequency = 1) %>%
-  select(DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency,StateClassID,Distribution)
-
-# Save csv
-datasheetName <- "stsim_DistributionValue"
-flowExternalDistn %>%
-  select(DistributionTypeID, ExternalVariableTypeID, ExternalVariableMin, ExternalVariableMax, Value, ValueDistributionRelativeFrequency) %>%
-  #mutate_if(is.numeric, round, digits=sig_figs) %>%
-  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
-                                      paste0(datasheetName, " Flow Multipliers Wetland Emergent Site IPCC.csv")))
-
-# State Attribute Value Distributions
-initialCarbonSite <- initialCarbonExternalDistn %>%
-  select(StateClassID,Distribution,DistributionTypeID) %>%
-  rename(StateAttributeTypeID = Distribution,
-         DistributionType = DistributionTypeID) %>%
-  distinct()
-
-NPPSite <- ungroup(NPPExternalDistn) %>%
-  select(StateClassID,DistributionTypeID) %>%
-  rename(DistributionType = DistributionTypeID) %>%
-  mutate(StateAttributeTypeID = "Net Growth") %>% 
-  distinct()
-
-# Flow Multiplier Value Distributions
-flowMultiplierValueSite <- flowExternalDistn %>%
-  select(StateClassID,Distribution,DistributionTypeID) %>%
-  rename(FlowGroupID = Distribution,
-         DistributionType = DistributionTypeID) %>%
-  distinct()
-
-# Save csv
-datasheetName <- "stsim_StateAttributeValue"
-initialCarbonSite %>%
-  #mutate_if(is.numeric, round, digits=sig_figs) %>%
-  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
-                      paste0(datasheetName, " Initial C Wetland Emergent Site.csv")))
-
-NPPSite %>%
-  #mutate_if(is.numeric, round, digits=sig_figs) %>%
-  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
-                      paste0(datasheetName, " NPP Wetland Emergent Site.csv")))
-
-# Save csv
-datasheetName <- "stsimsf_FlowMultiplier"
-flowMultiplierValueSite %>%
-  #mutate_if(is.numeric, round, digits=sig_figs) %>%
-  write_csv(file.path(paste(subscenariosDir, datasheetName, sep="/"), 
-                      paste0(datasheetName, " Wetland Emergent Site.csv")))
 
 # Add Lateral Flux uncertainty
 
