@@ -165,7 +165,7 @@ myDataEmergent <- myData %>%
                            "Lateral Transport Emergent: BG Slow -> Aquatic",
                            "Emission Emergent: BG Slow -> Atmosphere Temp",
                            "Stabilization Emergent: BG Slow -> Deep Soil",
-                           "Lateral Transport: BG Very Fast -> Aquatic ",
+                           "Lateral Transport: BG Very Fast -> Aquatic",
                            "Emission: BG Very Fast -> Atmosphere Temp")) %>%
   select(-StateAttributeTypeId)
 
