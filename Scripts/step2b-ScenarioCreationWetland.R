@@ -367,6 +367,8 @@ as.data.frame(decompBGVFNew)
 # Belowground Very Fast equilibrium value for an oak gum cypress forest
 eqBGVF <- 0.1055309
 eqFR <- 2.682043
+eqCR <- 20.74
+eqBGF <- 0.6
 
 # Mass Remaining for palustrine forested sites
 massRemainingBGVF <- 0.7320098466 # Savannah 0.6843146
@@ -437,10 +439,12 @@ myData$Value[myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"] <- tran
 soilAge <- (1290+1295)/2
 soilPoolSize <- (628.4 + 127.1)/2
 
-poolTotal <- soilPoolSize - eqBGVF - eqFR
-emissionsInOut <- 1.889 - (poolTotal/soilAge)
+poolTotal <- soilPoolSize - eqBGVF - eqFR - eqCR - eqBGF
+emissionsInOut <- 1.548114
 
-flowMultBGStoDeep <- poolTotal/(soilAge*poolTotal)
+burialRate <- soilPoolSize/soilAge
+
+flowMultBGStoDeep <- burialRate/poolTotal
 flowMultBGStoAtm <-  emissionsInOut/poolTotal
 
 myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
@@ -454,6 +458,9 @@ addFlowMult <- tibble(StateClassId = c("Wetland: Estuarine Forested",
 myData <- myData %>%
   addRow(addFlowMult)
 
+# Update foliage turnover rate with deciduous value
+myData$Value[myData$FlowGroupId == "Biomass Turnover: Foliage -> AG Very Fast [Type]"] <- 0.95
+
 # Update Net Growth by pool
 
 netGrowth <- myData %>%
@@ -466,6 +473,7 @@ netGrowth <- myData %>%
 avgFoliageKrauss <- mean(c(3.492,2.838))
 avgStemKrauss <- mean(c(1.922,2.035))
 avgRootKrauss <- mean(c(2.870,1.370))
+avgAboveKrauss <- avgFoliageKrauss+avgStemKrauss
 
 netGrowthCBM66 <- 3.8157
 
@@ -492,12 +500,10 @@ flowMultRoot <- netGrowth %>%
                             "Net Growth Forest: Atmosphere -> Coarse Roots [Type]")) %>%
   pull(Value)
 
-avgFoliageCBM <- netGrowthCBM66*sum(flowMultFoliage)
-avgStemCBM <- netGrowthCBM66*sum(flowMultStem)
+avgAboveCBM <- netGrowthCBM66*sum(c(flowMultFoliage,flowMultStem))
 avgRootCBM <- netGrowthCBM66*sum(flowMultRoot)
 
-avgFoliageI <- avgFoliageKrauss/avgFoliageCBM
-avgStemI <- avgStemKrauss/avgStemCBM
+avgAboveI <- avgAboveKrauss/avgAboveCBM
 avgRootI <- avgRootKrauss/avgRootCBM
 
 addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse Roots [Type]",
@@ -507,9 +513,9 @@ addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse
                                         "Net Growth Forest: Atmosphere -> Other Wood [Type]"),
                         multiplier = c(avgRootI,
                                        avgRootI,
-                                       avgFoliageI,
-                                       avgStemI,
-                                       avgStemI))
+                                       avgAboveI,
+                                       avgAboveI,
+                                       avgAboveI))
 
 netGrowth2 <- netGrowth %>%
   left_join(addGrowth, by = join_by(FlowGroupId)) %>%
@@ -534,8 +540,10 @@ rm(myScenario,myData)
 
 # Mass Remaining for palustrine forested sites
 massRemainingBGVF <- 0.6843146 # Savannah 0.6843146
-eqBGVFs <- 0.06819238
+eqBGVFs <- 0.06819236
 eqFRs <- 1.733207
+eqCRs <- 13.37742
+eqBGFs <- 0.3862857
 
 # Flow Multipliers Forested Wetland
 myScenario <- scenario(myProject, scenario="SF Flow Multipliers [Forested Wetland BGS Slower S]",
@@ -589,10 +597,12 @@ myData$Value[myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"] <- tran
 soilAge <- 1290
 soilPoolSize <- 628.4
 
-poolTotal <- soilPoolSize - eqBGVFs - eqFRs
-emissionsInOut <- 1.456 - (poolTotal/soilAge) #1.036
+poolTotal <- soilPoolSize - eqBGVFs - eqFRs - eqCRs - eqBGFs
+emissionsInOut <- 2.085988
 
-flowMultBGStoDeep <- poolTotal/(soilAge*poolTotal)
+burialRate <- soilPoolSize/soilAge
+
+flowMultBGStoDeep <- burialRate/poolTotal
 flowMultBGStoAtm <-  emissionsInOut/poolTotal
 
 myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
@@ -604,6 +614,9 @@ addFlowMult <- tibble(StateClassId = c("Wetland: Estuarine Forested",
 
 myData <- myData %>%
   addRow(addFlowMult)
+
+# Update foliage turnover rate with deciduous value
+myData$Value[myData$FlowGroupId == "Biomass Turnover: Foliage -> AG Very Fast [Type]"] <- 0.95
 
 # Update Net Growth
 
@@ -617,9 +630,9 @@ netGrowth <- myData %>%
 avgFoliageKrauss <- 2.838
 avgStemKrauss <- 2.035
 avgRootKrauss <- 1.370
+avgAboveKrauss <- avgFoliageKrauss+avgStemKrauss
 
-avgFoliageI <- avgFoliageKrauss/avgFoliageCBM
-avgStemI <- avgStemKrauss/avgStemCBM
+avgAboveI <- avgAboveKrauss/avgAboveCBM
 avgRootI <- avgRootKrauss/avgRootCBM
 
 addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse Roots [Type]",
@@ -629,9 +642,9 @@ addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse
                                         "Net Growth Forest: Atmosphere -> Other Wood [Type]"),
                         multiplier = c(avgRootI,
                                        avgRootI,
-                                       avgFoliageI,
-                                       avgStemI,
-                                       avgStemI))
+                                       avgAboveI,
+                                       avgAboveI,
+                                       avgAboveI))
 
 netGrowth2 <- netGrowth %>%
   left_join(addGrowth, by = join_by(FlowGroupId)) %>%
@@ -656,6 +669,8 @@ rm(myScenario,myData)
 massRemainingBGVF <- 0.7797051
 eqBGVFw <- 0.1428744
 eqFRw <- 3.630878
+eqCRw <- 28.02423
+eqBGFw <- 0.8091378
 
 # Flow Multipliers Forested Wetland
 myScenario <- scenario(myProject, scenario="SF Flow Multipliers [Forested Wetland BGS Slower W]",
@@ -710,10 +725,12 @@ myData$Value[myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"] <- tran
 soilAge <- 1295
 soilPoolSize <- 127.1
 
-poolTotal <- soilPoolSize - eqBGVFw - eqFRw
-emissionsInOut <- 2.531 - (poolTotal/soilAge)# 1.13
+poolTotal <- soilPoolSize - eqBGVFw - eqFRw - eqCRw - eqBGFw
+emissionsInOut <- 5.751005
 
-flowMultBGStoDeep <- poolTotal/(soilAge*poolTotal)
+burialRate <- soilPoolSize/soilAge
+
+flowMultBGStoDeep <- burialRate/poolTotal
 flowMultBGStoAtm <-  emissionsInOut/poolTotal
 
 myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
@@ -725,6 +742,9 @@ addFlowMult <- tibble(StateClassId = c("Wetland: Estuarine Forested",
 
 myData <- myData %>%
   addRow(addFlowMult)
+
+# Update foliage turnover rate with deciduous value
+myData$Value[myData$FlowGroupId == "Biomass Turnover: Foliage -> AG Very Fast [Type]"] <- 0.95
 
 # Update Net Growth
 
@@ -738,9 +758,9 @@ netGrowth <- myData %>%
 avgFoliageKrauss <- 3.492
 avgStemKrauss <- 1.922
 avgRootKrauss <- 2.870
+avgAboveKrauss <- avgFoliageKrauss+avgStemKrauss
 
-avgFoliageI <- avgFoliageKrauss/avgFoliageCBM
-avgStemI <- avgStemKrauss/avgStemCBM
+avgAboveI <- avgAboveKrauss/avgAboveCBM
 avgRootI <- avgRootKrauss/avgRootCBM
 
 addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse Roots [Type]",
@@ -750,9 +770,9 @@ addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse
                                         "Net Growth Forest: Atmosphere -> Other Wood [Type]"),
                         multiplier = c(avgRootI,
                                        avgRootI,
-                                       avgFoliageI,
-                                       avgStemI,
-                                       avgStemI))
+                                       avgAboveI,
+                                       avgAboveI,
+                                       avgAboveI))
 
 netGrowth2 <- netGrowth %>%
   left_join(addGrowth, by = join_by(FlowGroupId)) %>%
