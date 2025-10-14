@@ -18,6 +18,8 @@ rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 
 outpathDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/Output/")
 
+source(paste0(rootPath, "Scripts/calculateDecayRates.R"))
+
 numberOfJobs <- 7
 
 dataPath <- "Data/"
@@ -534,7 +536,25 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3800; 1 
 
 rm(myScenario)
 
-run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M")
+# projectName: Project
+# scenarioName: The spinup scenario
+# targetValue: Target value is for BGS BGVF and FR totals
+# convergenceLevel: Convergence level is how different should the BGS pool be from the targetValue - BGVF - FR.
+# scenarioMult: Flow multiplier values that should be updated to ensure convergence
+# emissionsStart: Starting value for emissions flux
+# meanBurial: Burial rate
+
+calculateDecayRates(
+  projectName = myProject,
+  scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M",
+  targetValue = ((628.4 + 127.1) / 2),
+  convergenceLevel = 0.1,
+  scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower]",
+  emissionsStart = 1.548114,
+  meanBurial = mean(c((628.4/1290),(127.1/1295)))
+)
+
+#run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M")
 
 # # Flow Multipliers Forested Wetland
 # Only run if updating flow multiplier terms to match soil carbon value
@@ -640,7 +660,18 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3800; 1 
 
 rm(myScenario)
 
-run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S")
+calculateDecayRates(
+  projectName = myProject,
+  scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S",
+  targetValue = 628.4,
+  convergenceLevel = 0.1,
+  scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower S]",
+  emissionsStart = 2.085988,
+  meanBurial = 628.4/1290 #0.4871318
+)
+
+
+#run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S")
 
 # # Flow Multipliers Forested Wetland
 # # Only run if updating flow multiplier terms to match soil carbon value
@@ -743,7 +774,18 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3800; 1 
 
 rm(myScenario)
 
-run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W")
+calculateDecayRates(
+  projectName = myProject,
+  scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W",
+  targetValue = 127.1,
+  convergenceLevel = 0.1,
+  scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower W]",
+  emissionsStart = 5.751005,
+  meanBurial = 127.1/1295 #0.09814672
+)
+
+
+#run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W")
 
 # # Flow Multipliers Forested Wetland
 # #Only run if updating flow multiplier terms to match soil carbon value
