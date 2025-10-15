@@ -467,7 +467,7 @@ flowGroupIDs %>%
 
 # Extent, Project, Spatial Resolution
 
-scenID <- scenarioListAll$ScenarioId[grep(paste0("Basin ",scenariosBasin[1]),scenarioListAll$Name)]
+scenID <- max(scenarioListAll$ScenarioId[grep(paste0("Basin ",scenariosBasin[1]),scenarioListAll$Name)])
 
 r1 <- rast(paste0(rootPath,"Models/",
                   modelName,"/",
