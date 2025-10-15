@@ -491,26 +491,7 @@ for (i in 1:length(plotFlows)){
   col <- as.character(myDataNECB$Color)
   names(col) <- as.character(myDataNECB$ScenarioO)
   
-  p5 <- ggplot(myDataNECB, aes(x = ScenarioO, y = mean, colour = ScenarioO, fill = ScenarioO)) +
-    geom_errorbar(aes(x=ScenarioO, ymin=low, ymax=high), colour = "black", width = 0.25)+
-    geom_point(shape = 23, size = 3) +
-    theme_bw() +
-    scale_colour_manual(values=col,
-                        aesthetics = c("colour", "fill")) +
-    theme(panel.border = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.line = element_line(colour = "black"),
-          legend.position="none",
-          legend.title=element_blank()) +
-    xlab("\nLand Cover Class") + 
-    ylab(as.expression(bquote(atop(.(plotFlowsName),"(tonnes "~C~ha^-1~y^-1*")")))) +
-    ylim(minVal,maxVal)
-  
-  p5
-  
-  ggsave(paste0(pathOutSingleCell,"/",plotName,".png"), p5, width = 3.5, height = 3.5, dpi = 600)
-  
+    
   if (plotFlows[i] == "Annual Emissions: CH4 (tons C per year)"){
     
     p5 <- ggplot(myDataNECB, aes(x = ScenarioO, y = mean, colour = ScenarioO, fill = ScenarioO)) +
@@ -527,6 +508,28 @@ for (i in 1:length(plotFlows)){
             legend.title=element_blank()) +
       xlab("\nLand Cover Class") + 
       ylab(as.expression(bquote(atop(.(plotFlowsName)~CH[4],"(tonnes "~C~ha^-1~y^-1*")")))) +
+      ylim(minVal,maxVal)
+    
+    p5
+    
+    ggsave(paste0(pathOutSingleCell,"/",plotName,".png"), p5, width = 3.5, height = 3.5, dpi = 600)
+    
+  } else {
+    
+    p5 <- ggplot(myDataNECB, aes(x = ScenarioO, y = mean, colour = ScenarioO, fill = ScenarioO)) +
+      geom_errorbar(aes(x=ScenarioO, ymin=low, ymax=high), colour = "black", width = 0.25)+
+      geom_point(shape = 23, size = 3) +
+      theme_bw() +
+      scale_colour_manual(values=col,
+                          aesthetics = c("colour", "fill")) +
+      theme(panel.border = element_blank(),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            axis.line = element_line(colour = "black"),
+            legend.position="none",
+            legend.title=element_blank()) +
+      xlab("\nLand Cover Class") + 
+      ylab(as.expression(bquote(atop(.(plotFlowsName),"(tonnes "~C~ha^-1~y^-1*")")))) +
       ylim(minVal,maxVal)
     
     p5
