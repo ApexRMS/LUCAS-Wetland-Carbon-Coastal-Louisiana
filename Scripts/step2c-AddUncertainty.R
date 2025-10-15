@@ -203,9 +203,9 @@ myZeros <- tibble(StateClassId = rep(c("Wetland: Estuarine Emergent",
                   Value = 0)
 
 emergentWetland <- emergentWetland %>%
-  addRow(myZeros) %>%
-  addRow(flowMultipliersAg) %>%
-  addRow(flowMultipliersAg2) %>%
+  bind_rows(myZeros,
+           flowMultipliersAg,
+           flowMultipliersAg2) %>%
   select(where(~!all(is.na(.x))))
 
 myData <- datasheet(myScenario,"stsim_FlowMultiplier", optional = T, empty = T) %>%
