@@ -372,11 +372,11 @@ myData$Order[myData$FlowTypeId == "Stabilization: BG Slow -> Deep Soil"] <- 5
 myData$Order[myData$FlowTypeId == "Lateral Transport: BG Slow -> Aquatic"] <- 5
 
 myDataAll <- myData %>%
-  addRow(myDataAddForest) %>%
-  addRow(myDataAddCO2) %>%
-  addRow(myDataAddLatCH4) %>%
-  addRow(myDataAddAtm) %>%
-  addRow(myDataAddLat2)
+  bind_rows(myDataAddForest,
+            myDataAddCO2,
+            myDataAddLatCH4,
+            myDataAddAtm,
+            myDataAddLat2)
 
 write.csv(myDataAll,
           paste0(outpathDatasheets,"stsim_FlowOrder.csv"), row.names = FALSE)
@@ -560,12 +560,12 @@ myData$FlowTypeId[myData$FlowTypeId == "Stabilization: BG Slow -> Deep Soil" &
 myDataState <- flowTypesMethane
 
 myDataAll <- flowTypesAddEmergent %>%
-  addRow(flowTypesEmergentDecay) %>%
-  addRow(flowTypesAddForest1) %>%
-  addRow(flowTypesAddForest2) %>%
-  addRow(flowTypesAddCO2) %>%
-  addRow(flowTypesLateral) %>%
-  addRow(flowTypesAtm)
+  bind_rows(flowTypesEmergentDecay,
+            flowTypesAddForest1,
+            flowTypesAddForest2,
+            flowTypesAddCO2,
+            flowTypesLateral,
+            flowTypesAtm)
 
 write.csv(myDataAll,
           paste0(outpathDatasheets,"stsim_FlowPathway1.csv"), row.names = FALSE)
