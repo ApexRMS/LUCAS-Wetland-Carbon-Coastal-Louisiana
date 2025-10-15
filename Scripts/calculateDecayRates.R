@@ -68,6 +68,8 @@ calculateDecayRates <- function(
   
   saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
   
+  rm(myScenario, myData)
+  
   run(projectName, scenario = scenarioName)
   
   scenarioList <- scenario(projectName, summary = T, results = T)
@@ -77,6 +79,9 @@ calculateDecayRates <- function(
   myScenario <- scenario(projectName, scenario = max(forestId))
   
   myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
+  
+  # Has equilibrium been reached, difference is less than 1%, (difference in peaks, year prior to disturbance)
+  peaks <- seq(125, 3500, 125) - 1
   
   testE <- myData %>%
     filter(Timestep %in% peaks) %>%
@@ -91,20 +96,15 @@ calculateDecayRates <- function(
   
   carbonMean <- testE %>% filter(Timestep == 3499) %>% pull(carbonMean)
   
-  diffPer <- (abs(carbonMean - targetValue) /
-                mean(c(carbonMean, targetValue))) *
-    100
-  
   diffPerSign <- ((carbonMean - targetValue) /
-                    mean(c(carbonMean, targetValue))) *
-    100
+                    mean(c(carbonMean, targetValue))) * 100
 
-  while (diffPer > convergenceLevel) {
+  while (abs(diffPerSign) > convergenceLevel) {
     
     if (diffPerSign > 0) {
-      emissionsInOut <- emissionsInOut * (100 + diffPer) / 100
+      emissionsInOut <- emissionsInOut * (100 + abs(diffPerSign)) / 100
     } else if (diffPerSign < 0) {
-      emissionsInOut <- emissionsInOut * (100 - diffPer) / 100
+      emissionsInOut <- emissionsInOut * (100 - abs(diffPerSign)) / 100
     }
 
     # Flow Multipliers Forested Wetland
@@ -123,7 +123,9 @@ calculateDecayRates <- function(
     ] <- flowMultBGStoAtm
     
     saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
-
+    
+    rm(myScenario,myData)
+    
     run(projectName, scenario = scenarioName)
 
     scenarioList <- scenario(projectName, summary = T, results = T)
@@ -147,17 +149,13 @@ calculateDecayRates <- function(
 
     carbonMean <- testE %>% filter(Timestep == 3499) %>% pull(carbonMean)
 
-    diffPer <- (abs(carbonMean - targetValue) /
-      mean(c(carbonMean, targetValue))) *
-      100
-
     diffPerSign <- ((carbonMean - targetValue) /
-      mean(c(carbonMean, targetValue))) *
-      100
+      mean(c(carbonMean, targetValue))) * 100
 
     print(diffPerSign)
     print(emissionsInOut)
   }
-
+  
+  print(diffPerSign)
   print(testE, n = nrow(testE))
 }
