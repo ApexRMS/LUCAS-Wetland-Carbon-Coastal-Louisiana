@@ -538,8 +538,8 @@ rm(myScenario)
 
 # projectName: Project
 # scenarioName: The spinup scenario
-# targetValue: Target value is for BGS BGVF and FR totals
-# convergenceLevel: Convergence level is how different should the BGS pool be from the targetValue - BGVF - FR.
+# targetValue: Target value is the sum of BGS, BGVF, FR, CR, and BGF. The sum of all belowground carbon.
+# convergenceLevel: Convergence level is how different should the BGS pool be from the targetValue - BGVF - FR - CR - BGF.
 # scenarioMult: Flow multiplier values that should be updated to ensure convergence
 # emissionsStart: Starting value for emissions flux
 # meanBurial: Burial rate
