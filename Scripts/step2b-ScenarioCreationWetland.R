@@ -613,6 +613,12 @@ saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
 
 rm(myScenario,myData)
 
+
+rm(massRemainingBGVF,emissionFlowMultBGVF,transferFlowMultBGVF,totalOutBGVF,
+   transferFlowMultBGVFupdate,emissionFlowMultBGVFupdate,scalerBG,
+   emissionFlowMultBGF,transferFlowMultBGF,
+   totalOutBGF,transferFlowMultBGFupdate,emissionFlowMultBGFupdate)
+
 # Values for S
 
 # Mass Remaining for palustrine forested sites
@@ -649,23 +655,6 @@ totalOutBGVF <- emissionFlowMultBGVF + transferFlowMultBGVF
 transferFlowMultBGVFupdate <- totalOutBGVF * (massRemainingBGVF)
 emissionFlowMultBGVFupdate <- totalOutBGVF - transferFlowMultBGVFupdate
 
-emissionFlowMultAGVF <- myData %>%
-  filter(FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-transferFlowMultAGVF <- myData %>%
-  filter(FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-totalOutAGVF <- emissionFlowMultAGVF + transferFlowMultAGVF
-
-transferFlowMultAGVFupdate <- totalOutAGVF * massRemainingAGVF
-emissionFlowMultAGVFupdate <- totalOutAGVF - transferFlowMultAGVFupdate
-
 # Scale up BGF humification rate
 scalerBG <- transferFlowMultBGVFupdate / transferFlowMultBGVF
 
@@ -685,44 +674,6 @@ totalOutBGF <- emissionFlowMultBGF + transferFlowMultBGF
 
 transferFlowMultBGFupdate <- scalerBG * transferFlowMultBGF
 emissionFlowMultBGFupdate <- totalOutBGF - transferFlowMultBGFupdate
-
-# Scale up AGF humification rate
-scalerAG <- transferFlowMultAGVFupdate / transferFlowMultAGVF
-
-emissionFlowMultAGF <- myData %>%
-  filter(FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-transferFlowMultAGF <- myData %>%
-  filter(FlowGroupId == "Decay: AG Fast -> BG Slow [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-totalOutAGF <- emissionFlowMultAGF + transferFlowMultAGF
-
-transferFlowMultAGFupdate <- scalerAG * transferFlowMultAGF
-emissionFlowMultAGFupdate <- totalOutAGF - transferFlowMultAGFupdate
-
-# Scale up AGM humification rate
-emissionFlowMultAGM <- myData %>%
-  filter(FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-transferFlowMultAGM <- myData %>%
-  filter(FlowGroupId == "Decay: AG Medium -> BG Slow [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-totalOutAGM <- emissionFlowMultAGM + transferFlowMultAGM
-
-transferFlowMultAGMupdate <- scalerAG * transferFlowMultAGM
-emissionFlowMultAGMupdate <- totalOutAGM - transferFlowMultAGMupdate
 
 # Update flow multiplier table
 
@@ -830,6 +781,11 @@ saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
 
 rm(myScenario,myData)
 
+rm(massRemainingBGVF,emissionFlowMultBGVF,transferFlowMultBGVF,totalOutBGVF,
+   transferFlowMultBGVFupdate,emissionFlowMultBGVFupdate,scalerBG,
+   emissionFlowMultBGF,transferFlowMultBGF,
+   totalOutBGF,transferFlowMultBGFupdate,emissionFlowMultBGFupdate)
+
 # Values for W
 
 # Mass Remaining for palustrine forested sites
@@ -866,23 +822,6 @@ totalOutBGVF <- emissionFlowMultBGVF + transferFlowMultBGVF
 transferFlowMultBGVFupdate <- totalOutBGVF * (massRemainingBGVF)
 emissionFlowMultBGVFupdate <- totalOutBGVF - transferFlowMultBGVFupdate
 
-emissionFlowMultAGVF <- myData %>%
-  filter(FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-transferFlowMultAGVF <- myData %>%
-  filter(FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-totalOutAGVF <- emissionFlowMultAGVF + transferFlowMultAGVF
-
-transferFlowMultAGVFupdate <- totalOutAGVF * massRemainingAGVF
-emissionFlowMultAGVFupdate <- totalOutAGVF - transferFlowMultAGVFupdate
-
 # Scale up BGF humification rate
 scalerBG <- transferFlowMultBGVFupdate / transferFlowMultBGVF
 
@@ -902,44 +841,6 @@ totalOutBGF <- emissionFlowMultBGF + transferFlowMultBGF
 
 transferFlowMultBGFupdate <- scalerBG * transferFlowMultBGF
 emissionFlowMultBGFupdate <- totalOutBGF - transferFlowMultBGFupdate
-
-# Scale up AGF humification rate
-scalerAG <- transferFlowMultAGVFupdate / transferFlowMultAGVF
-
-emissionFlowMultAGF <- myData %>%
-  filter(FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-transferFlowMultAGF <- myData %>%
-  filter(FlowGroupId == "Decay: AG Fast -> BG Slow [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-totalOutAGF <- emissionFlowMultAGF + transferFlowMultAGF
-
-transferFlowMultAGFupdate <- scalerAG * transferFlowMultAGF
-emissionFlowMultAGFupdate <- totalOutAGF - transferFlowMultAGFupdate
-
-# Scale up AGM humification rate
-emissionFlowMultAGM <- myData %>%
-  filter(FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-transferFlowMultAGM <- myData %>%
-  filter(FlowGroupId == "Decay: AG Medium -> BG Slow [Type]") %>%
-  select(Value) %>%
-  distinct() %>%
-  pull()
-
-totalOutAGM <- emissionFlowMultAGM + transferFlowMultAGM
-
-transferFlowMultAGMupdate <- scalerAG * transferFlowMultAGM
-emissionFlowMultAGMupdate <- totalOutAGM - transferFlowMultAGMupdate
 
 # Update flow multiplier table
 
