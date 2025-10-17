@@ -539,7 +539,7 @@ rm(myScenario)
 # projectName: Project
 # scenarioName: The spinup scenario
 # targetValue: Target value is the sum of BGS, BGVF, FR, CR, and BGF. The sum of all belowground carbon.
-# convergenceLevel: Convergence level is how different should the BGS pool be from the targetValue - BGVF - FR - CR - BGF.
+# convergenceLevel: Convergence level is how different (% difference) can the BGS pool be from the calculated value. 
 # scenarioMult: Flow multiplier values that should be updated to ensure convergence
 # emissionsStart: Starting value for emissions flux
 # meanBurial: Burial rate
@@ -827,7 +827,7 @@ myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 
 myDataFlux <- datasheet(myScenario, "stsim_OutputFlow", optional = T)
 
-# Change 3499 to 3566
+# Change 3499 to 3566. 66 year old forest following a harvest.
 
 myDataTotalDOM <- myData %>%
   filter(Timestep == 3566 &
