@@ -31,22 +31,22 @@ calculateDecayRates <- function(
 
   eqBGVFm <- myData %>%
     filter(StockGroupId == "DOM: Belowground Very Fast [Type]") %>%
-    filter(Timestep == 124) %>%
+    filter(Timestep == 3499) %>%
     pull(Amount)
 
   eqFRm <- myData %>%
     filter(StockGroupId == "Biomass: Fine Root [Type]") %>%
-    filter(Timestep == 124) %>%
+    filter(Timestep == 3499) %>%
     pull(Amount)
   
   eqCRm <- myData %>%
     filter(StockGroupId == "Biomass: Coarse Root [Type]") %>%
-    filter(Timestep == 124) %>%
+    filter(Timestep == 3499) %>%
     pull(Amount)
   
   eqBGFm <- myData %>%
     filter(StockGroupId == "DOM: Belowground Fast [Type]") %>%
-    filter(Timestep == 124) %>%
+    filter(Timestep == 3499) %>%
     pull(Amount)
 
   targetValue <- targetValue - eqBGVFm - eqFRm - eqCRm - eqBGFm
