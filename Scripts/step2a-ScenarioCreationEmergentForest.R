@@ -658,7 +658,9 @@ myData <- data.frame(SummaryOutputST	= "Yes",
                     AvgSpatialOutputST = "Yes",
                     AvgSpatialOutputSTTimesteps = 1,	
                     AvgSpatialOutputFL = "Yes",
-                    AvgSpatialOutputFLTimesteps = 1)
+                    AvgSpatialOutputFLTimesteps = 1,
+                    SummaryOutputFLOmitFromST = "Yes",
+                    SummaryOutputFLOmitToST = "Yes")
 
 saveDatasheet(myScenario, myData, sheetName)
 

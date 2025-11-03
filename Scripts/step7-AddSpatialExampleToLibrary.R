@@ -758,6 +758,8 @@ myDataOrig$SpatialOutputST <- "No"
 myDataOrig$SpatialOutputFL <- "No"
 myDataOrig$AvgSpatialOutputSTTimesteps <- 15
 myDataOrig$AvgSpatialOutputFLTimesteps <- 1
+myDataOrig$SummaryOutputFLOmitFromST <- TRUE
+myDataOrig$SummaryOutputFLOmitToST <- TRUE
 
 saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = FALSE)
 
