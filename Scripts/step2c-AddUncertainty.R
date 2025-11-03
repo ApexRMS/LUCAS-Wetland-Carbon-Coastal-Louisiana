@@ -189,7 +189,8 @@ names(flowMultipliersAg) <- gsub("ID","Id",names(flowMultipliersAg))
 flowMultipliersAg <- flowMultipliersAg %>%
   filter(FlowGroupId %in% flowGroupsMissingValues,
          StateClassId == "Agriculture:All") %>%
-  mutate(StateClassId = "Wetland: Palustrine Emergent")
+  mutate(StateClassId = "Wetland: Palustrine Emergent") %>%
+  select(-TertiaryStratumId)
 
 flowMultipliersAg2 <- flowMultipliersAg %>%
   mutate(StateClassId = "Wetland: Estuarine Emergent")
