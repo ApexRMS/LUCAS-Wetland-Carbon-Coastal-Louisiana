@@ -3,7 +3,7 @@ This repository contains code and data for the following manuscript:
 Stagg et al. A modeling framework for assessing the impact of wetland change on landscape-scale net ecosystem carbon balance. In prep.
 
 ## Dependencies
-The scripts in this repository were built using SyncroSim v3.1.12, with the following SyncroSim packages: ST-Sim v4.3.8, using R v4.5.1 with the following R packages rsyncrosim v2.1.4, tidyverse v2.0.0, terra v1.8-54, sf v1.0-21, and viridis v0.6.5.
+The scripts in this repository were built using SyncroSim v3.1.14, with the following SyncroSim packages: ST-Sim v4.5.3, using R v4.5.2 with the following R packages rsyncrosim v2.1.9, tidyverse v2.0.0, terra v1.8-70, sf v1.0-21, and viridis v0.6.5.
 
 ## Suggested Workflow
 1. __Download SyncroSim:__ SyncroSim v3.1.12 can be downloaded at: https://syncrosim.com/download/.
