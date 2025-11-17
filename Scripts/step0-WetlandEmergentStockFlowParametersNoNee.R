@@ -536,6 +536,7 @@ siteSummary0 <- foliageNPPSite %>%
 funFluxCalc <- function(SummaryTab) {
   
   SummaryTab <- SummaryTab %>%
+    rowwise() %>%
     mutate('TotalNPP_Amount' = FoliageNPP + RootNPP,
            'SedimentTransport_Amount' = 0,
            'FoliageGrowth_PropTotalNPP' = FoliageNPP / TotalNPP_Amount,
@@ -562,7 +563,6 @@ funFluxCalc <- function(SummaryTab) {
            'BGVFStabilization_PropMaxStock' = BGVFStabilization_Amount / BGVFMaxStock,
            'BGSDeposition' = SedimentTransport_Amount,
            'BGSIn_Amount' = (BGVFStabilization_Amount + AGVFStabilization_Amount + BGSDeposition)) %>%
-    rowwise() %>%
     mutate('BGSMaxStock' = BGSStock + BGSIn_Amount,
            'BGSOut_PropMaxStock' = BGSIn_Amount / BGSMaxStock,
            'BGSOut_Amount' = BGSOut_PropMaxStock * BGSMaxStock,
