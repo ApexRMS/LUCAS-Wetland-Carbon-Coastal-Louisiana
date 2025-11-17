@@ -83,6 +83,8 @@ detach(package:rsyncrosim)
 detach(package:tidyverse)
 detach(package:terra)
 
+# Increase the size of your instance and run spatial scenarios using SyncroSim Studio
+
 # 10. Create charts (png files) for spatial scenarios: carbon
 source(paste0(scriptsPath, "step10-SpatialFigures.R"))
 rm(list = setdiff(ls(), varsKeep))
