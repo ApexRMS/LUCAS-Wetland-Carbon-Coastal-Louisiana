@@ -207,7 +207,7 @@ for (k in 1:length(keepFluxesSpatialDiff)){
        type = "continuous",
        axes = FALSE,
        main = paste0("d. ", fluxName),
-       range = c(-(max2-60),(max2-60)),
+       range = c(-(max2-21),(max2-21)),
        col = rev(viridis(100)),
        cex.main = 0.8,
        fill_range = T,
