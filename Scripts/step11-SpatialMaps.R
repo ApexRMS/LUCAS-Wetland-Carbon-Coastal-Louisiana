@@ -154,7 +154,7 @@ for (k in 1:length(keepFluxesSpatial)){
       units = "in",
       res = 600)
   plot(r1, 
-       plg=list(title=as.expression(bquote("Mg "~C~ha^-1~y^-1)), 
+       plg=list(title=as.expression(bquote("Mg C"~ha^-1~y^-1)), 
                 title.cex=0.65),
        type = "continuous",
        axes = FALSE,
@@ -202,7 +202,7 @@ for (k in 1:length(keepFluxesSpatialDiff)){
       units = "in",
       res = 600)
   plot(r1, 
-       plg=list(title=as.expression(bquote("Mg "~C~ha^-1~y^-1)), 
+       plg=list(title=as.expression(bquote("Mg C"~ha^-1~y^-1)), 
                 title.cex=0.65),
        type = "continuous",
        axes = FALSE,
@@ -383,7 +383,7 @@ dev.off()
 #       units = "in",
 #       res = 600)
 #   plot(r1, 
-#        plg=list(title=as.expression(bquote("Mg "~C~ha^-1~y^-1)), 
+#        plg=list(title=as.expression(bquote("Mg C"~ha^-1~y^-1)), 
 #                 title.cex=0.65),
 #        type = "continuous",
 #        axes = FALSE,
@@ -431,7 +431,7 @@ dev.off()
 #       units = "in",
 #       res = 600)
 #   plot(r1, 
-#        plg=list(title=as.expression(bquote("Mg "~C~ha^-1~y^-1)), 
+#        plg=list(title=as.expression(bquote("Mg C"~ha^-1~y^-1)), 
 #                 title.cex=0.65),
 #        type = "continuous",
 #        axes = FALSE,
