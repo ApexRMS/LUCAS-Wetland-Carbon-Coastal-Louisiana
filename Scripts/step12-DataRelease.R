@@ -112,15 +112,25 @@ lookupName <- data.frame(Name = c("Ecosystem Carbon Storage (tons C)",
                                   "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
                                   "Annual Net Growth (tons CO2-eq per year)",
                                   "Annual Emissions: CO2 (tons CO2-eq per year)",
-                                  "Annual Lateral Flux (tons CO2-eq per year)"),
+                                  "Annual Lateral Flux (tons CO2-eq per year)",
+                                  "Annual Emissions: CH4 (tons C per year)",
+                                  "Annual Emissions: CO2 and CH4 (tons C per year)",
+                                  "Annual Net Growth (tons C per year)",
+                                  "Annual Emissions: CO2 (tons C per year)",
+                                  "Annual Lateral Flux (tons C per year)"),
                          NameShort = c("EcoStorage",
                                        "AnnNECBCO2e",
-                                       "AnnNECBtons",
+                                       "AnnNECBMgC",
                                        "AnnCH4CO2e",
                                        "AnnTotEmissCO2e",
                                        "AnnGrowCO2e",
                                        "AnnCO2CO2e",
-                                       "AnnLatCO2e"))
+                                       "AnnLatCO2e",
+                                       "AnnCH4MgC",
+                                       "AnnTotEmissMgC",
+                                       "AnnGrowMgC",
+                                       "AnnCO2MgC",
+                                       "AnnLatMgC"))
 
 landToChange <- c("Agriculture: Cropland",
                   "Developed: Medium Intensity",
@@ -132,13 +142,7 @@ landToChange <- c("Agriculture: Cropland",
                   "Grassland: Annual",
                   "Shrubland: Non-sage")
 
-keepFluxesSpatial <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
-                       "Annual Net Ecosystem Carbon Balance (tons C per year)",
-                       "Annual Emissions: CH4 (tons CO2-eq per year)",
-                       "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
-                       "Annual Net Growth (tons CO2-eq per year)",
-                       "Annual Emissions: CO2 (tons CO2-eq per year)",
-                       "Annual Lateral Flux (tons CO2-eq per year)")
+keepFluxesSpatial <- keepFluxes
 
 keepStocksSpatial <- c("Ecosystem Carbon Storage (tons C)")
 
@@ -202,7 +206,7 @@ for (i in 1:length(scenariosBasin)){
       select(-StateClassId) %>%
       mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
       group_by(Year,StateClass,StockGroup) %>%
-      summarize(Amount_tonsC = sum(Amount)) %>%
+      summarize(Amount_MgC = sum(Amount)) %>%
       ungroup() %>%
       mutate(Scenario = scenariosBasin[i])
     
@@ -294,7 +298,7 @@ for (i in 1:length(scenariosBasin)){
       select(-StateClassId) %>%
       mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
       group_by(Year,StateClass,StockGroup) %>%
-      summarize(Amount_tonsC = sum(Amount)) %>%
+      summarize(Amount_MgC = sum(Amount)) %>%
       ungroup() %>%
       mutate(Scenario = scenariosBasin[i])
     
@@ -441,16 +445,21 @@ write.csv(tabLandSub,paste0(pathOutTabular,"LandCoverArea_Basin.csv"),
           row.names = F)
 
 tabStockSubIPCC <- tabStockSub %>%
-  filter(StockGroup %in% c(keepStocks1))
+  filter(StockGroup %in% c(keepStocks1)) %>% 
+  mutate(StockGroup = str_replace(StockGroup,"\\(tons","\\(Mg"))
 
 tabStockSubLUCAS <- tabStockSub %>%
-  filter(StockGroup %in% c(keepStocks2NoType))
+  filter(StockGroup %in% c(keepStocks2NoType)) %>% 
+  mutate(StockGroup = str_replace(StockGroup,"\\(tons","\\(Mg"))
 
 write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_Basin.csv"),
           row.names = F)
 
 write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_Basin.csv"),
           row.names = F)
+
+tabFluxSub <- tabFluxSub %>% 
+  mutate(FlowGroup = str_replace(FlowGroup,"\\(tons","\\(Mg"))
 
 write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_Basin.csv"),
           row.names = F)
@@ -467,7 +476,7 @@ flowGroupIDs %>%
 
 # Extent, Project, Spatial Resolution
 
-scenID <- scenarioListAll$ScenarioId[grep(paste0("Basin ",scenariosBasin[1]),scenarioListAll$Name)]
+scenID <- max(scenarioListAll$ScenarioId[grep(paste0("Basin ",scenariosBasin[1]),scenarioListAll$Name)])
 
 r1 <- rast(paste0(rootPath,"Models/",
                   modelName,"/",
@@ -501,7 +510,7 @@ for (i in 1:length(scenariosSingleCell)){
              StockGroup = StockGroupId) %>%
       mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
       group_by(Year,StateClass,StockGroup) %>%
-      summarize(Mean_tonsC = mean(Amount, na.rm = T),
+      summarize(Mean_MgC = mean(Amount, na.rm = T),
                 Low = quantile(Amount,0.025, na.rm = T),
                 High = quantile(Amount,0.975, na.rm = T)) %>%
       ungroup() %>%
@@ -551,7 +560,7 @@ for (i in 1:length(scenariosSingleCell)){
              StockGroup = StockGroupId) %>%
       mutate(StockGroup = gsub(" [Type]","",StockGroup, fixed = T)) %>%
       group_by(Year,StateClass,StockGroup) %>%
-      summarize(Mean_tonsC = mean(Amount, na.rm = T),
+      summarize(Mean_MgC = mean(Amount, na.rm = T),
                 Low = quantile(Amount,0.025, na.rm = T),
                 High = quantile(Amount,0.975, na.rm = T)) %>%
       ungroup() %>%
@@ -602,10 +611,14 @@ tabStockSub$Low[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 tabStockSub$High[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 
 tabStockSubIPCC <- tabStockSub %>%
-  filter(StockGroup %in% c(keepStocks1))
+  filter(StockGroup %in% c(keepStocks1)) %>% 
+  mutate(StockGroup = str_replace(StockGroup,"\\(tons","\\(Mg")) %>%
+  select(-Scenario)
 
 tabStockSubLUCAS <- tabStockSub %>%
-  filter(StockGroup %in% c(keepStocks2NoType))
+  filter(StockGroup %in% c(keepStocks2NoType)) %>% 
+  mutate(StockGroup = str_replace(StockGroup,"\\(tons","\\(Mg")) %>%
+  select(-Scenario)
 
 write.csv(tabStockSubIPCC,paste0(pathOutTabular,"CarbonStocksIPCC_SingleCell.csv"),
           row.names = F)
@@ -615,6 +628,10 @@ write.csv(tabStockSubLUCAS,paste0(pathOutTabular,"CarbonStocksLUCAS_SingleCell.c
 
 tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
+
+tabFluxSub <- tabFluxSub %>% 
+  mutate(FlowGroup = str_replace(FlowGroup,"\\(tons","\\(Mg")) %>%
+  select(-Scenario)
 
 write.csv(tabFluxSub,paste0(pathOutTabular,"CarbonFluxes_SingleCell.csv"),
           row.names = F)

@@ -19,7 +19,7 @@ sourceDataPath <- "E:/Data Sources/"
 studyAreaFullPath <- paste0(rootPath,"StudyArea/BasinsCoastal.shp")
 
 applyCoarserGrid <- FALSE
-#spatialResMult <- 3#10
+spatialResMult <- 3 #10 # Only used when applyCoarserGrid == TRUE
 
 dataPath <- "Data/"
 modelPath <- "Models/"

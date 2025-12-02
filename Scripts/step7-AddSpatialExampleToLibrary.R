@@ -660,7 +660,7 @@ if(turnOnSpatialMultiprocessing){
   crs(smallGrid) <- crs(classRaster)
   ext(smallGrid) <- ext(classRaster)
   
-  bigGrid <- resample(smallGrid, classRaster, method = "near", filename = "temp.tif", overwrite = TRUE)
+  bigGrid <- resample(smallGrid, classRaster, method = "near")
   maskedGrid <- mask(bigGrid, classRaster)
   
   # Takes a vector of sizes (input) and a maximum size per group (threshold) and
@@ -720,7 +720,12 @@ flowGroupsAdd1 <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
                     "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
                     "Annual Net Growth (tons CO2-eq per year)",
                     "Annual Emissions: CO2 (tons CO2-eq per year)",
-                    "Annual Lateral Flux (tons CO2-eq per year)")
+                    "Annual Lateral Flux (tons CO2-eq per year)",
+                    "Annual Emissions: CH4 (tons C per year)",
+                    "Annual Emissions: CO2 and CH4 (tons C per year)",
+                    "Annual Net Growth (tons C per year)",
+                    "Annual Emissions: CO2 (tons C per year)",
+                    "Annual Lateral Flux (tons C per year)")
 
 myDataOrig$Spatial <- FALSE
 myDataOrig$AvgSpatial <- FALSE
@@ -753,6 +758,8 @@ myDataOrig$SpatialOutputST <- "No"
 myDataOrig$SpatialOutputFL <- "No"
 myDataOrig$AvgSpatialOutputSTTimesteps <- 15
 myDataOrig$AvgSpatialOutputFLTimesteps <- 1
+myDataOrig$SummaryOutputFLOmitFromST <- TRUE
+myDataOrig$SummaryOutputFLOmitToST <- TRUE
 
 saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = FALSE)
 

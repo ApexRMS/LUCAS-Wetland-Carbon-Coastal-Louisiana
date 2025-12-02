@@ -168,7 +168,8 @@ names(flowMultipliersAg) <- gsub("ID","Id",names(flowMultipliersAg))
 flowMultipliersAg <- flowMultipliersAg %>%
   filter(FlowGroupId %in% flowGroupsMissingValues,
          StateClassId == "Agriculture:All") %>%
-  mutate(StateClassId = "Wetland: Palustrine Emergent")
+  mutate(StateClassId = "Wetland: Palustrine Emergent") %>%
+  select(-TertiaryStratumId)
 
 flowMultipliersAg2 <- flowMultipliersAg %>%
   mutate(StateClassId = "Wetland: Estuarine Emergent")
@@ -364,9 +365,11 @@ decompBGVFNew <- decompBGVF %>%
 
 as.data.frame(decompBGVFNew)
 
-# Belowground Very Fast equilibrium value for an oak gum cypress forest
-eqBGVF <- 0.1055309
-eqFR <- 2.682043
+# # Belowground Very Fast equilibrium value for an oak gum cypress forest
+# eqBGVF <- 0.1055309
+# eqFR <- 2.682043
+# eqCR <- 20.74
+# eqBGF <- 0.6
 
 # Mass Remaining for palustrine forested sites
 massRemainingBGVF <- 0.7320098466 # Savannah 0.6843146
@@ -381,78 +384,160 @@ myScenarioOld <- scenario(myProject, scenario = "SF Flow Multipliers [Forested W
 
 myData <- datasheet(myScenarioOld, "stsim_FlowMultiplier")
 
-funRatio <- function(n,d){
-  (myData$Value[myData$FlowGroupId == n]/
-     myData$Value[myData$FlowGroupId == d])
-}
+# Calculate new humification and emission rates for BGVF
+emissionFlowMultBGVF <- myData %>%
+  filter(FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-emissionFlowMultBGVF <- unique(myData$Value[myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"])
-transferFlowMultBGVF <- unique(myData$Value[myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"])
+transferFlowMultBGVF <- myData %>%
+  filter(FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-emissionFlowMultBGVF <- emissionFlowMultBGVF*((1-massRemainingBGVF)/0.83)
-transferFlowMultBGVF <- transferFlowMultBGVF*(massRemainingBGVF/(1-0.83))
+totalOutBGVF <- emissionFlowMultBGVF + transferFlowMultBGVF
 
+transferFlowMultBGVFupdate <- totalOutBGVF * (massRemainingBGVF)
+emissionFlowMultBGVFupdate <- totalOutBGVF - transferFlowMultBGVFupdate
 
-emissionFlowMultAGVF <- unique(myData$Value[myData$FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]"])
-transferFlowMultAGVF <- unique(myData$Value[myData$FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]"])
+emissionFlowMultAGVF <- myData %>%
+  filter(FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-emissionFlowMultAGVF <- emissionFlowMultAGVF*((1-massRemainingAGVF)/0.815)
-transferFlowMultAGVF <- transferFlowMultAGVF*(massRemainingAGVF/(1-0.815))
+transferFlowMultAGVF <- myData %>%
+  filter(FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
+totalOutAGVF <- emissionFlowMultAGVF + transferFlowMultAGVF
 
-ratioBGVFtoBGFforE <- funRatio(n = "Emission: BG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: BG Fast -> Atmosphere Temp [Type]")
+transferFlowMultAGVFupdate <- totalOutAGVF * massRemainingAGVF
+emissionFlowMultAGVFupdate <- totalOutAGVF - transferFlowMultAGVFupdate
 
-ratioBGVFtoBGFforT <- funRatio(n = "Decay: BG Very Fast -> BG Slow [Type]",
-                               d = "Decay: BG Fast -> BG Slow [Type]")
+# Scale up BGF humification rate
+scalerBG <- transferFlowMultBGVFupdate / transferFlowMultBGVF
 
-ratioAGVFtoAGFforE <- funRatio(n = "Emission: AG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: AG Fast -> Atmosphere Temp [Type]")
+emissionFlowMultBGF <- myData %>%
+  filter(FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-ratioAGVFtoAGFforT <- funRatio(n = "Decay: AG Very Fast -> BG Slow [Type]",
-                               d = "Decay: AG Fast -> BG Slow [Type]")
+transferFlowMultBGF <- myData %>%
+  filter(FlowGroupId == "Decay: BG Fast -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-ratioAGVFtoAGMforE <- funRatio(n = "Emission: AG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: AG Medium -> Atmosphere Temp [Type]")
+totalOutBGF <- emissionFlowMultBGF + transferFlowMultBGF
 
-ratioAGVFtoAGMforT <- funRatio(n = "Decay: AG Very Fast -> BG Slow [Type]",
-                               d = "Decay: AG Medium -> BG Slow [Type]")
+transferFlowMultBGFupdate <- scalerBG * transferFlowMultBGF
+emissionFlowMultBGFupdate <- totalOutBGF - transferFlowMultBGFupdate
 
+# Scale up AGF humification rate
+scalerAG <- transferFlowMultAGVFupdate / transferFlowMultAGVF
 
-myData$Value[myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultBGVF
-myData$Value[myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"] <- transferFlowMultBGVF
+emissionFlowMultAGF <- myData %>%
+  filter(FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-myData$Value[myData$FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultBGVF/ratioBGVFtoBGFforE
-myData$Value[myData$FlowGroupId == "Decay: BG Fast -> BG Slow [Type]"] <- transferFlowMultBGVF/ratioBGVFtoBGFforT
+transferFlowMultAGF <- myData %>%
+  filter(FlowGroupId == "Decay: AG Fast -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-myData$Value[myData$FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF
-myData$Value[myData$FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]"] <- transferFlowMultAGVF
+totalOutAGF <- emissionFlowMultAGF + transferFlowMultAGF
 
-myData$Value[myData$FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF/ratioAGVFtoAGFforE
-myData$Value[myData$FlowGroupId == "Decay: AG Fast -> BG Slow [Type]"] <- transferFlowMultAGVF/ratioAGVFtoAGFforT
+transferFlowMultAGFupdate <- scalerAG * transferFlowMultAGF
+emissionFlowMultAGFupdate <- totalOutAGF - transferFlowMultAGFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF/ratioAGVFtoAGMforE
-myData$Value[myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"] <- transferFlowMultAGVF/ratioAGVFtoAGMforT
+# Scale up AGM humification rate
+emissionFlowMultAGM <- myData %>%
+  filter(FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-soilAge <- (1290+1295)/2
-soilPoolSize <- (628.4 + 127.1)/2
+transferFlowMultAGM <- myData %>%
+  filter(FlowGroupId == "Decay: AG Medium -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-poolTotal <- soilPoolSize - eqBGVF - eqFR
-emissionsInOut <- 1.889 - (poolTotal/soilAge)
+totalOutAGM <- emissionFlowMultAGM + transferFlowMultAGM
 
-flowMultBGStoDeep <- poolTotal/(soilAge*poolTotal)
-flowMultBGStoAtm <-  emissionsInOut/poolTotal
+transferFlowMultAGMupdate <- scalerAG * transferFlowMultAGM
+emissionFlowMultAGMupdate <- totalOutAGM - transferFlowMultAGMupdate
 
-myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
+# Update flow multiplier table
 
-# Only run, first time adding datasheet
+myData$Value[
+  myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultBGVFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"
+] <- transferFlowMultBGVFupdate
+
+myData$Value[
+  myData$FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultBGFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: BG Fast -> BG Slow [Type]"
+] <- transferFlowMultBGFupdate
+
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGVFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]"
+] <- transferFlowMultAGVFupdate
+
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Fast -> BG Slow [Type]"
+] <- transferFlowMultAGFupdate
+
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGMupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"
+] <- transferFlowMultAGMupdate
+
+# soilAge <- (1290+1295)/2
+# soilPoolSize <- (628.4 + 127.1)/2
+# 
+# poolTotal <- soilPoolSize - eqBGVF - eqFR - eqCR - eqBGF
+# emissionsInOut <- 1.548114
+# 
+# burialRate <- soilPoolSize/soilAge
+# 
+# flowMultBGStoDeep <- burialRate/poolTotal
+# flowMultBGStoAtm <-  emissionsInOut/poolTotal
+# 
+# myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
+
+# Add burial rate of zero as placeholder
 addFlowMult <- tibble(StateClassId = c("Wetland: Estuarine Forested",
                                        "Wetland: Palustrine Forested"),
                       FlowGroupId = "Stabilization: BG Slow -> Deep Soil [Type]",
-                      Value = flowMultBGStoDeep)
+                      Value = 0)
 
 myData <- myData %>%
   addRow(addFlowMult)
+
+# Update foliage turnover rate with deciduous value
+myData$Value[myData$FlowGroupId == "Biomass Turnover: Foliage -> AG Very Fast [Type]"] <- 0.95
 
 # Update Net Growth by pool
 
@@ -466,6 +551,7 @@ netGrowth <- myData %>%
 avgFoliageKrauss <- mean(c(3.492,2.838))
 avgStemKrauss <- mean(c(1.922,2.035))
 avgRootKrauss <- mean(c(2.870,1.370))
+avgAboveKrauss <- avgFoliageKrauss+avgStemKrauss
 
 netGrowthCBM66 <- 3.8157
 
@@ -492,12 +578,10 @@ flowMultRoot <- netGrowth %>%
                             "Net Growth Forest: Atmosphere -> Coarse Roots [Type]")) %>%
   pull(Value)
 
-avgFoliageCBM <- netGrowthCBM66*sum(flowMultFoliage)
-avgStemCBM <- netGrowthCBM66*sum(flowMultStem)
+avgAboveCBM <- netGrowthCBM66*sum(c(flowMultFoliage,flowMultStem))
 avgRootCBM <- netGrowthCBM66*sum(flowMultRoot)
 
-avgFoliageI <- avgFoliageKrauss/avgFoliageCBM
-avgStemI <- avgStemKrauss/avgStemCBM
+avgAboveI <- avgAboveKrauss/avgAboveCBM
 avgRootI <- avgRootKrauss/avgRootCBM
 
 addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse Roots [Type]",
@@ -507,9 +591,9 @@ addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse
                                         "Net Growth Forest: Atmosphere -> Other Wood [Type]"),
                         multiplier = c(avgRootI,
                                        avgRootI,
-                                       avgFoliageI,
-                                       avgStemI,
-                                       avgStemI))
+                                       avgAboveI,
+                                       avgAboveI,
+                                       avgAboveI))
 
 netGrowth2 <- netGrowth %>%
   left_join(addGrowth, by = join_by(FlowGroupId)) %>%
@@ -530,12 +614,20 @@ saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
 
 rm(myScenario,myData)
 
+
+rm(massRemainingBGVF,emissionFlowMultBGVF,transferFlowMultBGVF,totalOutBGVF,
+   transferFlowMultBGVFupdate,emissionFlowMultBGVFupdate,scalerBG,
+   emissionFlowMultBGF,transferFlowMultBGF,
+   totalOutBGF,transferFlowMultBGFupdate,emissionFlowMultBGFupdate)
+
 # Values for S
 
 # Mass Remaining for palustrine forested sites
 massRemainingBGVF <- 0.6843146 # Savannah 0.6843146
-eqBGVFs <- 0.06819238
-eqFRs <- 1.733207
+# eqBGVFs <- 0.06819236
+# eqFRs <- 1.733207
+# eqCRs <- 13.37742
+# eqBGFs <- 0.3862857
 
 # Flow Multipliers Forested Wetland
 myScenario <- scenario(myProject, scenario="SF Flow Multipliers [Forested Wetland BGS Slower S]",
@@ -546,64 +638,104 @@ myScenarioOld <- scenario(myProject, scenario = "SF Flow Multipliers [Forested W
 
 myData <- datasheet(myScenarioOld, "stsim_FlowMultiplier")
 
-emissionFlowMultBGVF <- unique(myData$Value[myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"])
-transferFlowMultBGVF <- unique(myData$Value[myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"])
+# Calculate new humification and emission rates for BGVF
+emissionFlowMultBGVF <- myData %>%
+  filter(FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-emissionFlowMultBGVF <- emissionFlowMultBGVF*((1-massRemainingBGVF)/0.83)
-transferFlowMultBGVF <- transferFlowMultBGVF*(massRemainingBGVF/(1-0.83))
+transferFlowMultBGVF <- myData %>%
+  filter(FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-ratioBGVFtoBGFforE <- funRatio(n = "Emission: BG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: BG Fast -> Atmosphere Temp [Type]")
+totalOutBGVF <- emissionFlowMultBGVF + transferFlowMultBGVF
 
-ratioBGVFtoBGFforT <- funRatio(n = "Decay: BG Very Fast -> BG Slow [Type]",
-                               d = "Decay: BG Fast -> BG Slow [Type]")
+transferFlowMultBGVFupdate <- totalOutBGVF * (massRemainingBGVF)
+emissionFlowMultBGVFupdate <- totalOutBGVF - transferFlowMultBGVFupdate
 
-ratioAGVFtoAGFforE <- funRatio(n = "Emission: AG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: AG Fast -> Atmosphere Temp [Type]")
+# Scale up BGF humification rate
+scalerBG <- transferFlowMultBGVFupdate / transferFlowMultBGVF
 
-ratioAGVFtoAGFforT <- funRatio(n = "Decay: AG Very Fast -> BG Slow [Type]",
-                               d = "Decay: AG Fast -> BG Slow [Type]")
+emissionFlowMultBGF <- myData %>%
+  filter(FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-ratioAGVFtoAGMforE <- funRatio(n = "Emission: AG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: AG Medium -> Atmosphere Temp [Type]")
+transferFlowMultBGF <- myData %>%
+  filter(FlowGroupId == "Decay: BG Fast -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-ratioAGVFtoAGMforT <- funRatio(n = "Decay: AG Very Fast -> BG Slow [Type]",
-                               d = "Decay: AG Medium -> BG Slow [Type]")
+totalOutBGF <- emissionFlowMultBGF + transferFlowMultBGF
 
+transferFlowMultBGFupdate <- scalerBG * transferFlowMultBGF
+emissionFlowMultBGFupdate <- totalOutBGF - transferFlowMultBGFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultBGVF
-myData$Value[myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"] <- transferFlowMultBGVF
+# Update flow multiplier table
 
-myData$Value[myData$FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultBGVF/ratioBGVFtoBGFforE
-myData$Value[myData$FlowGroupId == "Decay: BG Fast -> BG Slow [Type]"] <- transferFlowMultBGVF/ratioBGVFtoBGFforT
+myData$Value[
+  myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultBGVFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"
+] <- transferFlowMultBGVFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF
-myData$Value[myData$FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]"] <- transferFlowMultAGVF
+myData$Value[
+  myData$FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultBGFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: BG Fast -> BG Slow [Type]"
+] <- transferFlowMultBGFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF/ratioAGVFtoAGFforE
-myData$Value[myData$FlowGroupId == "Decay: AG Fast -> BG Slow [Type]"] <- transferFlowMultAGVF/ratioAGVFtoAGFforT
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGVFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]"
+] <- transferFlowMultAGVFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF/ratioAGVFtoAGMforE
-myData$Value[myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"] <- transferFlowMultAGVF/ratioAGVFtoAGMforT
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Fast -> BG Slow [Type]"
+] <- transferFlowMultAGFupdate
 
-soilAge <- 1290
-soilPoolSize <- 628.4
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGMupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"
+] <- transferFlowMultAGMupdate
 
-poolTotal <- soilPoolSize - eqBGVFs - eqFRs
-emissionsInOut <- 1.456 - (poolTotal/soilAge) #1.036
-
-flowMultBGStoDeep <- poolTotal/(soilAge*poolTotal)
-flowMultBGStoAtm <-  emissionsInOut/poolTotal
-
-myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
+# soilAge <- 1290
+# soilPoolSize <- 628.4
+# 
+# poolTotal <- soilPoolSize - eqBGVFs - eqFRs - eqCRs - eqBGFs
+# emissionsInOut <- 2.085988
+# 
+# burialRate <- soilPoolSize/soilAge
+# 
+# flowMultBGStoDeep <- burialRate/poolTotal
+# flowMultBGStoAtm <-  emissionsInOut/poolTotal
+# 
+# myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
 
 addFlowMult <- tibble(StateClassId = c("Wetland: Estuarine Forested",
                                        "Wetland: Palustrine Forested"),
                       FlowGroupId = "Stabilization: BG Slow -> Deep Soil [Type]",
-                      Value = flowMultBGStoDeep)
+                      Value = 0)
 
 myData <- myData %>%
   addRow(addFlowMult)
+
+# Update foliage turnover rate with deciduous value
+myData$Value[myData$FlowGroupId == "Biomass Turnover: Foliage -> AG Very Fast [Type]"] <- 0.95
 
 # Update Net Growth
 
@@ -617,9 +749,9 @@ netGrowth <- myData %>%
 avgFoliageKrauss <- 2.838
 avgStemKrauss <- 2.035
 avgRootKrauss <- 1.370
+avgAboveKrauss <- avgFoliageKrauss+avgStemKrauss
 
-avgFoliageI <- avgFoliageKrauss/avgFoliageCBM
-avgStemI <- avgStemKrauss/avgStemCBM
+avgAboveI <- avgAboveKrauss/avgAboveCBM
 avgRootI <- avgRootKrauss/avgRootCBM
 
 addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse Roots [Type]",
@@ -629,9 +761,9 @@ addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse
                                         "Net Growth Forest: Atmosphere -> Other Wood [Type]"),
                         multiplier = c(avgRootI,
                                        avgRootI,
-                                       avgFoliageI,
-                                       avgStemI,
-                                       avgStemI))
+                                       avgAboveI,
+                                       avgAboveI,
+                                       avgAboveI))
 
 netGrowth2 <- netGrowth %>%
   left_join(addGrowth, by = join_by(FlowGroupId)) %>%
@@ -650,12 +782,19 @@ saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
 
 rm(myScenario,myData)
 
+rm(massRemainingBGVF,emissionFlowMultBGVF,transferFlowMultBGVF,totalOutBGVF,
+   transferFlowMultBGVFupdate,emissionFlowMultBGVFupdate,scalerBG,
+   emissionFlowMultBGF,transferFlowMultBGF,
+   totalOutBGF,transferFlowMultBGFupdate,emissionFlowMultBGFupdate)
+
 # Values for W
 
 # Mass Remaining for palustrine forested sites
 massRemainingBGVF <- 0.7797051
-eqBGVFw <- 0.1428744
-eqFRw <- 3.630878
+# eqBGVFw <- 0.1428744
+# eqFRw <- 3.630878
+# eqCRw <- 28.02423
+# eqBGFw <- 0.8091378
 
 # Flow Multipliers Forested Wetland
 myScenario <- scenario(myProject, scenario="SF Flow Multipliers [Forested Wetland BGS Slower W]",
@@ -666,65 +805,105 @@ myScenarioOld <- scenario(myProject, scenario = "SF Flow Multipliers [Forested W
 
 myData <- datasheet(myScenarioOld, "stsim_FlowMultiplier")
 
-emissionFlowMultBGVF <- unique(myData$Value[myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"])
-transferFlowMultBGVF <- unique(myData$Value[myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"])
+# Calculate new humification and emission rates for BGVF
+emissionFlowMultBGVF <- myData %>%
+  filter(FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-emissionFlowMultBGVF <- emissionFlowMultBGVF*((1-massRemainingBGVF)/0.83)
-transferFlowMultBGVF <- transferFlowMultBGVF*(massRemainingBGVF/(1-0.83))
+transferFlowMultBGVF <- myData %>%
+  filter(FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
+totalOutBGVF <- emissionFlowMultBGVF + transferFlowMultBGVF
 
-ratioBGVFtoBGFforE <- funRatio(n = "Emission: BG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: BG Fast -> Atmosphere Temp [Type]")
+transferFlowMultBGVFupdate <- totalOutBGVF * (massRemainingBGVF)
+emissionFlowMultBGVFupdate <- totalOutBGVF - transferFlowMultBGVFupdate
 
-ratioBGVFtoBGFforT <- funRatio(n = "Decay: BG Very Fast -> BG Slow [Type]",
-                               d = "Decay: BG Fast -> BG Slow [Type]")
+# Scale up BGF humification rate
+scalerBG <- transferFlowMultBGVFupdate / transferFlowMultBGVF
 
-ratioAGVFtoAGFforE <- funRatio(n = "Emission: AG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: AG Fast -> Atmosphere Temp [Type]")
+emissionFlowMultBGF <- myData %>%
+  filter(FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-ratioAGVFtoAGFforT <- funRatio(n = "Decay: AG Very Fast -> BG Slow [Type]",
-                               d = "Decay: AG Fast -> BG Slow [Type]")
+transferFlowMultBGF <- myData %>%
+  filter(FlowGroupId == "Decay: BG Fast -> BG Slow [Type]") %>%
+  select(Value) %>%
+  distinct() %>%
+  pull()
 
-ratioAGVFtoAGMforE <- funRatio(n = "Emission: AG Very Fast -> Atmosphere Temp [Type]",
-                               d = "Emission: AG Medium -> Atmosphere Temp [Type]")
+totalOutBGF <- emissionFlowMultBGF + transferFlowMultBGF
 
-ratioAGVFtoAGMforT <- funRatio(n = "Decay: AG Very Fast -> BG Slow [Type]",
-                               d = "Decay: AG Medium -> BG Slow [Type]")
+transferFlowMultBGFupdate <- scalerBG * transferFlowMultBGF
+emissionFlowMultBGFupdate <- totalOutBGF - transferFlowMultBGFupdate
 
+# Update flow multiplier table
 
-myData$Value[myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultBGVF
-myData$Value[myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"] <- transferFlowMultBGVF
+myData$Value[
+  myData$FlowGroupId == "Emission: BG Very Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultBGVFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: BG Very Fast -> BG Slow [Type]"
+] <- transferFlowMultBGVFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultBGVF/ratioBGVFtoBGFforE
-myData$Value[myData$FlowGroupId == "Decay: BG Fast -> BG Slow [Type]"] <- transferFlowMultBGVF/ratioBGVFtoBGFforT
+myData$Value[
+  myData$FlowGroupId == "Emission: BG Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultBGFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: BG Fast -> BG Slow [Type]"
+] <- transferFlowMultBGFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF
-myData$Value[myData$FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]"] <- transferFlowMultAGVF
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Very Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGVFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Very Fast -> BG Slow [Type]"
+] <- transferFlowMultAGVFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF/ratioAGVFtoAGFforE
-myData$Value[myData$FlowGroupId == "Decay: AG Fast -> BG Slow [Type]"] <- transferFlowMultAGVF/ratioAGVFtoAGFforT
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Fast -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGFupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Fast -> BG Slow [Type]"
+] <- transferFlowMultAGFupdate
 
-myData$Value[myData$FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]"] <- emissionFlowMultAGVF/ratioAGVFtoAGMforE
-myData$Value[myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"] <- transferFlowMultAGVF/ratioAGVFtoAGMforT
+myData$Value[
+  myData$FlowGroupId == "Emission: AG Medium -> Atmosphere Temp [Type]"
+] <- emissionFlowMultAGMupdate
+myData$Value[
+  myData$FlowGroupId == "Decay: AG Medium -> BG Slow [Type]"
+] <- transferFlowMultAGMupdate
 
-soilAge <- 1295
-soilPoolSize <- 127.1
+# soilAge <- 1295
+# soilPoolSize <- 127.1
+# 
+# poolTotal <- soilPoolSize - eqBGVFw - eqFRw - eqCRw - eqBGFw
+# emissionsInOut <- 5.751005
+# 
+# burialRate <- soilPoolSize/soilAge
+# 
+# flowMultBGStoDeep <- burialRate/poolTotal
+# flowMultBGStoAtm <-  emissionsInOut/poolTotal
+# 
+# myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
 
-poolTotal <- soilPoolSize - eqBGVFw - eqFRw
-emissionsInOut <- 2.531 - (poolTotal/soilAge)# 1.13
-
-flowMultBGStoDeep <- poolTotal/(soilAge*poolTotal)
-flowMultBGStoAtm <-  emissionsInOut/poolTotal
-
-myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
-
+# Add burial rate of 0 as placeholder
 addFlowMult <- tibble(StateClassId = c("Wetland: Estuarine Forested",
                                        "Wetland: Palustrine Forested"),
                       FlowGroupId = "Stabilization: BG Slow -> Deep Soil [Type]",
-                      Value = flowMultBGStoDeep)
+                      Value = 0)
 
 myData <- myData %>%
   addRow(addFlowMult)
+
+# Update foliage turnover rate with deciduous value
+myData$Value[myData$FlowGroupId == "Biomass Turnover: Foliage -> AG Very Fast [Type]"] <- 0.95
 
 # Update Net Growth
 
@@ -738,9 +917,9 @@ netGrowth <- myData %>%
 avgFoliageKrauss <- 3.492
 avgStemKrauss <- 1.922
 avgRootKrauss <- 2.870
+avgAboveKrauss <- avgFoliageKrauss+avgStemKrauss
 
-avgFoliageI <- avgFoliageKrauss/avgFoliageCBM
-avgStemI <- avgStemKrauss/avgStemCBM
+avgAboveI <- avgAboveKrauss/avgAboveCBM
 avgRootI <- avgRootKrauss/avgRootCBM
 
 addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse Roots [Type]",
@@ -750,9 +929,9 @@ addGrowth <- data.frame(FlowGroupId = c("Net Growth Forest: Atmosphere -> Coarse
                                         "Net Growth Forest: Atmosphere -> Other Wood [Type]"),
                         multiplier = c(avgRootI,
                                        avgRootI,
-                                       avgFoliageI,
-                                       avgStemI,
-                                       avgStemI))
+                                       avgAboveI,
+                                       avgAboveI,
+                                       avgAboveI))
 
 netGrowth2 <- netGrowth %>%
   left_join(addGrowth, by = join_by(FlowGroupId)) %>%

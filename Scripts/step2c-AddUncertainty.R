@@ -189,7 +189,8 @@ names(flowMultipliersAg) <- gsub("ID","Id",names(flowMultipliersAg))
 flowMultipliersAg <- flowMultipliersAg %>%
   filter(FlowGroupId %in% flowGroupsMissingValues,
          StateClassId == "Agriculture:All") %>%
-  mutate(StateClassId = "Wetland: Palustrine Emergent")
+  mutate(StateClassId = "Wetland: Palustrine Emergent") %>%
+  select(-TertiaryStratumId)
 
 flowMultipliersAg2 <- flowMultipliersAg %>%
   mutate(StateClassId = "Wetland: Estuarine Emergent")
@@ -203,9 +204,9 @@ myZeros <- tibble(StateClassId = rep(c("Wetland: Estuarine Emergent",
                   Value = 0)
 
 emergentWetland <- emergentWetland %>%
-  addRow(myZeros) %>%
-  addRow(flowMultipliersAg) %>%
-  addRow(flowMultipliersAg2) %>%
+  bind_rows(myZeros,
+           flowMultipliersAg,
+           flowMultipliersAg2) %>%
   select(where(~!all(is.na(.x))))
 
 myData <- datasheet(myScenario,"stsim_FlowMultiplier", optional = T, empty = T) %>%

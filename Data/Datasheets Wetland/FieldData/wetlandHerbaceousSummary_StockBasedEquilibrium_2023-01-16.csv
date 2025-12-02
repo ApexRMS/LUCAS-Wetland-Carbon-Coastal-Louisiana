@@ -1,0 +1,15 @@
+﻿Salinity,Veg,Location,Subregion,Method,POC/DOC/DIC,Flux.g.C.per.m2.per.y,Source,Notes
+Salt,Marsh,Sage Lot Pond/Waquoit Bay MA,MidAtlantic,direct,DIC,414,Wang et al. [2016],Statistical relation between grab samples and continuous measured pH
+Salt,Marsh,North Inlet SC,SouthAtlantic,indirect,DIC,175,Morris and Whiting [1986],based on porewater concentrations and turnover
+Salt,Marsh,North Inlet SC,SouthAtlantic,direct,POC + DOC,456,Dame et al. [1986],grab samples
+Salt,Marsh,Duplin River Sapelo Island GA,SouthAtlantic,direct,DIC,156,Wang and Cai [2004],grab samples
+Salt,Marsh,Mount Eden Creek South SF Bay CA restored,California,indirect,All,320,Arias-Cortez et al. [2022],determined from difference in EC measurements and burial rates
+Salt,Marsh,Barataria Bay LA,Gulf,indirect,All,123,Feijtel et al [1985],Model study using estimates based on literature
+Brackish,Marsh,Barataria Bay LA,Gulf,indirect,All,10,Feijtel et al [1985],Model study using estimates based on literature
+Brackish,Marsh,Chesapeake Bay Edgewater MD,MidAtlantic,direct,DOC,201,Menendez et al. [2022],measured continuously by sonde
+Brackish,Marsh,Rush Ranch Rush Ranch SF Bay CA,California,direct,DIC + DOC,105,Bogard et al. [2020],measured continuously by sonde
+Estuarine,,,,,,217.8,Mean,
+Fresh,Marsh,"Winnous Point, Lake Erie, Sandusky OH",Midwest,direct,All,-22.7,Chu et al. [2015],"grab samples and continuously monitored flow, mean of 3 years, DOC order of magnitude higher than POC or DIC"
+Fresh,Marsh,Sweet Hall Marsh York River Estuary VA,MidAtlantic,direct,DIC,197,Neubauer and Anderson [2003],Measured with grab samples in 3 months during record drought
+Fresh,Marsh,Barataria Bay LA,Gulf,indirect,All,73,Feijtel et al [1985],Model study using estimates based on literature
+Palustrine,,,,,,82.4,Mean,

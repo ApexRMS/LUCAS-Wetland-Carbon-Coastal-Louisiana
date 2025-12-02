@@ -187,17 +187,17 @@ flowMultipliersShore <- flowMultipliers %>%
   filter(StateClassId == "Unconsolidated Shore:All") %>%
   mutate(StateClassId = "Wetland: Unconsolidated Shore") %>%
   select(StateClassId,FlowGroupId,Value) %>%
-  addRow(data.frame(StateClassId = "Wetland: Unconsolidated Shore",
-                    FlowGroupId = "Emission: BG Slow -> Atmosphere [Type]", 
-                    Value = 0))#0.0033
+  bind_rows(tibble(StateClassId = "Wetland: Unconsolidated Shore",
+                   FlowGroupId = "Emission: BG Slow -> Atmosphere [Type]", 
+                   Value = 0))#0.0033
 
 flowMultipliersWater <- flowMultipliers %>%
   filter(StateClassId == "Water:All") %>%
   mutate(StateClassId = "Water: All") %>%
   select(StateClassId,FlowGroupId,Value) %>%
-  addRow(data.frame(StateClassId = "Water: All",
-                    FlowGroupId = "Emission: BG Slow -> Atmosphere [Type]", 
-                    Value = 0))#0.0033
+  bind_rows(tibble(StateClassId = "Water: All",
+                   FlowGroupId = "Emission: BG Slow -> Atmosphere [Type]", 
+                   Value = 0))#0.0033
 
 myData <- datasheet(myScenario, "stsim_FlowMultiplier", optional = T, empty = T) %>%
   addRow(flowMultipliersAgCrop) %>%

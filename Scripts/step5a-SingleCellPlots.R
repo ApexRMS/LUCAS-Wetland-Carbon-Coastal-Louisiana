@@ -551,7 +551,7 @@ for (i in 1:length(plotFlows)){
   myDataNECB$Timestep <- myDataNECB$Timestep-2000
   
   p5 <- ggplot(myDataNECB, aes(x = Timestep, y = mean, color = Scenario, group = Scenario)) +
-    geom_hline(yintercept = 0, color = "dark grey",linewidth = 0.5, linetype = 2) +
+    geom_hline(yintercept = 0, color = "darkgrey",linewidth = 0.5, linetype = 2) +
     geom_line(linewidth = 0.8) +
     geom_ribbon(aes(ymin = min, ymax = max, fill = Scenario, group = Scenario), alpha = 0.25, colour = NA) +
     theme_bw() +

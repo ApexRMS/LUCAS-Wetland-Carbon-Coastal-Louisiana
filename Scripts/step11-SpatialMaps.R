@@ -87,7 +87,7 @@ for (j in 1:length(keepStocksSpatial)){
       units = "in",
       res = 600)
   plot(r1, 
-       plg=list(title=as.expression(bquote("tons C"~ha^-1)), 
+       plg=list(title=as.expression(bquote("Mg C"~ha^-1)), 
                 title.cex=0.65),
        type = "continuous",
        axes = FALSE,
@@ -116,11 +116,11 @@ listFluxes <- list.files(paste0(rootPath,"/Models/",
                          pattern = ".tif",
                          full.names = T)
 
-keepFluxesSpatial <- c("Annual Net Growth (tons CO2-eq per year)",
-                       "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
-                       "Annual Lateral Flux (tons CO2-eq per year)",
-                       "Annual Emissions: CH4 (tons CO2-eq per year)",
-                       "Annual Emissions: CO2 (tons CO2-eq per year)")
+keepFluxesSpatial <- c("Annual Net Growth (tons C per year)",
+                       "Annual Emissions: CO2 and CH4 (tons C per year)",
+                       "Annual Lateral Flux (tons C per year)",
+                       "Annual Emissions: CH4 (tons C per year)",
+                       "Annual Emissions: CO2 (tons C per year)")
 
 fluxNameLetters <- c("a. ",
                      "b. ",
@@ -128,7 +128,7 @@ fluxNameLetters <- c("a. ",
                      "z. ",
                      "z. ")
 
-keepFluxesSpatialDiff <- "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
+keepFluxesSpatialDiff <- "Annual Net Ecosystem Carbon Balance (tons C per year)"
 
 
 for (k in 1:length(keepFluxesSpatial)){
@@ -140,7 +140,7 @@ for (k in 1:length(keepFluxesSpatial)){
   listFluxesSub <- grep(fluxId,listFluxes, value = T)
   listFluxesSub <- grep("ts2016",listFluxesSub, value = T)
   
-  fluxName <- gsub("(tons CO2-eq per year)","",keepFluxesSpatial[k], fixed = T)
+  fluxName <- gsub("(tons C per year)","",keepFluxesSpatial[k], fixed = T)
   fluxName <- gsub(": "," ",fluxName)
   fluxName <- gsub("-"," ",fluxName)
   fluxName <- gsub("Annual Net Ecosystem Carbon Balance","Annual NECB",fluxName)
@@ -154,7 +154,7 @@ for (k in 1:length(keepFluxesSpatial)){
       units = "in",
       res = 600)
   plot(r1, 
-       plg=list(title=as.expression(bquote("tons "~CO[2-eq]~ha^-1~y^-1)), 
+       plg=list(title=as.expression(bquote("Mg C"~ha^-1~y^-1)), 
                 title.cex=0.65),
        type = "continuous",
        axes = FALSE,
@@ -184,7 +184,7 @@ for (k in 1:length(keepFluxesSpatialDiff)){
   listFluxesSub <- grep(fluxId,listFluxes, value = T)
   listFluxesSub <- grep("ts2016",listFluxesSub, value = T)
   
-  fluxName <- gsub("(tons CO2-eq per year)","",keepFluxesSpatialDiff[k], fixed = T)
+  fluxName <- gsub("(tons C per year)","",keepFluxesSpatialDiff[k], fixed = T)
   fluxName <- gsub(": "," ",fluxName)
   fluxName <- gsub("-"," ",fluxName)
   fluxName <- gsub("Annual Net Ecosystem Carbon Balance","Annual NECB",fluxName)
@@ -202,12 +202,12 @@ for (k in 1:length(keepFluxesSpatialDiff)){
       units = "in",
       res = 600)
   plot(r1, 
-       plg=list(title=as.expression(bquote("tons "~CO[2-eq]~ha^-1~y^-1)), 
+       plg=list(title=as.expression(bquote("Mg C"~ha^-1~y^-1)), 
                 title.cex=0.65),
        type = "continuous",
        axes = FALSE,
        main = paste0("d. ", fluxName),
-       range = c(-(max2-60),(max2-60)),
+       range = c(-(max2-21),(max2-21)),
        col = rev(viridis(100)),
        cex.main = 0.8,
        fill_range = T,
@@ -333,121 +333,3 @@ sbar(40000, xy=c(590000,684000),
      label = c(0,20,40))
 dev.off()
 
-# Carbon Fluxes tons C
-
-listFluxes <- list.files(paste0(rootPath,"/Models/",
-                                modelName,"/",
-                                modelName,".ssim.data/Scenario-",
-                                scenarioId(myScenario),
-                                "/stsim_OutputAverageSpatialFlowGroup"),
-                         pattern = ".tif",
-                         full.names = T)
-
-keepFluxesSpatial <- c("Annual Net Growth (tons CO2-eq per year)",
-                       "Annual Emissions: CH4 (tons CO2-eq per year)",
-                       "Annual Lateral Flux (tons CO2-eq per year)")
-
-fluxNameLetters <- c("a. ",
-                     "b. ",
-                     "c. ")
-
-dividerTonsC <- c(3.67,
-                  36.06,
-                  3.67)
-
-keepFluxesSpatialDiff <- "Annual Net Ecosystem Carbon Balance (tons C per year)"
-
-
-for (k in 1:length(keepFluxesSpatial)){
-  
-  fluxId <- flowGroupIds %>%
-    filter(Name == keepFluxesSpatial[k]) %>%
-    pull(FlowGroupId)
-  
-  listFluxesSub <- grep(fluxId,listFluxes, value = T)
-  listFluxesSub <- grep("ts2016",listFluxesSub, value = T)
-  
-  fluxName <- gsub("(tons CO2-eq per year)","",keepFluxesSpatial[k], fixed = T)
-  fluxName <- gsub(": "," ",fluxName)
-  fluxName <- gsub("-"," ",fluxName)
-  fluxName <- gsub("Annual Net Ecosystem Carbon Balance","Annual NECB",fluxName)
-  fluxName <- gsub(" CO2 and CH4","",fluxName)
-  
-  r1 <- rast(listFluxesSub)
-  
-  r1 <- r1/dividerTonsC[k]
-  
-  png(filename = paste0(pathOutMaps,gsub(" ","",fluxName),"_fluxTonnesC.png"),
-      width = 3.5,
-      height = 2.5,
-      units = "in",
-      res = 600)
-  plot(r1, 
-       plg=list(title=as.expression(bquote("tonnes "~C~ha^-1~y^-1)), 
-                title.cex=0.65),
-       type = "continuous",
-       axes = FALSE,
-       main = paste0(fluxNameLetters[k],fluxName),
-       col = rev(mako(n = 100)),
-       cex.main = 0.8,
-       maxcell = 10000000)
-  # north(type =1,cex = 0.7, "bottomleft")
-  sbar(40000, xy=c(500000,694000),
-       divs=2, cex=0.8,
-       type = "bar", below = "km",
-       label = c(0,20,40))
-  dev.off()
-  
-  rm(fluxId,listFluxesSub,fluxName,r1)
-  
-}
-
-# Carbon Flux Differences
-
-for (k in 1:length(keepFluxesSpatialDiff)){
-  
-  fluxId <- flowGroupIds %>%
-    filter(Name == keepFluxesSpatialDiff[k]) %>%
-    pull(FlowGroupId)
-  
-  listFluxesSub <- grep(fluxId,listFluxes, value = T)
-  listFluxesSub <- grep("ts2016",listFluxesSub, value = T)
-  
-  fluxName <- gsub("(tons C per year)","",keepFluxesSpatialDiff[k], fixed = T)
-  fluxName <- gsub(": "," ",fluxName)
-  fluxName <- gsub("-"," ",fluxName)
-  fluxName <- gsub("Annual Net Ecosystem Carbon Balance","Annual NECB",fluxName)
-  
-  r1 <- rast(listFluxesSub)
-  
-  min1 <- global(r1,min, na.rm = T)$min
-  max1 <- global(r1,max, na.rm = T)$max
-  
-  max2 <- max(c(abs(min1),abs(max1)))
-  
-  png(filename = paste0(pathOutMaps,gsub(" ","",fluxName),"_fluxTonnesC.png"),
-      width = 3.5,
-      height = 2.5,
-      units = "in",
-      res = 600)
-  plot(r1, 
-       plg=list(title=as.expression(bquote("tonnes "~C~ha^-1~y^-1)), 
-                title.cex=0.65),
-       type = "continuous",
-       axes = FALSE,
-       main = paste0("d. ", fluxName),
-       range = c(-(max2-21),(max2-21)),
-       col = rev(viridis(100)),
-       cex.main = 0.8,
-       fill_range = T,
-       maxcell = 10000000)
-  # north(type =1,cex = 0.7, "bottomleft")
-  sbar(40000, xy=c(500000,694000),
-       divs=2, cex=0.8,
-       type = "bar", below = "km",
-       label = c(0,20,40))
-  dev.off()
-  
-  rm(fluxId,listFluxesSub,fluxName,r1)
-  
-}

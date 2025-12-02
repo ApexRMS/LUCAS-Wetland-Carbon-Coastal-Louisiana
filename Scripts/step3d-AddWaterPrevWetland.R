@@ -165,7 +165,7 @@ myDataEmergent <- myData %>%
                            "Lateral Transport Emergent: BG Slow -> Aquatic",
                            "Emission Emergent: BG Slow -> Atmosphere Temp",
                            "Stabilization Emergent: BG Slow -> Deep Soil",
-                           "Lateral Transport: BG Very Fast -> Aquatic ",
+                           "Lateral Transport: BG Very Fast -> Aquatic",
                            "Emission: BG Very Fast -> Atmosphere Temp")) %>%
   select(-StateAttributeTypeId)
 
@@ -555,12 +555,12 @@ flowMultipliersWaterBGS <- flowMultipliersWater %>%
   filter(FlowGroupId %in% c("Emission: BG Slow -> Atmosphere Temp [Type]",
                             "Lateral Transport: BG Slow -> Aquatic [Type]"))
 
-flowMultipliersWaterBGSm <- (0.003097*0.075)/sum(flowMultipliersWaterBGS$Value)
+flowMultipliersWaterBGSm <- (0.003281*0.075)/sum(flowMultipliersWaterBGS$Value)
 
 flowMultipliersWaterBGS <- flowMultipliersWaterBGS %>%
   mutate(Value = Value*flowMultipliersWaterBGSm)
 
-flowMultipliersWater$Value[flowMultipliersWater$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- 0.003097*(1-0.075)
+flowMultipliersWater$Value[flowMultipliersWater$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- 0.003281*(1-0.075)
 
 flowMultipliersWaterKeep <- flowMultipliersWater %>%
   filter(!(FlowGroupId %in% c("Decay: AG Very Fast -> BG Slow [Type]",
