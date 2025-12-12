@@ -31,22 +31,22 @@ calculateDecayRates <- function(
 
   eqBGVFm <- myData %>%
     filter(StockGroupId == "DOM: Belowground Very Fast [Type]") %>%
-    filter(Timestep == 3499) %>%
+    filter(Timestep == 3566) %>%
     pull(Amount)
 
   eqFRm <- myData %>%
     filter(StockGroupId == "Biomass: Fine Root [Type]") %>%
-    filter(Timestep == 3499) %>%
+    filter(Timestep == 3566) %>%
     pull(Amount)
   
   eqCRm <- myData %>%
     filter(StockGroupId == "Biomass: Coarse Root [Type]") %>%
-    filter(Timestep == 3499) %>%
+    filter(Timestep == 3566) %>%
     pull(Amount)
   
   eqBGFm <- myData %>%
     filter(StockGroupId == "DOM: Belowground Fast [Type]") %>%
-    filter(Timestep == 3499) %>%
+    filter(Timestep == 3566) %>%
     pull(Amount)
 
   targetValue <- targetValue - eqBGVFm - eqFRm - eqCRm - eqBGFm
@@ -101,7 +101,7 @@ calculateDecayRates <- function(
       percentDiff = (carbonMean - lag(carbonMean)) / lag(carbonMean) * 100
     )
   
-  carbonMean <- testE %>% filter(Timestep == 3499) %>% pull(carbonMean)
+  carbonMean <- testE %>% filter(Timestep == 3566) %>% pull(carbonMean)
   
   diffPerSign <- ((carbonMean - targetValue) /
                     mean(c(carbonMean, targetValue))) * 100
@@ -153,7 +153,7 @@ calculateDecayRates <- function(
         percentDiff = (carbonMean - lag(carbonMean)) / lag(carbonMean) * 100
       )
 
-    carbonMean <- testE %>% filter(Timestep == 3499) %>% pull(carbonMean)
+    carbonMean <- testE %>% filter(Timestep == 3566) %>% pull(carbonMean)
 
     diffPerSign <- ((carbonMean - targetValue) /
       mean(c(carbonMean, targetValue))) * 100
