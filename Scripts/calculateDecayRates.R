@@ -101,7 +101,10 @@ calculateDecayRates <- function(
       percentDiff = (carbonMean - lag(carbonMean)) / lag(carbonMean) * 100
     )
   
-  carbonMean <- testE %>% filter(Timestep == 3566) %>% pull(carbonMean)
+  carbonMean <- myData %>% 
+    filter(Timestep == 3566) %>% 
+    filter(StockGroupId == "DOM: Belowground Slow [Type]") %>% 
+    pull(Amount)
   
   diffPerSign <- ((carbonMean - targetValue) /
                     mean(c(carbonMean, targetValue))) * 100
@@ -153,7 +156,10 @@ calculateDecayRates <- function(
         percentDiff = (carbonMean - lag(carbonMean)) / lag(carbonMean) * 100
       )
 
-    carbonMean <- testE %>% filter(Timestep == 3566) %>% pull(carbonMean)
+    carbonMean <- myData %>% 
+      filter(Timestep == 3566) %>% 
+      filter(StockGroupId == "DOM: Belowground Slow [Type]") %>% 
+      pull(Amount)
 
     diffPerSign <- ((carbonMean - targetValue) /
       mean(c(carbonMean, targetValue))) * 100
