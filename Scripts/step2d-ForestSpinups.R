@@ -550,7 +550,7 @@ calculateDecayRates(
   targetValue = ((628.4 + 127.1) / 2),
   convergenceLevel = 0.1,
   scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower]",
-  emissionsStart = 1.548114,
+  emissionsStart = 1.458641,
   meanBurial = mean(c((628.4/1290),(127.1/1295)))
 )
 
@@ -666,7 +666,7 @@ calculateDecayRates(
   targetValue = 628.4,
   convergenceLevel = 0.1,
   scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower S]",
-  emissionsStart = 0.9437037,
+  emissionsStart = 0.9092933,
   meanBurial = 628.4/1290 #0.4871318
 )
 
@@ -780,7 +780,7 @@ calculateDecayRates(
   targetValue = 127.1,
   convergenceLevel = 0.1,
   scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower W]",
-  emissionsStart = 2.315744,
+  emissionsStart = 1.924325,
   meanBurial = 127.1/1295 #0.09814672
 )
 
