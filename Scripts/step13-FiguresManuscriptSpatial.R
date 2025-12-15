@@ -45,19 +45,19 @@ if(!dir.exists(pathOutManuscript)){
 
 scenarioList <- scenario(myProject, summary = T, results = T)
 
-id1 <- scenarioList$ScenarioId[grep("Basin Climate and No Land Cover Change",scenarioList$Name)]
+#id1 <- scenarioList$ScenarioId[grep("Basin Climate and No Land Cover Change",scenarioList$Name)]
 id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
 id3 <- scenarioList$ScenarioId[grep("Basin IPCC",scenarioList$Name)]
 id4 <- scenarioList$ScenarioId[grep("Basin No Palustrine Forested Wetland",scenarioList$Name)]
 
-myScenario1 <- scenario(myProject, scenario=max(id1))
+#myScenario1 <- scenario(myProject, scenario=max(id1))
 myScenario2 <- scenario(myProject, scenario=max(id2))
 myScenario3 <- scenario(myProject, scenario=max(id3))
 myScenario4 <- scenario(myProject, scenario=max(id4))
 
 # Summarize Flows
 
-myDataFlux1 <- datasheet(myScenario1, "stsim_OutputFlow")
+#myDataFlux1 <- datasheet(myScenario1, "stsim_OutputFlow")
 myDataFlux2 <- datasheet(myScenario2, "stsim_OutputFlow")
 myDataFlux3 <- datasheet(myScenario3, "stsim_OutputFlow")
 myDataFlux4 <- datasheet(myScenario4, "stsim_OutputFlow")
