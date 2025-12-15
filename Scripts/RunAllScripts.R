@@ -137,3 +137,7 @@ detach(package:rsyncrosim)
 detach(package:tidyverse)
 detach(package:ggplot2)
 detach(package:terra)
+
+# 13. Extract data for supplement tables
+source(paste0(scriptsPath, "step13-SupplementTables.R"))
+rm(list = setdiff(ls(), varsKeep))
