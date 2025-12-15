@@ -561,12 +561,12 @@ flowMultipliersWaterBGS <- flowMultipliersWater %>%
   filter(FlowGroupId %in% c("Emission: BG Slow -> Atmosphere Temp [Type]",
                             "Lateral Transport: BG Slow -> Aquatic [Type]"))
 
-flowMultipliersWaterBGSm <- (0.003281*0.075)/sum(flowMultipliersWaterBGS$Value)
+flowMultipliersWaterBGSm <- (0.00325*0.075)/sum(flowMultipliersWaterBGS$Value)
 
 flowMultipliersWaterBGS <- flowMultipliersWaterBGS %>%
   mutate(Value = Value*flowMultipliersWaterBGSm)
 
-flowMultipliersWater$Value[flowMultipliersWater$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- 0.003281*(1-0.075)
+flowMultipliersWater$Value[flowMultipliersWater$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- 0.00325*(1-0.075)
 
 flowMultipliersWaterKeep <- flowMultipliersWater %>%
   filter(!(FlowGroupId %in% c("Decay: AG Very Fast -> BG Slow [Type]",
