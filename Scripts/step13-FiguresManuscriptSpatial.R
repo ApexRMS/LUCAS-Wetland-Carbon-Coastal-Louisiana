@@ -138,7 +138,7 @@ for (i in 1:length(plotFlows)){
                                  keyheight=0.1,
                                  default.unit="inch")) +
     xlab("\nYear") + 
-    ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~CO[2-eq]~y^-1*")"))))+
+    ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~CO[2-eq]~yr^-1*")"))))+
     ylim(minVal,maxVal)
   
   p6
@@ -228,7 +228,7 @@ for (i in 1:length(plotFlows)){
                                    keyheight=0.1,
                                    default.unit="inch")) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg C"~y^-1*")"))))+
+      ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg C"~yr^-1*")"))))+
       ylim(-5.1,4) +
       ggtitle("a.")
     
@@ -254,7 +254,7 @@ for (i in 1:length(plotFlows)){
                                    keyheight=0.1,
                                    default.unit="inch")) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~CO[2-eq]~y^-1*")"))))+
+      ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~CO[2-eq]~yr^-1*")"))))+
       ylim(-5.1,4)+
       ggtitle("b.")
   }
@@ -345,7 +345,7 @@ for (i in 1:length(plotFlows)){
                                  keyheight=0.1,
                                  default.unit="inch")) +
     xlab("\nYear") + 
-    ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~C~y^-1*")"))))+
+    ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~C~yr^-1*")"))))+
     ylim(minVal,maxVal)
   
   p6
