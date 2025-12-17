@@ -170,6 +170,86 @@ for (i in 1:length(scenarios)){
 }
 
 
+# Carbon storage
+
+plotName <- "EcosystemCarbonStorage"
+
+for (i in 1:length(scenarios)){
+  
+  sId <- scenarioList$ScenarioId[grep(scenarios[i],scenarioList$Name)]
+  
+  myScenario1 <- scenario(myProject, scenario=max(sId))
+  
+  myDataStock1 <- datasheet(myScenario1, "stsim_OutputStock")
+  
+  stocksKeep <- data.frame(StockGroupId = c("Biomass: Coarse Root [Type]",
+                                             "Biomass: Fine Root [Type]",
+                                             "Biomass: Foliage [Type]",
+                                             "Biomass: Merchantable [Type]",
+                                             "Biomass: Other Wood [Type]",
+                                             "Deep Soil [Type]",
+                                             "DOM: Aboveground Fast [Type]",
+                                             "DOM: Aboveground Medium [Type]",
+                                             "DOM: Aboveground Slow [Type]",
+                                             "DOM: Aboveground Very Fast [Type]",
+                                             "DOM: Belowground Fast [Type]",
+                                             "DOM: Belowground Slow [Type]",
+                                             "DOM: Belowground Very Fast [Type]",
+                                             "DOM: Snag Branch [Type]",
+                                             "DOM: Snag Stem [Type]"),
+                           StockNameNew = c(rep("Living Biomass",5),
+                                            "Deep Soil",
+                                            rep("Dead Organic Matter",9)))
+  
+  myDataStock2 <- myDataStock1 %>%
+    mutate(TimestepNew = Timestep-2000) %>%
+    filter(StockGroupId %in% stocksKeep$StockGroupId) %>%
+    left_join(stocksKeep, by = "StockGroupId") %>%
+    group_by(TimestepNew,StockNameNew,Iteration) %>%
+    summarize(AmountSum = sum(Amount, na.rm = T), .groups = "drop") %>%
+    group_by(TimestepNew,StockNameNew) %>%
+    summarize(AmountMean = mean(AmountSum, na.rm = T),
+              AmountLow = quantile(AmountSum,0.025, na.rm = T),
+              AmountHigh = quantile(AmountSum,0.975, na.rm = T), .groups = "drop")
+  
+  StockNameNewOrder <- c("Living Biomass",
+                         "Dead Organic Matter",
+                         "Deep Soil")
+  
+  myDataStock2$Pool <- factor(myDataStock2$StockNameNew, 
+                              levels = StockNameNewOrder)
+  
+  col <- c("#829863","#B98A71","#8C6E60")
+  names(col) <- StockNameNewOrder
+  
+  p1 <- ggplot(myDataStock2, aes(x=TimestepNew, y=AmountMean, fill=Pool)) + 
+    geom_area() + 
+    scale_colour_manual(values=col,
+                        aesthetics = c("fill")) +
+    theme_bw() +
+    theme(panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(colour = "black"),
+          legend.position="right",
+          legend.title=element_blank(),
+          plot.title = element_text(size=12)) +
+    xlab("\nAnnual Timestep") +
+    ylab(as.expression(bquote(atop("Carbon stock","(Mg C"~ha^-1*")")))) +
+    ggtitle(scenarioLetters[i]) +
+    ylim(0,1000)
+  
+  p1
+  
+  print(sum(myDataStock2$AmountMean[myDataStock2$TimestepNew == 124]))
+  
+  ggsave(paste0(pathOutSingleCell,"/",plotName,"_",substr(scenarioLetters[i],1,1),".png"), p1, width = 5, height = 3, dpi = 600)
+  
+  rm(p1,myDataStock2,myDataStock1,myScenario1,sId)
+  
+}
+
+
 # Loop through all flux tables and save data needed for plots
 
 scenariosForest <- c("Original Oak Gum Cypress Forest",
