@@ -128,7 +128,7 @@ for (i in 1:length(scenNamesForestedWetland)){
   myDataFlux <- datasheet(myScenario, "stsim_OutputFlow", optional = T)
   
   myDataTotalDOM <- myData %>%
-    filter(Timestep == 3566 &
+    filter(Timestep == 3565 &
              StateClassId == "Wetland: Palustrine Forested" &
              StockGroupId %in% c("DOM: Aboveground Very Fast [Type]",
                                  "DOM: Belowground Fast [Type]",
@@ -140,7 +140,7 @@ for (i in 1:length(scenNamesForestedWetland)){
     select(StockGroupId,CarbonStock)
   
   myDataLatFlows <- myDataFlux %>%
-    filter(Timestep == 3566 &
+    filter(Timestep == 3565 &
              FromStateClassId == "Wetland: Palustrine Forested" &
              FlowGroupId %in% c("Transfer: Snag Stem -> AG Medium [Type]",
                                 "Biomass Turnover: Coarse Roots -> BG Fast [Type]",
@@ -172,7 +172,7 @@ for (i in 1:length(scenNamesForestedWetland)){
   #                 FlowIn = 0))
   
   myDataLatPartition <- myDataFlux %>%
-    filter(Timestep == 3566 &
+    filter(Timestep == 3565 &
              FromStateClassId == "Wetland: Palustrine Forested" &
              FlowGroupId %in% c("Emission: AG Very Fast -> Atmosphere Temp [Type]",
                                 "Emission: BG Fast -> Atmosphere Temp [Type]",
@@ -198,10 +198,19 @@ for (i in 1:length(scenNamesForestedWetland)){
   write.csv(myDataLatPartition,paste0(outpathDatasheets,"LatPartition",siteLetter,".csv"), row.names = F)
   
   myData <- myData[myData$Timestep >= 3500,]
-  myData$AgeMin <- myData$Timestep - 3500
-  myData$AgeMax <- myData$Timestep - 3500
+  myData$AgeMin <- myData$Timestep - 3499
+  myData$AgeMax <- myData$Timestep - 3499
   
   myData$AgeMax[myData$AgeMax == 300] <- NA
+  
+  # Duplicate year 0 and year 1
+  myDataZero <- myData %>%
+    filter(AgeMin == 1) %>%
+    mutate(AgeMin = 0,
+           AgeMax = 0)
+  
+  myData <- myData %>%
+    add_row(myDataZero)
   
   range(myData$AgeMax, na.rm = TRUE)
   range(myData$AgeMin)
