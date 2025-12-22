@@ -101,7 +101,7 @@ detach(package:tidyverse)
 detach(package:terra)
 detach(package:viridis)
 
-# 12 Create data release files
+# 12. Create data release files
 source(paste0(scriptsPath, "step12-DataRelease.R"))
 rm(list = setdiff(ls(), varsKeep))
 detach(package:rsyncrosim)
@@ -123,7 +123,7 @@ detach(package:rsyncrosim)
 detach(package:tidyverse)
 detach(package:viridis)
 
-# 13 Create figures for manuscript: spatial scenario charts
+# 13. Create figures for manuscript: spatial scenario charts
 source(paste0(scriptsPath, "step13-FiguresManuscriptSpatial.R"))
 rm(list = setdiff(ls(), varsKeep))
 detach(package:rsyncrosim)
