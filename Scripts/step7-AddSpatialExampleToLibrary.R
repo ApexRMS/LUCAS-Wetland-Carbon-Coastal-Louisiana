@@ -11,7 +11,7 @@ library(terra)
 
 ## Spatial Multiprocessing----
 turnOnSpatialMultiprocessing <- TRUE # Divide jobs by spatial tiles?
-tileSize                     <- 650000 #1e4 # Approximate number of cells per tile
+tileSize                     <- 325000 #1e4 # Approximate number of cells per tile
 contig                       <- TRUE # Create contiguous tiles?
 numberOfJobs <- 15
 
@@ -625,6 +625,30 @@ saveDatasheet(myScenario, myData, sheetName, append = FALSE)
 
 rm(myScenario, myData, sheetName)
 
+# Output Options
+myScenario <- scenario(myProject, 
+                       scenario = "Output Options [Spatial; Summary; Uncertainty]",
+                       folder = "Single-Cell Sub-Scenarios")
+
+sheetName <- "stsim_OutputOptions"
+myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>% 
+  addRow(data.frame(SummaryOutputSC = TRUE,
+                    SummaryOutputSCTimesteps = 1,
+                    SummaryOutputTR = TRUE,
+                    SummaryOutputTRTimesteps = 1,
+                    SummaryOutputEV = TRUE,
+                    SummaryOutputEVTimesteps = 1))
+saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+
+sheetName <- "stsim_OutputOptionsSpatial"
+
+myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>% 
+  addRow(data.frame(RasterOutputSC = TRUE,
+                    RasterOutputSCTimesteps = 15))
+saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+
+rm(myScenario, myData, sheetName)
+
 ## Spatial Multiprocessing ----
 if(turnOnSpatialMultiprocessing){
   # Load primary stratum raster
@@ -763,6 +787,49 @@ saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = F
 
 rm(myDataOrig, myScenario)
 
+# Update Outputs
+myScenario <- scenario(myProject, 
+                       scenario="SF Output Options and Filters [Only 2016; Uncertainty]",
+                       folder = "Single-Cell Sub-Scenarios",
+                       sourceScenario = "SF Output Options and Filters [Add Methane]")
+
+myDataOrig <- datasheet(myScenario, name = "stsim_OutputFilterFlows")
+
+flowGroupsAdd1 <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+                    "Annual Net Ecosystem Carbon Balance (tons C per year)")
+
+myDataOrig$Spatial <- FALSE
+myDataOrig$AvgSpatial <- FALSE
+myDataOrig$Spatial[myDataOrig$FlowGroupId %in% flowGroupsAdd1] <- TRUE
+
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterFlows", append = FALSE)
+
+rm(myDataOrig,flowGroupsAdd1)
+
+myDataOrig <- datasheet(myScenario, name = "stsim_OutputFilterStocks")
+
+myDataOrig$Spatial <- FALSE
+myDataOrig$AvgSpatial <- FALSE
+
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterStocks", append = FALSE)
+
+rm(myDataOrig)
+
+myDataOrig <- datasheet(myScenario, name = "stsim_OutputOptionsStockFlow")
+
+myDataOrig$SpatialOutputFL <- "Yes"
+myDataOrig$SpatialOutputFLTimesteps <- 15
+myDataOrig$AvgSpatialOutputST <- "No"
+myDataOrig$AvgSpatialOutputSTTimesteps <- 15
+myDataOrig$AvgSpatialOutputFL <- "No"
+myDataOrig$AvgSpatialOutputFLTimesteps <- 15
+myDataOrig$SummaryOutputFLOmitFromST <- TRUE
+myDataOrig$SummaryOutputFLOmitToST <- TRUE
+
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = FALSE)
+
+rm(myDataOrig, myScenario)
+
 myScenario <- scenario(myProject, 
                        scenario="Stock Limit [All]",
                        folder = "Single-Cell Sub-Scenarios")
@@ -869,13 +936,13 @@ mergeDependencies(myScenario) <- F
 
 dependency(myScenario) <- c("Spatial Multiprocessing",
                             "Run Control [2001-2016; 40 MC; Spatial]",
-                            "Output Options [Spatial; Summary]",
+                            "Output Options [Spatial; Summary; Uncertainty]",
                             "STSM Initial Conditions [Spatial]",
                             "STSM Spatial Multipliers [LA]",
                             "STSM Transition Multipliers [LA]",
                             "STSM Transition Pathways [LA]",
                             "SF Flow Spatial Multipliers [PRISM Historical]",
-                            "SF Output Options and Filters [Only 2016]",
+                            "SF Output Options and Filters [Only 2016; Uncertainty]",
                             "Flow Multipliers [PRISM, Uncertainty, Add Prev Wetland]",
                             "Stock Limit [All]",
                             "Single Cell: Carbon and LULC: Uncertainty")
