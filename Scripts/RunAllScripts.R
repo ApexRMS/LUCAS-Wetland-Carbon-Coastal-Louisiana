@@ -2,9 +2,10 @@
 # ApexRMS
 # Nov 2025
 
-scriptsPath <- "E:/gitprojects/A329-LucasBarataria/Scripts/"
+rootPath <- "E:/gitprojects/A329-LucasBarataria/"
+scriptsPath <- paste0(rootPath,"Scripts/")
 
-varsKeep <- c("scriptsPath","varsKeep")
+varsKeep <- c("scriptsPath","varsKeep",rootPath)
   
 # 0. Pre-process wetland data
 source(paste0(scriptsPath, "step0-WetlandEmergentStockFlowParametersNoNee.R"))

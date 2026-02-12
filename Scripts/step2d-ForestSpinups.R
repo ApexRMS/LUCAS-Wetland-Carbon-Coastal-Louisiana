@@ -14,8 +14,6 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 outpathDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/Output/")
 
 source(paste0(rootPath, "Scripts/calculateDecayRates.R"))

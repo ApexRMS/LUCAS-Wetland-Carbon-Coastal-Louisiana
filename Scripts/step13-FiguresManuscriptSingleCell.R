@@ -11,8 +11,6 @@ library(viridis)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 dataPath <- "Data/"
 modelPath <- "Models/"
 
@@ -199,7 +197,11 @@ for (i in 1:length(scenarios)){
                                              "DOM: Snag Stem [Type]"),
                            StockNameNew = c(rep("Living Biomass",5),
                                             "Deep Soil",
-                                            rep("Dead Organic Matter",9)))
+                                            rep("DOM: Aboveground",4),
+                                            "DOM: Belowground Fast",
+                                            "DOM: Belowground Slow",
+                                            "DOM: Belowground Very Fast",
+                                            rep("DOM: Standing Dead",2)))
   
   myDataStock2 <- myDataStock1 %>%
     mutate(TimestepNew = Timestep-2000) %>%
@@ -213,13 +215,18 @@ for (i in 1:length(scenarios)){
               AmountHigh = quantile(AmountSum,0.975, na.rm = T), .groups = "drop")
   
   StockNameNewOrder <- c("Living Biomass",
-                         "Dead Organic Matter",
+                         "DOM: Standing Dead",
+                         "DOM: Aboveground",
+                         "DOM: Belowground Very Fast",
+                         "DOM: Belowground Fast",
+                         "DOM: Belowground Slow",
                          "Deep Soil")
   
   myDataStock2$Pool <- factor(myDataStock2$StockNameNew, 
                               levels = StockNameNewOrder)
   
-  col <- c("#829863","#B98A71","#8C6E60")
+  #col <- c("#829863","#B98A71","#8C6E60")
+  col <- c("#01665e","#80cdc1","#c7eae5","#f6e8c3","#dfc27d","#bf812d","#8c510a")
   names(col) <- StockNameNewOrder
   
   p1 <- ggplot(myDataStock2, aes(x=TimestepNew, y=AmountMean, fill=Pool)) + 

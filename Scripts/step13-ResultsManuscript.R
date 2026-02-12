@@ -16,8 +16,6 @@ old <- options(pillar.sigfig = 10)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 dataPath <- "Data/"
 modelPath <- "Models/"
 
