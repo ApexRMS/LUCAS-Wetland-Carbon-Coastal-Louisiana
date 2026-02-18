@@ -142,3 +142,7 @@ detach(package:terra)
 # 13. Extract data for supplement tables
 source(paste0(scriptsPath, "step13-SupplementTables.R"))
 rm(list = setdiff(ls(), varsKeep))
+
+# 14. Add charts to syncrosim library
+source(paste0(scriptsPath, "step14-AddCharts.R"))
+rm(list = setdiff(ls(), varsKeep))
