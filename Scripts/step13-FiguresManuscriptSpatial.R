@@ -136,7 +136,7 @@ for (i in 1:length(plotFlows)){
                                  keyheight=0.1,
                                  default.unit="inch")) +
     xlab("\nYear") + 
-    ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~CO[2-eq]~yr^-1*")"))))+
+    ylab(as.expression(bquote(atop("Net Radiative Balance","(Tg "~CO[2-eq]~yr^-1*")"))))+
     ylim(minVal,maxVal)
   
   p6
@@ -204,7 +204,7 @@ for (i in 1:length(plotFlows)){
   lineType <- as.character(myDataNECBB$Type)
   names(lineType) <- as.character(myDataNECBB$Scenario)
   
-  if (i == 1){
+  if (plotFlows[i] == "Annual Net Ecosystem Carbon Balance (tons C per year)"){
     
     p7 <- ggplot(myDataNECBB, aes(x = Timestep, y = mean, color = Scenario, group = Scenario, linetype = Scenario)) +
       geom_line(linewidth = 0.8) +
@@ -230,7 +230,7 @@ for (i in 1:length(plotFlows)){
       ylim(-5.1,4) +
       ggtitle("a.")
     
-  } else if (i == 2){
+  } else if (plotFlows[i] == "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"){
     
     p7 <- ggplot(myDataNECBB, aes(x = Timestep, y = mean, color = Scenario, group = Scenario, linetype = Scenario)) +
       geom_line(linewidth = 0.8) +
@@ -252,7 +252,7 @@ for (i in 1:length(plotFlows)){
                                    keyheight=0.1,
                                    default.unit="inch")) +
       xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~CO[2-eq]~yr^-1*")"))))+
+      ylab(as.expression(bquote(atop("Net Radiative Balance","(Tg "~CO[2-eq]~yr^-1*")"))))+
       ylim(-5.1,4)+
       ggtitle("b.")
   }
@@ -352,4 +352,23 @@ for (i in 1:length(plotFlows)){
   
   rm(minVal,maxVal,col,lineType)
   
+  # Create table of cumulative NECB differences
+  
+  myDataNECBBwide <- myDataNECBA %>%
+    select(Scenario, Timestep, mean) %>%
+    pivot_wider(names_from = Scenario, values_from = mean) %>%
+    arrange(Timestep) %>%
+    mutate(
+      ScenDiff = Schoolmaster - IPCC
+    )
+  
+  nameTabular <- "TgC_yr"
+  
+  write.csv(
+    myDataNECBBwide,
+    paste0(pathOut, "NECB_Comparison_2026-02-18_",nameTabular,".csv"),
+    row.names = F
+  )
+  
 }
+
