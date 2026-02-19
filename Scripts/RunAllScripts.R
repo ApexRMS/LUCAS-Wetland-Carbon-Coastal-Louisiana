@@ -2,11 +2,11 @@
 # ApexRMS
 # Nov 2025
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-scriptsPath <- paste0(rootPath,"Scripts/")
+rootPath <- "E:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
+scriptsPath <- paste0(rootPath, "Scripts/")
 
-varsKeep <- c("scriptsPath","varsKeep","rootPath")
-  
+varsKeep <- c("scriptsPath", "varsKeep", "rootPath")
+
 # 0. Pre-process wetland data
 source(paste0(scriptsPath, "step0-WetlandEmergentStockFlowParametersNoNee.R"))
 rm(list = setdiff(ls(), varsKeep))
