@@ -263,18 +263,18 @@ myDataPal2NPP <- myData %>%
 
 keepFlowsEst <- keepFlowsEst[
   !(keepFlowsEst %in%
-      c(
-        "Wetland: Estuarine Emergent Net Growth Wetland Emergent: Atmosphere -> Foliage",
-        "Wetland: Estuarine Emergent Net Growth Wetland Emergent: Atmosphere -> Fine Roots"
-      ))
+    c(
+      "Wetland: Estuarine Emergent Net Growth Wetland Emergent: Atmosphere -> Foliage",
+      "Wetland: Estuarine Emergent Net Growth Wetland Emergent: Atmosphere -> Fine Roots"
+    ))
 ]
 
 keepFlowsPal <- keepFlowsPal[
   !(keepFlowsPal %in%
-      c(
-        "Wetland: Palustrine Emergent Net Growth Wetland Emergent: Atmosphere -> Foliage",
-        "Wetland: Palustrine Emergent Net Growth Wetland Emergent: Atmosphere -> Fine Roots"
-      ))
+    c(
+      "Wetland: Palustrine Emergent Net Growth Wetland Emergent: Atmosphere -> Foliage",
+      "Wetland: Palustrine Emergent Net Growth Wetland Emergent: Atmosphere -> Fine Roots"
+    ))
 ]
 
 myDataEst2 <- myData %>%

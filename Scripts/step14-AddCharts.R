@@ -13,6 +13,8 @@ signIn(mySession)
 dataPath <- "Data/"
 modelPath <- "Models/"
 
+modelName <- "Barataria"
+
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 
 myLibrary <- ssimLibrary(
@@ -56,18 +58,19 @@ myChart %>%
       "Annual Net Growth (tons CO2-eq per year)"
     )
   ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsXAxis(title = "Year")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -90,18 +93,19 @@ myChart %>%
       "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
     )
   ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsXAxis(title = "Year")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -124,18 +128,19 @@ myChart %>%
     filter = "StockGroupId",
     addValue = "Ecosystem Carbon Storage (tons C)"
   ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsXAxis(title = "Year")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -164,18 +169,19 @@ myChart %>%
     )
   ) %>%
   chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "tons C") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsYAxis(title = "tons C")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -212,18 +218,19 @@ myChart %>%
     )
   ) %>%
   chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "tons C") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsYAxis(title = "tons C")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -249,18 +256,20 @@ myChart %>%
     )
   ) %>%
   chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "Area (ha)") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsYAxis(title = "Area (ha)")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -294,18 +303,19 @@ myChart %>%
       "Annual Net Growth (tons CO2-eq per year)"
     )
   ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsXAxis(title = "Year")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -327,18 +337,19 @@ myChart %>%
       "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
     )
   ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsXAxis(title = "Year")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -361,18 +372,19 @@ myChart %>%
     filter = "StockGroupId",
     addValue = "Ecosystem Carbon Storage (tons C)"
   ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsXAxis(title = "Year")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -399,18 +411,19 @@ myChart %>%
     )
   ) %>%
   chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "tons C") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsYAxis(title = "tons C")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -447,18 +460,19 @@ myChart %>%
     )
   ) %>%
   chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "tons C") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsYAxis(title = "tons C")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
@@ -499,18 +513,19 @@ myChart %>%
     addValue = stateClassUnique
   ) %>%
   chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "Area (ha)") %>%
-  chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE) %>%
-  chartOptionsFormat(
-    myChart,
-    noDataAsZero = TRUE,
-    showDataPoints = FALSE,
-    showDataPointsOnly = FALSE,
-    showPanelTitles = TRUE,
-    showToolTips = TRUE,
-    showNoDataPanels = TRUE,
-    lineWidth = 1
-  )
+  chartOptionsYAxis(title = "Area (ha)")
+
+chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
+chartOptionsFormat(
+  myChart,
+  noDataAsZero = TRUE,
+  showDataPoints = FALSE,
+  showDataPointsOnly = FALSE,
+  showPanelTitles = TRUE,
+  showToolTips = TRUE,
+  showNoDataPanels = TRUE,
+  lineWidth = 1
+)
 
 rm(myChart)
 
