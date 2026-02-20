@@ -420,7 +420,7 @@ myDataZero <- myData %>%
          AgeMax = 0)
 
 myData <- myData %>%
-  add_row(myDataZero)
+  dplyr::bind_rows(myDataZero)
 
 range(myData$AgeMax, na.rm = TRUE)
 range(myData$AgeMin)
@@ -929,7 +929,7 @@ myDataZero <- myData %>%
          AgeMax = 0)
 
 myData <- myData %>%
-  add_row(myDataZero)
+  dplyr::bind_rows(myDataZero)
 
 range(myData$AgeMax, na.rm = TRUE)
 range(myData$AgeMin)
