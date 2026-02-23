@@ -1,4 +1,4 @@
-# A329-LucasBarataria
+# LUCAS Wetland Carbon Model for Coastal Louisiana
 This repository contains code and data for the following manuscript: 
 Stagg et al. A modeling framework for assessing the impact of wetland change on landscape-scale net ecosystem carbon balance. In prep.
 
