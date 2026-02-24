@@ -13,8 +13,6 @@ library(viridis)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 dataPath <- "Data/"
 modelPath <- "Models/"
 
@@ -207,8 +205,34 @@ for (k in 1:length(keepFluxesSpatialDiff)){
        type = "continuous",
        axes = FALSE,
        main = paste0("d. ", fluxName),
-       range = c(-(max2-21),(max2-21)),
-       col = rev(viridis(100)),
+       range = c(-(max2-23),(max2-21)),
+       col = c("#997726",
+               "#a9832a",
+               "#b9902d",
+               "#c99c31",
+               "#d0a43e",
+               "#d3ac4e",
+               "#d7b35e",
+               "#dbbb6d",
+               "#dfc27d",
+               "#f5f5f5",
+               "#c7eae5",
+               "#b9e5de",
+               "#aadfd8",
+               "#9cdad1",
+               "#8ed5cb",
+               "#80cfc4",
+               "#71cabd",
+               "#63c5b7",
+               "#55bfb0",
+               "#41ac9d",
+               "#3b9e90",
+               "#369083",
+               "#318176",
+               "#2b7369",
+               "#26655c",
+               "#20574f",
+               "#1b4842"),#rev(viridis(100)),
        cex.main = 0.8,
        fill_range = T,
        maxcell = 10000000)

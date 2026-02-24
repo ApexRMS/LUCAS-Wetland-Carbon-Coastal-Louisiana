@@ -12,8 +12,6 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 outpathDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/Output/")
 rootPathUpdatedTables <- paste0(rootPath,"Data/Datasheets Wetland/Emergent/")
 
@@ -348,7 +346,8 @@ flowsToZero <- c("Decay: AG Fast -> AG Slow",
 
 myDataAddForest <- myData %>%
   filter(FlowTypeId %in% flowsToZero) %>%
-  mutate(FlowTypeId = gsub("AG Slow","BG Slow",FlowTypeId))
+  mutate(FlowTypeId = gsub("AG Slow","BG Slow",FlowTypeId)) %>%
+  filter(FlowTypeId != "Decay: AG Very Fast -> BG Slow")
 
 myDataAddCO2 <- myData %>%
   filter(FlowTypeId %in% flowTypesForest) %>%

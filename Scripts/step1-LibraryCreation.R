@@ -6,8 +6,6 @@
 library(rsyncrosim)
 library(tidyverse)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 

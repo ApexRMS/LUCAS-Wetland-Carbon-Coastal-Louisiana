@@ -12,8 +12,6 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 pathInDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/")
 
 dataPath <- "Data/"
@@ -57,7 +55,13 @@ myData <- data.frame(Name = c("Water: Previously Emergent Wetland",
                                       "Unvegetated Emergent",
                                       "Previously Forested Wetland",
                                       "Unvegetated Forested"),
-                    Id = c(13,98,14,99))
+                    Id = c(13,98,14,99),
+                    Color = c(
+                      "255,84,117,168",
+                      "255,0,242,242",
+                      "255,84,117,168",
+                      "255,0,242,242"
+                    ))
 
 saveDatasheet(myProject, myData, sheetName, append = T)
 
@@ -555,12 +559,12 @@ flowMultipliersWaterBGS <- flowMultipliersWater %>%
   filter(FlowGroupId %in% c("Emission: BG Slow -> Atmosphere Temp [Type]",
                             "Lateral Transport: BG Slow -> Aquatic [Type]"))
 
-flowMultipliersWaterBGSm <- (0.003281*0.075)/sum(flowMultipliersWaterBGS$Value)
+flowMultipliersWaterBGSm <- (0.00325*0.075)/sum(flowMultipliersWaterBGS$Value)
 
 flowMultipliersWaterBGS <- flowMultipliersWaterBGS %>%
   mutate(Value = Value*flowMultipliersWaterBGSm)
 
-flowMultipliersWater$Value[flowMultipliersWater$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- 0.003281*(1-0.075)
+flowMultipliersWater$Value[flowMultipliersWater$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- 0.00325*(1-0.075)
 
 flowMultipliersWaterKeep <- flowMultipliersWater %>%
   filter(!(FlowGroupId %in% c("Decay: AG Very Fast -> BG Slow [Type]",

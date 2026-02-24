@@ -16,7 +16,7 @@ dateStamp <- "2025_05_16"
 
 # Set directory paths
 #baseDir <- 'C:/gitprojects/a275/'
-baseDir <- 'E:/gitprojects/A329-LucasBarataria/'
+baseDir <- rootPath
 cleanDataDir <- paste0(baseDir, "Data/Datasheets Wetland/FieldData/")
 outDir <- paste0(baseDir, "Data/Datasheets Wetland/")
 

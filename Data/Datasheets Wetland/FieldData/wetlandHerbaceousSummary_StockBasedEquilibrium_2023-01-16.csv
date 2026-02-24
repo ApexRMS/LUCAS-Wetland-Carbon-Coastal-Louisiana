@@ -9,7 +9,6 @@ Brackish,Marsh,Barataria Bay LA,Gulf,indirect,All,10,Feijtel et al [1985],Model 
 Brackish,Marsh,Chesapeake Bay Edgewater MD,MidAtlantic,direct,DOC,201,Menendez et al. [2022],measured continuously by sonde
 Brackish,Marsh,Rush Ranch Rush Ranch SF Bay CA,California,direct,DIC + DOC,105,Bogard et al. [2020],measured continuously by sonde
 Estuarine,,,,,,217.8,Mean,
-Fresh,Marsh,"Winnous Point, Lake Erie, Sandusky OH",Midwest,direct,All,-22.7,Chu et al. [2015],"grab samples and continuously monitored flow, mean of 3 years, DOC order of magnitude higher than POC or DIC"
 Fresh,Marsh,Sweet Hall Marsh York River Estuary VA,MidAtlantic,direct,DIC,197,Neubauer and Anderson [2003],Measured with grab samples in 3 months during record drought
 Fresh,Marsh,Barataria Bay LA,Gulf,indirect,All,73,Feijtel et al [1985],Model study using estimates based on literature
 Palustrine,,,,,,82.4,Mean,

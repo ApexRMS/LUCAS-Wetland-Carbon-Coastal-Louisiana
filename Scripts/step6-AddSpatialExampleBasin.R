@@ -14,7 +14,6 @@ library(sf)
 library(terra)
 
 # Specify file paths
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
 sourceDataPath <- "E:/Data Sources/"
 studyAreaFullPath <- paste0(rootPath,"StudyArea/BasinsCoastal.shp")
 

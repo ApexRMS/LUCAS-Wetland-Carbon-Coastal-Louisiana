@@ -16,8 +16,6 @@ old <- options(pillar.sigfig = 10)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 dataPath <- "Data/"
 modelPath <- "Models/"
 
@@ -59,19 +57,19 @@ if(!dir.exists(pathOutCarbonFluxes)){
 # Land Cover Change over time
 scenarioList <- scenario(myProject, summary = T, results = T)
 
-id1 <- scenarioList$ScenarioId[grep("Basin Climate and No Land Cover Change",scenarioList$Name)]
+#id1 <- scenarioList$ScenarioId[grep("Basin Climate and No Land Cover Change",scenarioList$Name)]
 id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
 id3 <- scenarioList$ScenarioId[grep("Basin IPCC",scenarioList$Name)]
 id4 <- scenarioList$ScenarioId[grep("Basin No Palustrine Forested Wetland",scenarioList$Name)]
 
-myScenario1 <- scenario(myProject, scenario=max(id1))
+#myScenario1 <- scenario(myProject, scenario=max(id1))
 myScenario2 <- scenario(myProject, scenario=max(id2))
 myScenario3 <- scenario(myProject, scenario=max(id3))
 myScenario4 <- scenario(myProject, scenario=max(id4))
 
 # Summarize Total Ecosystem Carbon
 
-myDataStock1 <- datasheet(myScenario1, "stsim_OutputStock")
+#myDataStock1 <- datasheet(myScenario1, "stsim_OutputStock")
 myDataStock2 <- datasheet(myScenario2, "stsim_OutputStock")
 myDataStock3 <- datasheet(myScenario3, "stsim_OutputStock")
 myDataStock4 <- datasheet(myScenario4, "stsim_OutputStock")
@@ -92,18 +90,18 @@ for (i in 1:length(plotStocksChange)){
   
   plotName <- gsub("[Type]","",gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotStocksChange[i]), fixed = T),fixed = T)), fixed = T)
   
-  myDataStock1c <- myDataStock1 %>%
-    filter(StockGroupId == plotStocksChange[i]) %>%
-    group_by(Timestep,Iteration) %>%
-    summarize(totalC = sum(Amount, na.rm = T)) %>%
-    ungroup() %>%
-    group_by(Timestep) %>%
-    summarize(mean = mean(totalC),
-              min = min(totalC),
-              max = max(totalC)) %>%
-    mutate(Scenario = "No LC change",
-           Color = "#D4621F",
-           Type = "solid")
+  # myDataStock1c <- myDataStock1 %>%
+  #   filter(StockGroupId == plotStocksChange[i]) %>%
+  #   group_by(Timestep,Iteration) %>%
+  #   summarize(totalC = sum(Amount, na.rm = T)) %>%
+  #   ungroup() %>%
+  #   group_by(Timestep) %>%
+  #   summarize(mean = mean(totalC),
+  #             min = min(totalC),
+  #             max = max(totalC)) %>%
+  #   mutate(Scenario = "No LC change",
+  #          Color = "#D4621F",
+  #          Type = "solid")
   
   myDataStock2c <- myDataStock2 %>%
     filter(StockGroupId == plotStocksChange[i]) %>%
@@ -222,14 +220,14 @@ for (i in 1:length(plotStocksChange)){
   ggsave(paste0(pathOutCarbonStocks,"/",plotName,"_","LandCover",".png"), p4, width = 3.8, height = 4.5, dpi = 600)
   
   
-  rm(myDataStock1c,myDataStock2c,myDataStock3c,myDataStock4c,
+  rm(myDataStock2c,myDataStock3c,myDataStock4c,
      myDataCarbonStorageA,myDataCarbonStorageB,plotName)
   
 }
 
 # Summarize Flows
 
-myDataFlux1 <- datasheet(myScenario1, "stsim_OutputFlow")
+#myDataFlux1 <- datasheet(myScenario1, "stsim_OutputFlow")
 myDataFlux2 <- datasheet(myScenario2, "stsim_OutputFlow")
 myDataFlux3 <- datasheet(myScenario3, "stsim_OutputFlow")
 myDataFlux4 <- datasheet(myScenario4, "stsim_OutputFlow")
@@ -253,18 +251,18 @@ for (i in 1:length(plotFlows)){
   
   plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
   
-  myDataFlux1c <- myDataFlux1 %>%
-    filter(FlowGroupId == plotFlows[i]) %>%
-    group_by(Timestep,Iteration) %>%
-    summarize(totalC = sum(Amount, na.rm = T)) %>%
-    ungroup() %>%
-    group_by(Timestep) %>%
-    summarize(mean = mean(totalC),
-              min = min(totalC),
-              max = max(totalC)) %>%
-    mutate(Scenario = "No LC change",
-           Color = "#D4621F",
-           Type = "solid")
+  # myDataFlux1c <- myDataFlux1 %>%
+  #   filter(FlowGroupId == plotFlows[i]) %>%
+  #   group_by(Timestep,Iteration) %>%
+  #   summarize(totalC = sum(Amount, na.rm = T)) %>%
+  #   ungroup() %>%
+  #   group_by(Timestep) %>%
+  #   summarize(mean = mean(totalC),
+  #             min = min(totalC),
+  #             max = max(totalC)) %>%
+  #   mutate(Scenario = "No LC change",
+  #          Color = "#D4621F",
+  #          Type = "solid")
   
   myDataFlux2c <- myDataFlux2 %>%
     filter(FlowGroupId == plotFlows[i]) %>%
@@ -406,7 +404,7 @@ for (i in 1:length(plotFlows)){
   ggsave(paste0(pathOutCarbonFluxes,"/",plotName,"_","NoForestWetland",".png"), p7, width = 3.8, height = 4.5, dpi = 600)
   
   
-  rm(myDataFlux1c,myDataFlux2c,myDataFlux3c,myDataFlux4c,
+  rm(myDataFlux2c,myDataFlux3c,myDataFlux4c,
      myDataNECBA,myDataNECBB,plotName)
   
 }

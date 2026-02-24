@@ -2,10 +2,11 @@
 # ApexRMS
 # Nov 2025
 
-scriptsPath <- "E:/gitprojects/A329-LucasBarataria/Scripts/"
+rootPath <- "E:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
+scriptsPath <- paste0(rootPath, "Scripts/")
 
-varsKeep <- c("scriptsPath","varsKeep")
-  
+varsKeep <- c("scriptsPath", "varsKeep", "rootPath")
+
 # 0. Pre-process wetland data
 source(paste0(scriptsPath, "step0-WetlandEmergentStockFlowParametersNoNee.R"))
 rm(list = setdiff(ls(), varsKeep))
@@ -101,7 +102,7 @@ detach(package:tidyverse)
 detach(package:terra)
 detach(package:viridis)
 
-# 12 Create data release files
+# 12. Create data release files
 source(paste0(scriptsPath, "step12-DataRelease.R"))
 rm(list = setdiff(ls(), varsKeep))
 detach(package:rsyncrosim)
@@ -123,7 +124,7 @@ detach(package:rsyncrosim)
 detach(package:tidyverse)
 detach(package:viridis)
 
-# 13 Create figures for manuscript: spatial scenario charts
+# 13. Create figures for manuscript: spatial scenario charts
 source(paste0(scriptsPath, "step13-FiguresManuscriptSpatial.R"))
 rm(list = setdiff(ls(), varsKeep))
 detach(package:rsyncrosim)
@@ -137,3 +138,11 @@ detach(package:rsyncrosim)
 detach(package:tidyverse)
 detach(package:ggplot2)
 detach(package:terra)
+
+# 13. Extract data for supplement tables
+source(paste0(scriptsPath, "step13-SupplementTables.R"))
+rm(list = setdiff(ls(), varsKeep))
+
+# 14. Add charts to syncrosim library
+source(paste0(scriptsPath, "step14-AddCharts.R"))
+rm(list = setdiff(ls(), varsKeep))

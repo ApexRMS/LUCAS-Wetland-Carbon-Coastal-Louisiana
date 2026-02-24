@@ -11,8 +11,6 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 pathInDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/")
 rootPathUpdatedTables <- paste0(rootPath,"Data/Datasheets Wetland/Emergent/")
 
@@ -331,7 +329,7 @@ myUpdate <- data.frame(ExternalVariableTypeId = c("Site ID Wetland: Palustrine E
                        DistributionTypeId = "Uniform Integer",
                        DistributionFrequency = "Iteration Only",
                        DistributionMin = c(1,1),
-                       DistributionMax = c((3*6),(9*18)))
+                       DistributionMax = c((2*6),(9*18)))
 
 myData <- myData %>%
   addRow(myUpdate)
@@ -352,7 +350,7 @@ myData <- datasheet(myScenario, "core_ExternalVariableValue", optional = T, empt
 
 myUpdate <- data.frame(Iteration = c(1:1000),
                        ExternalVariableTypeId = "Site ID Wetland: Palustrine Emergent",
-                       ExternalVariableValue = sample(c(1:18),1000,replace = TRUE)) %>%
+                       ExternalVariableValue = sample(c(1:12),1000,replace = TRUE)) %>%
   addRow(data.frame(Iteration = c(1:1000),
                     ExternalVariableTypeId = "Site ID Wetland: Estuarine Emergent",
                     ExternalVariableValue = sample(c(1:162),1000,replace = TRUE)))

@@ -14,8 +14,6 @@ library(tidyverse)
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
-rootPath <- "E:/gitprojects/A329-LucasBarataria/"
-
 outpathDatasheets <- paste0(rootPath,"Data/Datasheets Wetland/Output/")
 
 source(paste0(rootPath, "Scripts/calculateDecayRates.R"))
@@ -212,7 +210,7 @@ rm(multiTab,sheetName)
 
 # sub-scenario: 40 MC: Forest
 myScenario <- scenario(myProject, 
-                       scenario = "Run Control [Spinup Forest; Non-Spatial; 0-1676; 40 MC]",
+                       scenario = "Run Control [Spinup Forest; Non-Spatial; 0-1674; 40 MC]",
                        folder = "Single-Cell Sub-Scenarios")
 
 sheetName <- "stsim_RunControl"
@@ -220,7 +218,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(MinimumIteration = 1,
                     MaximumIteration = 40,
                     MinimumTimestep = 0,
-                    MaximumTimestep = 1676,
+                    MaximumTimestep = 1674,
                     IsSpatial = FALSE))
 saveDatasheet(myScenario, myData, sheetName, append = FALSE)
 
@@ -228,7 +226,7 @@ rm(myScenario, myData, sheetName)
 
 # sub-scenario: 1 MC: Forested Wetland more cycles
 myScenario <- scenario(myProject, 
-                       scenario = "Run Control [Spinup Forest; Non-Spatial; 0-3800; 1 MC]",
+                       scenario = "Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 MC]",
                        folder = "Single-Cell Sub-Scenarios")
 
 sheetName <- "stsim_RunControl"
@@ -236,7 +234,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(MinimumIteration = 1,
                     MaximumIteration = 1,
                     MinimumTimestep = 0,
-                    MaximumTimestep = 3800,
+                    MaximumTimestep = 3799,
                     IsSpatial = FALSE))
 saveDatasheet(myScenario, myData, sheetName, append = FALSE)
 
@@ -365,7 +363,7 @@ saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FA
 
 rm(myScenario,disturbanceYears,myData)
 
-# Initialize Wetland
+# Initialize Oak Gum Cypress Upland Forest
 
 myScenario <- scenario(myProject,
                        scenario="Original Forest: Oak Gum Cypress Spinup: Harvest",
@@ -373,7 +371,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-1676; 40 MC]",
+dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-1674; 40 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "Net Growth, Methane [Updated]",
                             "Initial Conditions: Single Cell - Forest: Oak/Gum/Cypress Group [Age 0]",
@@ -409,11 +407,20 @@ testE <- myData %>%
 
 print(testE, n = nrow(testE))
 
-myData <- myData[myData$Timestep >= 1376,]
-myData$AgeMin <- myData$Timestep - 1376
-myData$AgeMax <- myData$Timestep - 1376
+myData <- myData[myData$Timestep >= 1375,]
+myData$AgeMin <- myData$Timestep - 1374
+myData$AgeMax <- myData$Timestep - 1374
 
 myData$AgeMax[myData$AgeMax == 300] <- NA
+
+# Duplicate year 0 and year 1
+myDataZero <- myData %>%
+  filter(AgeMin == 1) %>%
+  mutate(AgeMin = 0,
+         AgeMax = 0)
+
+myData <- myData %>%
+  dplyr::bind_rows(myDataZero)
 
 range(myData$AgeMax, na.rm = TRUE)
 range(myData$AgeMin)
@@ -525,7 +532,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3800; 1 MC]",
+dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "Net Growth, Methane [Updated]",
                             "Initial Conditions: Single Cell - Wetland: Palustrine Forested [Age 0]",
@@ -548,9 +555,9 @@ calculateDecayRates(
   projectName = myProject,
   scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M",
   targetValue = ((628.4 + 127.1) / 2),
-  convergenceLevel = 0.1,
+  convergenceLevel = 0.01,
   scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower]",
-  emissionsStart = 1.548114,
+  emissionsStart = 1.457301,
   meanBurial = mean(c((628.4/1290),(127.1/1295)))
 )
 
@@ -649,7 +656,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3800; 1 MC]",
+dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "Net Growth, Methane [Updated S]",
                             "Initial Conditions: Single Cell - Wetland: Palustrine Forested [Age 0]",
@@ -664,9 +671,9 @@ calculateDecayRates(
   projectName = myProject,
   scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S",
   targetValue = 628.4,
-  convergenceLevel = 0.1,
+  convergenceLevel = 0.01,
   scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower S]",
-  emissionsStart = 0.9437037,
+  emissionsStart = 0.9080549,
   meanBurial = 628.4/1290 #0.4871318
 )
 
@@ -763,7 +770,7 @@ myScenario <- scenario(myProject,
 
 mergeDependencies(myScenario) <- F
 
-dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3800; 1 MC]",
+dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 MC]",
                             "Output Options [Non-Spatial; Summary]",
                             "Net Growth, Methane [Updated W]",
                             "Initial Conditions: Single Cell - Wetland: Palustrine Forested [Age 0]",
@@ -778,9 +785,9 @@ calculateDecayRates(
   projectName = myProject,
   scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W",
   targetValue = 127.1,
-  convergenceLevel = 0.1,
+  convergenceLevel = 0.01,
   scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower W]",
-  emissionsStart = 2.315744,
+  emissionsStart = 1.924325,
   meanBurial = 127.1/1295 #0.09814672
 )
 
@@ -827,10 +834,12 @@ myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 
 myDataFlux <- datasheet(myScenario, "stsim_OutputFlow", optional = T)
 
-# Change 3499 to 3566. 66 year old forest following a harvest.
+# 66 year old forest following a harvest.
+# A Harvest occurs in 3500 and resets age to 1
+# Therefore at timestep 3565 the forest will be 66 years old. 
 
 myDataTotalDOM <- myData %>%
-  filter(Timestep == 3566 &
+  filter(Timestep == 3565 &
            StateClassId == "Wetland: Palustrine Forested" &
            StockGroupId %in% c("DOM: Aboveground Very Fast [Type]",
                               "DOM: Belowground Fast [Type]",
@@ -842,7 +851,7 @@ myDataTotalDOM <- myData %>%
   select(StockGroupId,CarbonStock)
 
 myDataLatFlows <- myDataFlux %>%
-  filter(Timestep == 3566 &
+  filter(Timestep == 3565 &
          FromStateClassId == "Wetland: Palustrine Forested" &
          FlowGroupId %in% c("Transfer: Snag Stem -> AG Medium [Type]",
                             "Biomass Turnover: Coarse Roots -> BG Fast [Type]",
@@ -870,7 +879,7 @@ myDataLatFlows <- myDataFlux %>%
   summarize(FlowIn = sum(Amount))
 
 myDataLatPartition <- myDataFlux %>%
-  filter(Timestep == 3566 &
+  filter(Timestep == 3565 &
          FromStateClassId == "Wetland: Palustrine Forested" &
          FlowGroupId %in% c("Emission: AG Very Fast -> Atmosphere Temp [Type]",
                             "Emission: BG Fast -> Atmosphere Temp [Type]",
@@ -910,10 +919,19 @@ testE <- myData %>%
 print(testE, n = nrow(testE))
 
 myData <- myData[myData$Timestep >= 3500,]
-myData$AgeMin <- myData$Timestep - 3500
-myData$AgeMax <- myData$Timestep - 3500
+myData$AgeMin <- myData$Timestep - 3499
+myData$AgeMax <- myData$Timestep - 3499
 
 myData$AgeMax[myData$AgeMax == 300] <- NA
+
+# Duplicate year 0 and year 1
+myDataZero <- myData %>%
+  filter(AgeMin == 1) %>%
+  mutate(AgeMin = 0,
+         AgeMax = 0)
+
+myData <- myData %>%
+  dplyr::bind_rows(myDataZero)
 
 range(myData$AgeMax, na.rm = TRUE)
 range(myData$AgeMin)
