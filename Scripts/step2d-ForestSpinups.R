@@ -834,7 +834,9 @@ myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 
 myDataFlux <- datasheet(myScenario, "stsim_OutputFlow", optional = T)
 
-# Change 3499 to 3565. 66 year old forest following a harvest.
+# 66 year old forest following a harvest.
+# A Harvest occurs in 3500 and resets age to 1
+# Therefore at timestep 3565 the forest will be 66 years old. 
 
 myDataTotalDOM <- myData %>%
   filter(Timestep == 3565 &
