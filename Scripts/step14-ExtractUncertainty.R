@@ -100,8 +100,18 @@ tabFluxNet <- tabFlux %>%
   ) %>%
   ungroup()
 
+
 tabFluxDev
 
 tabFluxEco
 
 tabFluxNet
+
+as.data.frame(tabFluxDev)
+
+as.data.frame(tabFluxEco)
+
+as.data.frame(tabFluxNet)
+
+table(tabFlux$Iteration)
+length(unique(tabFlux$Iteration))
