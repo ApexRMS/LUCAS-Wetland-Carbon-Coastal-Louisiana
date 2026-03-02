@@ -4,7 +4,6 @@
 
 library(rsyncrosim)
 library(tidyverse)
-library(terra)
 
 # Specify file paths, library, and project
 
@@ -31,6 +30,8 @@ scenID <- scenarioListAll$ScenarioId[grep(
   "Basin Uncertainty Baseline",
   scenarioListAll$Name
 )]
+
+# Compare results with mean model
 
 # scenID <- scenarioListAll$ScenarioId[grep(
 #   "Basin Baseline",
@@ -74,8 +75,7 @@ tabFluxDev <- tabFlux %>%
     mean = mean(totalC, na.rm = T),
     low = quantile(totalC, 0.025, na.rm = T),
     high = quantile(totalC, 0.975, na.rm = T)
-  ) %>%
-  ungroup()
+  )
 
 tabFluxEco <- tabFlux %>%
   filter(!(ToStateClassId %in% stateClassDev)) %>%
@@ -86,8 +86,7 @@ tabFluxEco <- tabFlux %>%
     mean = mean(totalC, na.rm = T),
     low = quantile(totalC, 0.025, na.rm = T),
     high = quantile(totalC, 0.975, na.rm = T)
-  ) %>%
-  ungroup()
+  )
 
 tabFluxNet <- tabFlux %>%
   group_by(Iteration) %>%
@@ -97,8 +96,7 @@ tabFluxNet <- tabFlux %>%
     mean = mean(totalC, na.rm = T),
     low = quantile(totalC, 0.025, na.rm = T),
     high = quantile(totalC, 0.975, na.rm = T)
-  ) %>%
-  ungroup()
+  )
 
 
 tabFluxDev
