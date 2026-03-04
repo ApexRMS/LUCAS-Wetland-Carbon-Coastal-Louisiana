@@ -25,13 +25,13 @@ myLibrary <- ssimLibrary(
 myProject <- rsyncrosim::project(myLibrary, project = "Definitions")
 
 # Look at Chart Criteria for the project
-chartCriteria(myProject)
+#chartCriteria(myProject)
 
 ## Carbon Fluxes: Growth, Emissions, Lateral Flux ----
 
 myChart <- chart(
   myProject,
-  chart = "1 ha Carbon Fluxes: Growth, Emissions, Lateral Flux"
+  chart = "1 ha Growth Emissions and Lateral Flux"
 )
 
 myChart %>%
@@ -57,25 +57,12 @@ myChart %>%
       "Annual Net Growth (tons C per year)",
       "Annual Net Growth (tons CO2-eq per year)"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
 ## Carbon Fluxes: Annual Net Ecosystem Carbon Balance ----
-myChart <- chart(myProject, chart = "1 ha Carbon Fluxes: NECB")
+myChart <- chart(myProject, chart = "1 ha NECB")
 
 myChart %>%
   chartData(
@@ -92,27 +79,14 @@ myChart %>%
       "Annual Net Ecosystem Carbon Balance (tons C per year)",
       "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
 ## Carbon Stocks: Ecosystem Carbon Storage ----
 myChart <- chart(
   myProject,
-  chart = "1 ha Carbon Stocks: Ecosystem Carbon Storage"
+  chart = "1 ha Ecosystem Carbon Storage"
 )
 
 myChart %>%
@@ -127,27 +101,14 @@ myChart %>%
     variable = "stsim_StockGroup",
     filter = "StockGroupId",
     addValue = "Ecosystem Carbon Storage (tons C)"
-  ) %>%
-  chartOptionsXAxis(title = "Year")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
 
 ## Carbon Stocks: IPCC ----
 
-myChart <- chart(myProject, chart = "1 ha Carbon Stocks: IPCC")
+myChart <- chart(myProject, chart = "1 ha IPCC Carbon Stocks")
 
 myChart %>%
   chartData(
@@ -167,26 +128,10 @@ myChart %>%
       "DOM: Litter",
       "DOM: Soil"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "tons C")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
-
-rm(myChart)
+  )
 
 ## Carbon Stocks: LUCAS ----
-myChart <- chart(myProject, chart = "1 ha Carbon Stocks: LUCAS")
+myChart <- chart(myProject, chart = "1 ha LUCAS Carbon Stocks")
 
 myChart %>%
   chartData(
@@ -200,37 +145,23 @@ myChart %>%
     variable = "stsim_StockGroup",
     filter = "StockGroupId",
     addValue = c(
-      "Biomass: Coarse Root",
-      "Biomass: Fine Root",
-      "Biomass: Foliage",
-      "Biomass: Merchantable",
-      "Biomass: Other Wood",
-      "Deep Soil",
-      "DOM: Aboveground Fast",
-      "DOM: Aboveground Medium",
-      "DOM: Aboveground Slow",
-      "DOM: Aboveground Very Fast",
-      "DOM: Belowground Fast",
-      "DOM: Belowground Slow",
-      "DOM: Belowground Very Fast",
-      "DOM: Snag Branch",
-      "DOM: Snag Stem"
+      "Biomass: Coarse Root [Type]",
+      "Biomass: Fine Root [Type]",
+      "Biomass: Foliage [Type]",
+      "Biomass: Merchantable [Type]",
+      "Biomass: Other Wood [Type]",
+      "Deep Soil [Type]",
+      "DOM: Aboveground Fast [Type]",
+      "DOM: Aboveground Medium [Type]",
+      "DOM: Aboveground Slow [Type]",
+      "DOM: Aboveground Very Fast [Type]",
+      "DOM: Belowground Fast [Type]",
+      "DOM: Belowground Slow [Type]",
+      "DOM: Belowground Very Fast [Type]",
+      "DOM: Snag Branch [Type]",
+      "DOM: Snag Stem [Type]"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "tons C")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
@@ -254,29 +185,14 @@ myChart %>%
       "Wetland: Palustrine Emergent",
       "Wetland: Estuarine Emergent"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "Area (ha)")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
 ## Carbon Fluxes: Growth, Emissions, Lateral Flux ----
 myChart <- chart(
   myProject,
-  chart = "Basin Carbon Fluxes: Growth, Emissions, Lateral Flux"
+  chart = "Basin Growth Emissions and Lateral Flux"
 )
 
 myChart %>%
@@ -302,25 +218,12 @@ myChart %>%
       "Annual Net Growth (tons C per year)",
       "Annual Net Growth (tons CO2-eq per year)"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
 ## Carbon Fluxes: Annual Net Ecosystem Carbon Balance ----
-myChart <- chart(myProject, chart = "Basin Carbon Fluxes: NECB")
+myChart <- chart(myProject, chart = "Basin NECB")
 myChart %>%
   chartData(
     type = "Line",
@@ -336,27 +239,14 @@ myChart %>%
       "Annual Net Ecosystem Carbon Balance (tons C per year)",
       "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
 ## Carbon Stocks: Ecosystem Carbon Storage ----
 myChart <- chart(
   myProject,
-  chart = "Basin Carbon Stocks: Ecosystem Carbon Storage"
+  chart = "Basin Ecosystem Carbon Storage"
 )
 
 myChart %>%
@@ -371,25 +261,12 @@ myChart %>%
     variable = "stsim_StockGroup",
     filter = "StockGroupId",
     addValue = "Ecosystem Carbon Storage (tons C)"
-  ) %>%
-  chartOptionsXAxis(title = "Year")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
 ## Carbon Stocks: IPCC ----
-myChart <- chart(myProject, chart = "Basin Carbon Stocks: IPCC")
+myChart <- chart(myProject, chart = "Basin IPCC Carbon Stocks")
 
 myChart %>%
   chartData(
@@ -409,26 +286,12 @@ myChart %>%
       "DOM: Litter",
       "DOM: Soil"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "tons C")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
 ## Carbon Stocks: LUCAS ----
-myChart <- chart(myProject, chart = "Basin Carbon Stocks: LUCAS")
+myChart <- chart(myProject, chart = "Basin LUCAS Carbon Stocks")
 
 myChart %>%
   chartData(
@@ -442,37 +305,23 @@ myChart %>%
     variable = "stsim_StockGroup",
     filter = "StockGroupId",
     addValue = c(
-      "Biomass: Coarse Root",
-      "Biomass: Fine Root",
-      "Biomass: Foliage",
-      "Biomass: Merchantable",
-      "Biomass: Other Wood",
-      "Deep Soil",
-      "DOM: Aboveground Fast",
-      "DOM: Aboveground Medium",
-      "DOM: Aboveground Slow",
-      "DOM: Aboveground Very Fast",
-      "DOM: Belowground Fast",
-      "DOM: Belowground Slow",
-      "DOM: Belowground Very Fast",
-      "DOM: Snag Branch",
-      "DOM: Snag Stem"
+      "Biomass: Coarse Root [Type]",
+      "Biomass: Fine Root [Type]",
+      "Biomass: Foliage [Type]",
+      "Biomass: Merchantable [Type]",
+      "Biomass: Other Wood [Type]",
+      "Deep Soil [Type]",
+      "DOM: Aboveground Fast [Type]",
+      "DOM: Aboveground Medium [Type]",
+      "DOM: Aboveground Slow [Type]",
+      "DOM: Aboveground Very Fast [Type]",
+      "DOM: Belowground Fast [Type]",
+      "DOM: Belowground Slow [Type]",
+      "DOM: Belowground Very Fast [Type]",
+      "DOM: Snag Branch [Type]",
+      "DOM: Snag Stem [Type]"
     )
-  ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "tons C")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+  )
 
 rm(myChart)
 
@@ -510,33 +359,19 @@ myChart %>%
   chartInclude(
     variable = "stsim_StateClass",
     filter = "StateClassId",
-    addValue = stateClassUnique
-  ) %>%
-  chartOptionsXAxis(title = "Year") %>%
-  chartOptionsYAxis(title = "Area (ha)")
-
-chartOptionsLegend(myChart, showScenarioId = FALSE, showTimestamp = FALSE)
-chartOptionsFormat(
-  myChart,
-  noDataAsZero = TRUE,
-  showDataPoints = FALSE,
-  showDataPointsOnly = FALSE,
-  showPanelTitles = TRUE,
-  showToolTips = TRUE,
-  showNoDataPanels = TRUE,
-  lineWidth = 1
-)
+    addValue = as.character(stateClassUnique)
+  )
 
 rm(myChart)
 
 # Maps ----
 
 # Add Manually
-# Flows: CO2 Emissions in tons CO2-eq
-# Flows: Lateral Flux in tons CO2-eq
-# Flows: Methane Emissions in tons CO2-eq
-# Flows: Net Ecosystem Carbon Balance in tons C
-# Flows: Net Ecosystem Carbon Balance in tons CO2-eq
-# Flows: Net Growth in tons CO2-eq
+# Flows: CO2 Emissions in Mg C/ha/yr
+# Flows: Lateral Flux in Mg C/ha/yr
+# Flows: Methane Emissions in Mg C/ha/yr
+# Flows: Net Ecosystem Carbon Balance in Mg C/ha/yr
+# Flows: Net Ecosystem Carbon Balance in Mg CO2eq/ha/yr
+# Flows: Net Growth in Mg C/ha/yr
 # Land Cover
-# Stocks: Ecosystem Carbon Storage in tons C
+# Stocks: Ecosystem Carbon Storage in Mg C/ha
