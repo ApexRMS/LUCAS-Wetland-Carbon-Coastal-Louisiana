@@ -50,8 +50,6 @@ myChart %>%
       "Annual Emissions: CH4 (tons CO2-eq per year)",
       "Annual Emissions: CO2 (tons C per year)",
       "Annual Emissions: CO2 (tons CO2-eq per year)",
-      "Annual Emissions: CO2 and CH4 (tons C per year)",
-      "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
       "Annual Lateral Flux (tons C per year)",
       "Annual Lateral Flux (tons CO2-eq per year)",
       "Annual Net Growth (tons C per year)",
@@ -211,8 +209,6 @@ myChart %>%
       "Annual Emissions: CH4 (tons CO2-eq per year)",
       "Annual Emissions: CO2 (tons C per year)",
       "Annual Emissions: CO2 (tons CO2-eq per year)",
-      "Annual Emissions: CO2 and CH4 (tons C per year)",
-      "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
       "Annual Lateral Flux (tons C per year)",
       "Annual Lateral Flux (tons CO2-eq per year)",
       "Annual Net Growth (tons C per year)",
@@ -297,7 +293,7 @@ myChart %>%
   chartData(
     type = "Line",
     addY = "stsim_StockGroup",
-    timesteps = c(2001, 2124),
+    timesteps = c(2001, 2016),
     iterationType = "Mean"
   ) %>%
   chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
