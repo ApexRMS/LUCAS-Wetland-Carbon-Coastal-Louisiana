@@ -7,6 +7,9 @@ library(rsyncrosim)
 library(tidyverse)
 library(terra)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 ## Spatial Multiprocessing----
@@ -729,10 +732,10 @@ if(turnOnSpatialMultiprocessing){
 }
 
 # Update Outputs
-myScenario <- scenario(myProject, 
-                       scenario="SF Output Options and Filters [Only 2016]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Output Options and Filters [Only 2016]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios",
-                       sourceScenario = "SF Output Options and Filters [Add Methane]")
+                       sourceScenario = vTag("SF Output Options and Filters [Add Methane]", gwpVariant, style="bracket"))
 
 myDataOrig <- datasheet(myScenario, name = "stsim_OutputFilterFlows")
 
@@ -788,10 +791,10 @@ saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = F
 rm(myDataOrig, myScenario)
 
 # Update Outputs
-myScenario <- scenario(myProject, 
-                       scenario="SF Output Options and Filters [Only 2016; Uncertainty]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Output Options and Filters [Only 2016; Uncertainty]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios",
-                       sourceScenario = "SF Output Options and Filters [Add Methane]")
+                       sourceScenario = vTag("SF Output Options and Filters [Add Methane]", gwpVariant, style="bracket"))
 
 myDataOrig <- datasheet(myScenario, name = "stsim_OutputFilterFlows")
 
@@ -864,8 +867,8 @@ folder(ssimObject = myProject,
        folder = "4. Final Spatial Scenarios")
 
 # No LULC, Climate
-myScenario <- scenario(myProject, 
-                       scenario = "Basin Climate and No Land Cover Change",
+myScenario <- scenario(myProject,
+                       scenario = vTag("Basin Climate and No Land Cover Change", gwpVariant, style="suffix"),
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -876,16 +879,16 @@ dependency(myScenario) <- c("Spatial Multiprocessing",
                             "STSM Initial Conditions [Spatial]",
                             "STSM Transition Pathways [Turn Off]",
                             "SF Flow Spatial Multipliers [PRISM Historical]",
-                            "SF Output Options and Filters [Only 2016]",
+                            vTag("SF Output Options and Filters [Only 2016]", gwpVariant, style="bracket"),
                             "SF Flow Multipliers [PRISM, Mean, Add Prev Wetland]",
                             "Stock Limit [All]",
-                            "Single Cell: Carbon and LULC: Mean")
-                            
+                            vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
 rm(myScenario)
 
 # LULC, Climate
-myScenario <- scenario(myProject, 
-                       scenario = "Basin Baseline",
+myScenario <- scenario(myProject,
+                       scenario = vTag("Basin Baseline", gwpVariant, style="suffix"),
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -898,16 +901,16 @@ dependency(myScenario) <- c("Spatial Multiprocessing",
                             "STSM Transition Multipliers [LA]",
                             "STSM Transition Pathways [LA]",
                             "SF Flow Spatial Multipliers [PRISM Historical]",
-                            "SF Output Options and Filters [Only 2016]",
+                            vTag("SF Output Options and Filters [Only 2016]", gwpVariant, style="bracket"),
                             "SF Flow Multipliers [PRISM, Mean, Add Prev Wetland]",
                             "Stock Limit [All]",
-                            "Single Cell: Carbon and LULC: Mean")
+                            vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 # LULC, Climate
-myScenario <- scenario(myProject, 
-                       scenario = "Basin IPCC",
+myScenario <- scenario(myProject,
+                       scenario = vTag("Basin IPCC", gwpVariant, style="suffix"),
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -920,16 +923,16 @@ dependency(myScenario) <- c("Spatial Multiprocessing",
                              "STSM Transition Multipliers [LA]",
                              "STSM Transition Pathways [LA]",
                              "SF Flow Spatial Multipliers [PRISM Historical]",
-                             "SF Output Options and Filters [Only 2016]",
+                             vTag("SF Output Options and Filters [Only 2016]", gwpVariant, style="bracket"),
                              "SF Flow Multipliers [PRISM, Mean, Add Prev Wetland, IPCC]",
                              "Stock Limit [All]",
-                             "Single Cell: Carbon and LULC: Mean")
+                             vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 # LULC, Climate
-myScenario <- scenario(myProject, 
-                       scenario = "Basin Uncertainty Baseline",
+myScenario <- scenario(myProject,
+                       scenario = vTag("Basin Uncertainty Baseline", gwpVariant, style="suffix"),
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -942,10 +945,10 @@ dependency(myScenario) <- c("Spatial Multiprocessing",
                             "STSM Transition Multipliers [LA]",
                             "STSM Transition Pathways [LA]",
                             "SF Flow Spatial Multipliers [PRISM Historical]",
-                            "SF Output Options and Filters [Only 2016; Uncertainty]",
+                            vTag("SF Output Options and Filters [Only 2016; Uncertainty]", gwpVariant, style="bracket"),
                             "Flow Multipliers [PRISM, Uncertainty, Add Prev Wetland]",
                             "Stock Limit [All]",
-                            "Single Cell: Carbon and LULC: Uncertainty")
+                            vTag("Single Cell: Carbon and LULC: Uncertainty", gwpVariant, style="bracket"))
 
 rm(myScenario)
 

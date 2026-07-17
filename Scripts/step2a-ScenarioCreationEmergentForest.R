@@ -7,6 +7,9 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -27,6 +30,8 @@ myLibrary <- ssimLibrary(name = paste0(modelFullPath, "/", modelName, ".ssim"),
 
 myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
+
+if (activeGWP == "GWP100") {
 
 # Add Flow Type
 flowTypes <- read_csv(paste0(rootPathUpdatedTables,"stsimsf_FlowMultiplier/stsimsf_FlowMultiplier Wetland Emergent Mean IPCC.csv"))
@@ -186,6 +191,8 @@ myCSV <- read.csv(paste0(outpathDatasheets,"stsim_StateAttributeType.csv"))
 saveDatasheet(myProject, myCSV, "stsim_StateAttributeType", append = TRUE)
 
 rm(myCSV)
+
+}
 
 # Create sub-scenarios
 
@@ -421,8 +428,8 @@ rm(myScenario,myData,transitionTypeGroup,transitionTypes)
 
 # Add additional pathways
 
-myScenario <- scenario(myProject, 
-                       scenario="SF Flow Pathways [Base Flows, Add Methane]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Flow Pathways [Base Flows, Add Methane]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios",
                        sourceScenario = "SF Flow Pathways [Base Flows]")
 
@@ -585,8 +592,8 @@ rm(myScenario,flowTypesAddEmergent,myData,flowTypesAddForest1,flowTypesAddForest
    flowTypesMethane,flowTypesLateral,flowTypesAtm,myDataState,myDataAll, myCSV1,myCSV2)
 
 # Update Outputs
-myScenario <- scenario(myProject, 
-                       scenario="SF Output Options and Filters [Add Methane]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Output Options and Filters [Add Methane]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios",
                        sourceScenario = "SF Output Options and Filters")
 
@@ -664,11 +671,11 @@ myData <- data.frame(SummaryOutputST	= "Yes",
 saveDatasheet(myScenario, myData, sheetName)
 
 # Calculate new GWP for methane
-GWPmethane <- round((16.043/12.011)*27,2)
+GWPmethane <- round((16.043/12.011)*gwpVariant$factor,2)
 
 # Update stock flow group membership
-myScenario <- scenario(myProject, 
-                       scenario="SF Stock and Flow Group Membership [Add Methane]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Stock and Flow Group Membership [Add Methane]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios",
                        sourceScenario = "SF Stock and Flow Group Membership")
 

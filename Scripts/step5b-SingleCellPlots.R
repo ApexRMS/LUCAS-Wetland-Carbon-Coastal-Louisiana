@@ -6,6 +6,9 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -23,28 +26,23 @@ myLibrary <- ssimLibrary(name = paste0(modelFullPath, "/", modelName, ".ssim"),
 
 myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
-pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/")
+pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/", gwpVariant$label, "/")
 
 if(!dir.exists(pathOut)){
-  dir.create(pathOut)
+  dir.create(pathOut, recursive = TRUE)
 }
 
 pathOutTransitions <- paste0(pathOut,"TransitionsWetlandWater")
 
 if(!dir.exists(pathOutTransitions)){
-  dir.create(pathOutTransitions)
+  dir.create(pathOutTransitions, recursive = TRUE)
 }
 
 
 funCompareCharts <- function(scenariosToCompare,scenarioNames,plotNamePrefix){
-  
-  scenarioList <- scenario(myProject, summary = T, results = T)
-  
-  tEId <- scenarioList$ScenarioId[grep(scenariosToCompare[1],scenarioList$Name)]
-  tPId <- scenarioList$ScenarioId[grep(scenariosToCompare[2],scenarioList$Name)]
-  
-  myScenarioTE <- scenario(myProject, scenario=max(tEId))
-  myScenarioTP <- scenario(myProject, scenario=max(tPId))
+
+  myScenarioTE <- getScenarioExact(myProject, vTag(scenariosToCompare[1], gwpVariant, style="bracket"))
+  myScenarioTP <- getScenarioExact(myProject, vTag(scenariosToCompare[2], gwpVariant, style="bracket"))
   
   myDataStockTE <- datasheet(myScenarioTE, "stsim_OutputStock")
   myDataStockTP <- datasheet(myScenarioTP, "stsim_OutputStock")

@@ -8,6 +8,9 @@ library(rsyncrosim)
 library(tidyverse)
 library(terra)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -276,9 +279,9 @@ saveDatasheet(myScenario, fileNamesTable, sheetName)
 
 # Update initial conditions
 
-# Create new transition table 
-myScenario <- scenario(myProject, 
-                       scenario = "Basin No Palustrine Forested Wetland",
+# Create new transition table
+myScenario <- scenario(myProject,
+                       scenario = vTag("Basin No Palustrine Forested Wetland", gwpVariant, style="suffix"),
                        folder = "4. Final Spatial Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -291,10 +294,10 @@ dependency(myScenario) <- c("Spatial Multiprocessing",
                             "STSM Transition Multipliers [No Forested Wetland]",
                             "STSM Transition Pathways [No Forested Wetland]",
                             "SF Flow Spatial Multipliers [PRISM Historical]",
-                            "SF Output Options and Filters [Only 2016]",
+                            vTag("SF Output Options and Filters [Only 2016]", gwpVariant, style="bracket"),
                             "SF Flow Multipliers [PRISM, Mean, Add Prev Wetland]",
                             "Stock Limit [All]",
-                            "Single Cell: Carbon and LULC: Mean")
+                            vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
 
 rm(myScenario)
 

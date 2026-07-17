@@ -10,6 +10,8 @@ library(terra)
 options(scipen = 999)
 old <- options(pillar.sigfig = 10)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -28,18 +30,6 @@ myLibrary <- ssimLibrary(name = paste0(modelFullPath, "/", modelName, ".ssim"),
 myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
 pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/")
-
-pathOutSpatial <- paste0(pathOut,"Spatial/")
-
-if(!dir.exists(pathOutSpatial)){
-  dir.create(pathOutSpatial)
-}
-
-pathOutManuscript <- paste0(pathOutSpatial,"Manuscript")
-
-if(!dir.exists(pathOutManuscript)){
-  dir.create(pathOutManuscript)
-}
 
 scenarioList <- scenario(myProject, summary = T, results = T)
 
@@ -120,12 +110,25 @@ lookupChart <- data.frame(LandClass = c("Estuarine Emergent Wetland",
                                     "#6D6C14"
                                     ))
 
+for (activeGWP in names(gwpVariants)) {
+  gwpVariant <- gwpVariants[[activeGWP]]
+
+  pathOutSpatial <- paste0(pathOut,gwpVariant$label,"/Spatial/")
+
+  if(!dir.exists(pathOutSpatial)){
+    dir.create(pathOutSpatial, recursive = TRUE)
+  }
+
+  pathOutManuscript <- paste0(pathOutSpatial,"Manuscript")
+
+  if(!dir.exists(pathOutManuscript)){
+    dir.create(pathOutManuscript, recursive = TRUE)
+  }
+
 for (s in 1:length(scen)){
-  
-  idS <- scenarioList$ScenarioId[grep(scen[s],scenarioList$Name)]
-  
-  myScenarioS <- scenario(myProject, scenario=max(idS))
-  
+
+  myScenarioS <- getScenarioExact(myProject, vTag(scen[s], gwpVariant, style="suffix"))
+
   myDataLandS <- datasheet(myScenarioS, "stsim_OutputStratumState")
   
   landS <- myDataLandS %>%
@@ -189,9 +192,7 @@ for (s in 1:length(scen)){
   
 }
 
-id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
-
-myScenario2 <- scenario(myProject, scenario=max(id2))
+myScenario2 <- getScenarioExact(myProject, vTag("Basin Baseline", gwpVariant, style="suffix"))
 
 lookupS <- lookupLC %>%
   rename(Start = StateClassId,
@@ -300,17 +301,19 @@ timeStepPair <- c(2001,2016)
 stateClassTable <- datasheet(myProject, name = "stsim_StateClass") %>%
   select(Name,Id)
 
-lookupLC <- lookupLC %>%
+# Note: uses lookupLCNet (not lookupLC) so this join is idempotent across
+# GWP-variant loop iterations; lookupLC itself is never mutated.
+lookupLCNet <- lookupLC %>%
   rename(Name = StateClassId) %>%
   left_join(stateClassTable,by = join_by(Name))
 
 
-lookupS <- lookupLC %>%
+lookupS <- lookupLCNet %>%
   rename(Start = Id,
          LandClassStart = LandClass) %>%
   select(Start,LandClassStart)
 
-lookupE <- lookupLC %>%
+lookupE <- lookupLCNet %>%
   rename(End = Id,
          LandClassEnd = LandClass) %>%
   select(End,LandClassEnd)
@@ -319,9 +322,7 @@ scenList <- c("Basin Baseline")
 
 for (i in 1:length(scenList)){
   
-  scenID <- scenarioList$ScenarioId[grep(scenList[i],scenarioList$Name)]
-  
-  myScenario <- scenario(myProject, scenario=max(scenID))
+  myScenario <- getScenarioExact(myProject, vTag(scenList[i], gwpVariant, style="suffix"))
   
   listLandCover <- list.files(paste0(rootPath,"/Models/",
                                      modelName,"/",
@@ -419,5 +420,7 @@ for (i in 1:length(scenList)){
     geom_text(aes(x=LandClassEnd2, y=LandClassStart2, label = Area_haR), color = "black", size = 4)
   
   ggsave(paste0(pathOutManuscript,"/LandCoverT_",gsub(" ","",scenList[i]),".png"), pT, width = 6, height = 4, dpi = 600)
-  
+
 }
+
+} # end gwpVariants loop

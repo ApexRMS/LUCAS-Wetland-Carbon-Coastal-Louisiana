@@ -10,6 +10,9 @@ library(rsyncrosim)
 library(tidyverse)
 library(terra)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -130,16 +133,16 @@ for (i in 1:length(transitionsList)){
   
   transitionName <- gsub(" [Type]","",gsub("LULCC: ","",transitionsList[i]),fixed = T)
   
-  myScenario <- scenario(myProject, 
-                         scenario=paste0("Transition: ",transitionName),
+  myScenario <- scenario(myProject,
+                         scenario=vTag(paste0("Transition: ",transitionName), gwpVariant, style="bracket"),
                          folder = "Single-Cell Transitions")
-  
+
   mergeDependencies(myScenario) <- F
-  
+
   stateClassStart <- unlist(lapply(strsplit(transitionName, " -> "), "[[", 1))
-  
+
   if (paste0("LULCC: ",transitionName) %in% myPath2$TransitionTypeId){
-    
+
     dependency(myScenario) <- c("Run Control [2001-2100; 1 MC]",
                                 "Output Options [Non-Spatial; Summary]",
                                 "SF Output Options [All]",
@@ -148,12 +151,12 @@ for (i in 1:length(transitionsList)){
                                 "STSM Transition Pathways [LA]",
                                 "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
                                 "Stock Limit [All]",
-                                "Single Cell: Carbon and LULC: Mean")
-    
+                                vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
     rm(myScenario)
-    
+
   } else if (paste0("LULCC: ",transitionName) %in% myPath1$TransitionTypeId){
-    
+
     dependency(myScenario) <- c("Run Control [2001-2100; 1 MC]",
                                 "Output Options [Non-Spatial; Summary]",
                                 "SF Output Options [All]",
@@ -162,14 +165,14 @@ for (i in 1:length(transitionsList)){
                                 "STSM Transition Pathways [No Forested Wetland]",
                                 "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
                                 "Stock Limit [All]",
-                                "Single Cell: Carbon and LULC: Mean")
-    
+                                vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
     rm(myScenario)
-    
+
   }
-  
-  run(myProject, 
-      scenario=paste0("Transition: ",transitionName))
+
+  run(myProject,
+      scenario=vTag(paste0("Transition: ",transitionName), gwpVariant, style="bracket"))
   
   
 }

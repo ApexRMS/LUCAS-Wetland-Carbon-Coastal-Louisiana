@@ -7,6 +7,9 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -98,15 +101,11 @@ scenNamesForestedWetland <- c("Updated Wetland: Palustrine Forested Spinup: Limi
 latSites <- c(latS,latW)
 
 for (i in 1:length(scenNamesForestedWetland)){
-  
-  scenarioList <- scenario(myProject, summary = T, results = T)
-  
-  forestId <- scenarioList$ScenarioId[grep(scenNamesForestedWetland[i],scenarioList$Name)]
-  
-  myScenario <- scenario(myProject, scenario=max(forestId))
-  
+
+  myScenario <- getScenarioExact(myProject, vTag(scenNamesForestedWetland[i], gwpVariant, style = "bracket"))
+
   siteLetter <- substring(scenNamesForestedWetland[i],nchar(scenNamesForestedWetland[i]),nchar(scenNamesForestedWetland[i]))
-  
+
   myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
   
   # Has equilibrium been reached, difference is less than 1%, (difference in peaks, year prior to disturbance)
@@ -244,8 +243,8 @@ for (i in 1:length(scenNamesForestedWetland)){
   rm(myScenario)
   
   
-  myScenario <- scenario(myProject, 
-                         scenario=paste0("Init C Stocks at Equilibrium [Wetland: Palustrine Forested Updated ",siteLetter," ]"),
+  myScenario <- scenario(myProject,
+                         scenario=vTag(paste0("Init C Stocks at Equilibrium [Wetland: Palustrine Forested Updated ",siteLetter," ]"), gwpVariant, style = "bracket"),
                          folder = "Single-Cell Sub-Scenarios")
   
   write.csv(myData3,
@@ -266,8 +265,8 @@ for (i in 1:length(scenNamesForestedWetland)){
   tail(myData4)
   mean(myData$Amount[myData$AgeMin == 300 & myData$StockGroupId == "DOM: Snag Stem [Type]"])
   
-  rm(myData4,myScenario,myData3,myData2,myData,forestId,scenarioList, myCSV, myCSV2)
-  
+  rm(myData4,myScenario,myData3,myData2,myData, myCSV, myCSV2)
+
 }
 
 

@@ -11,6 +11,8 @@ library(terra)
 options(scipen = 999)
 old <- options(pillar.sigfig = 10)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -30,19 +32,7 @@ myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
 pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/")
 
-pathOutSpatial <- paste0(pathOut,"Spatial/")
-
-if(!dir.exists(pathOutSpatial)){
-  dir.create(pathOutSpatial)
-}
-
-pathOutManuscript <- paste0(pathOutSpatial,"Manuscript")
-
-if(!dir.exists(pathOutManuscript)){
-  dir.create(pathOutManuscript)
-}
-
-# Extract stocks 
+# Extract stocks
 scenarioList <- scenario(myProject, summary = T, results = T)
 
 scenariosTable <- c("Original Oak Gum Cypress Forest",
@@ -99,15 +89,37 @@ stocksAtm <- c("Atmosphere [Type]",
                 "Atmosphere: CO [Type]",
                 "Atmosphere: CO2 [Type]")
 
+for (activeGWP in names(gwpVariants)) {
+  gwpVariant <- gwpVariants[[activeGWP]]
+
+  pathOutSpatial <- paste0(pathOut,gwpVariant$label,"/Spatial/")
+
+  if(!dir.exists(pathOutSpatial)){
+    dir.create(pathOutSpatial, recursive = TRUE)
+  }
+
+  pathOutManuscript <- paste0(pathOutSpatial,"Manuscript")
+
+  if(!dir.exists(pathOutManuscript)){
+    dir.create(pathOutManuscript, recursive = TRUE)
+  }
+
 stockTable <- data.frame(Scenario = NA,
                          StockGroup = NA,
                          StateClass = NA,
                          AmountT = NA)
 
 for (i in 1:length(scenariosTable)){
-  
-  id1 <- scenarioList$ScenarioId[grep(scenariosTable[i],scenarioList$Name)]
-  myScenario1 <- scenario(myProject, scenario=max(id1))
+
+  # "Basin *" scenarios carry a suffix-style GWP tag; single-cell final
+  # scenarios (from step4-FinalScenarios.R) carry a bracket-style tag
+  scenarioNameTagged <- if (grepl("^Basin ", scenariosTable[i])) {
+    vTag(scenariosTable[i], gwpVariant, style="suffix")
+  } else {
+    vTag(scenariosTable[i], gwpVariant, style="bracket")
+  }
+
+  myScenario1 <- getScenarioExact(myProject, scenarioNameTagged)
   myDataStock1 <- datasheet(myScenario1, "stsim_OutputStock")
   
   myDataStock1s <- myDataStock1 %>%
@@ -129,12 +141,12 @@ for (i in 1:length(scenariosTable)){
     group_by(StockGroup,StateClass) %>%
     summarize(AmountT = round(sum(AmountI,na.rm = T),2)) %>%
     ungroup() %>%
-    mutate(Scenario = scenariosTable[i])
-  
+    mutate(Scenario = scenarioNameTagged)
+
   stockTable <- stockTable %>%
     add_row(myDataStock1s)
-  
-  rm(id1,myScenario1,myDataStock1,myDataStock1s)
+
+  rm(scenarioNameTagged,myScenario1,myDataStock1,myDataStock1s)
   
 
 }
@@ -143,13 +155,13 @@ stockTable <- stockTable[-1,]
 
 stockTable <- stockTable %>%
   rename(AmountTonsC = AmountT) %>%
-  mutate(ScenarioName = case_when(Scenario == "Original Oak Gum Cypress Forest"~"Oak Gum Cypress Forest",
-                                  Scenario == "Palustrine Forested Wetland: Add Uncertainty"~"Palustrine Forested Wetland",
-                                  Scenario == "Palustrine Emergent Wetland: Add Uncertainty"~"Palustrine Emergent Wetland",
-                                  Scenario == "Estuarine Emergent Wetland: Add Uncertainty"~"Estuarine Emergent Wetland",
-                                  Scenario == "Basin Baseline"~"Baseline",
-                                  Scenario == "Basin No Palustrine Forested Wetland"~"No Palustrine Forested Wetland",
-                                  Scenario == "Basin IPCC"~"IPCC")) %>%
+  mutate(ScenarioName = case_when(Scenario == vTag("Original Oak Gum Cypress Forest", gwpVariant, style="bracket")~"Oak Gum Cypress Forest",
+                                  Scenario == vTag("Palustrine Forested Wetland: Add Uncertainty", gwpVariant, style="bracket")~"Palustrine Forested Wetland",
+                                  Scenario == vTag("Palustrine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket")~"Palustrine Emergent Wetland",
+                                  Scenario == vTag("Estuarine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket")~"Estuarine Emergent Wetland",
+                                  Scenario == vTag("Basin Baseline", gwpVariant, style="suffix")~"Baseline",
+                                  Scenario == vTag("Basin No Palustrine Forested Wetland", gwpVariant, style="suffix")~"No Palustrine Forested Wetland",
+                                  Scenario == vTag("Basin IPCC", gwpVariant, style="suffix")~"IPCC")) %>%
   select(ScenarioName,StateClass,StockGroup,AmountTonsC)
 
 write.csv(stockTable,
@@ -239,13 +251,11 @@ scenariosDiff <- c("Basin Baseline",
                    "Basin IPCC")
 
 for (i in 1:length(plotFlows)){
-  
-  id2 <- scenarioList$ScenarioId[grep(scenariosDiff[1],scenarioList$Name)]
-  myScenario2 <- scenario(myProject, scenario=max(id2))
+
+  myScenario2 <- getScenarioExact(myProject, vTag(scenariosDiff[1], gwpVariant, style="suffix"))
   myDataFlux2 <- datasheet(myScenario2, "stsim_OutputFlow")
-  
-  id3 <- scenarioList$ScenarioId[grep(scenariosDiff[2],scenarioList$Name)]
-  myScenario3 <- scenario(myProject, scenario=max(id3))
+
+  myScenario3 <- getScenarioExact(myProject, vTag(scenariosDiff[2], gwpVariant, style="suffix"))
   myDataFlux3 <- datasheet(myScenario3, "stsim_OutputFlow")
   
   myDataFlux2necb <- myDataFlux2 %>%
@@ -269,9 +279,8 @@ for (i in 1:length(plotFlows)){
   
   print(plotFlows[i])
   print(myDataFlux2necb[myDataFlux2necb$Timestep == timePeriod[2],])
-  
-  rm(id2,id3,
-     myScenario2,myScenario3,
+
+  rm(myScenario2,myScenario3,
      myDataFlux2,myDataFlux3)
   
   rm(myDataFlux2necb,myDataFlux3necb)
@@ -291,13 +300,11 @@ scenariosDiff <- c("Basin Baseline",
                    "Basin IPCC")
 
 for (i in 1:length(plotStocks)){
-  
-  id2 <- scenarioList$ScenarioId[grep(scenariosDiff[1],scenarioList$Name)]
-  myScenario2 <- scenario(myProject, scenario=max(id2))
+
+  myScenario2 <- getScenarioExact(myProject, vTag(scenariosDiff[1], gwpVariant, style="suffix"))
   myDataStock2 <- datasheet(myScenario2, "stsim_OutputStock")
-  
-  id3 <- scenarioList$ScenarioId[grep(scenariosDiff[2],scenarioList$Name)]
-  myScenario3 <- scenario(myProject, scenario=max(id3))
+
+  myScenario3 <- getScenarioExact(myProject, vTag(scenariosDiff[2], gwpVariant, style="suffix"))
   myDataStock3 <- datasheet(myScenario3, "stsim_OutputStock")
   
   myDataStock2e <- myDataStock2 %>%
@@ -321,18 +328,16 @@ for (i in 1:length(plotStocks)){
   print(plotStocks[i])
   print(myDataStock2e[myDataStock2e$Timestep == timePeriod[2],])
   
-  rm(id2,id3,
-     myScenario2,myScenario3,
+  rm(myScenario2,myScenario3,
      myDataStock2,myDataStock3)
-  
+
   rm(myDataStock2e,myDataStock3e)
 }
 
 
 # For changes in NECB associated with transitions of wetland to water
 
-id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
-myScenario2 <- scenario(myProject, scenario=max(id2))
+myScenario2 <- getScenarioExact(myProject, vTag("Basin Baseline", gwpVariant, style="suffix"))
 
 start1 <- c("2001","2006","2010")
 end1 <- c("2006","2010","2016")
@@ -844,7 +849,9 @@ for (i in 1:length(yearsL)){
     pull(sum)
   
   print(tabTwat)
-  
+
 }
+
+} # end gwpVariants loop
 
 

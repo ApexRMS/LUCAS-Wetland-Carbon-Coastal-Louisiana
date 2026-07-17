@@ -7,6 +7,9 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -281,14 +284,14 @@ for (i in 1:length(scen)){
 }
 
 
-myScenario <- scenario(myProject, 
-                       scenario="SF Flow Pathways [Event, Base, Updated, Water]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Flow Pathways [Event, Base, Updated, Water]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios Merged")
 
 mergeDependencies(myScenario) <- T
 
 dependency(myScenario) <- c("SF Flow Pathways [Event Flows]",
-                            "SF Flow Pathways [Base Flows, Add Methane, Add Ag, Add Water]")
+                            vTag("SF Flow Pathways [Base Flows, Add Methane, Add Ag, Add Water]", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
@@ -296,8 +299,8 @@ rm(myScenario)
 #"Flow Multiplier by Stock [Wetland to Water]",
 
 # Merge carbon data sheets for mean model
-myScenario <- scenario(myProject, 
-                       scenario="Single Cell: Carbon and LULC: Mean",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios Merged")
 
 mergeDependencies(myScenario) <- F
@@ -305,16 +308,16 @@ mergeDependencies(myScenario) <- F
 dependency(myScenario) <- c("SAV: Mean Update and Initial C",
                             "Stock Limit [All]",
                             "SF Initial Stocks",
-                            "SF Stock and Flow Group Membership [Add Methane]",
+                            vTag("SF Stock and Flow Group Membership [Add Methane]", gwpVariant, style="bracket"),
                             "SF Flow Order [Updated]",
-                            "SF Flow Pathways [Event, Base, Updated, Water]",
+                            vTag("SF Flow Pathways [Event, Base, Updated, Water]", gwpVariant, style="bracket"),
                             "Pipeline")
 
 rm(myScenario)
 
 # Merge carbon data sheets for uncertainty model
-myScenario <- scenario(myProject, 
-                       scenario="Single Cell: Carbon and LULC: Uncertainty",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Single Cell: Carbon and LULC: Uncertainty", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios Merged")
 
 mergeDependencies(myScenario) <- F
@@ -324,9 +327,9 @@ dependency(myScenario) <- c("SAV: Uncertainty Update and Initial C",
                             "External Variable: Site ID Lat Flux Estimate Set Seed Add Forest",
                             "Stock Limit [All]",
                             "SF Initial Stocks",
-                            "SF Stock and Flow Group Membership [Add Methane]",
+                            vTag("SF Stock and Flow Group Membership [Add Methane]", gwpVariant, style="bracket"),
                             "SF Flow Order [Updated]",
-                            "SF Flow Pathways [Event, Base, Updated, Water]",
+                            vTag("SF Flow Pathways [Event, Base, Updated, Water]", gwpVariant, style="bracket"),
                             "Pipeline")
 
 rm(myScenario)
@@ -336,8 +339,8 @@ rm(myScenario)
 
 # Wetland: Estuarine Emergent
 
-myScenario <- scenario(myProject, 
-                       scenario="Estuarine Emergent Wetland: Mean",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Estuarine Emergent Wetland: Mean", gwpVariant, style="bracket"),
                        folder = "3. Single-Cell Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -349,14 +352,14 @@ dependency(myScenario) <- c("Run Control [2001-2124; 1 MC]",
                             "Transition Multipliers",
                             "STSM Transition Pathways",
                             "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
-                            "Single Cell: Carbon and LULC: Mean")
+                            vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 # Wetland: Palustrine Emergent
 
-myScenario <- scenario(myProject, 
-                       scenario="Palustrine Emergent Wetland: Mean",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Palustrine Emergent Wetland: Mean", gwpVariant, style="bracket"),
                        folder = "3. Single-Cell Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -368,15 +371,15 @@ dependency(myScenario) <- c("Run Control [2001-2124; 1 MC]",
                             "Transition Multipliers",
                             "STSM Transition Pathways",
                             "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
-                            "Single Cell: Carbon and LULC: Mean")
+                            vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
 rm(myScenario)
 
 # Run Final Scenarios
 
 # Wetland: Estuarine Emergent
 
-myScenario <- scenario(myProject, 
-                       scenario="Estuarine Emergent Wetland: Add Uncertainty",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Estuarine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"),
                        folder = "3. Single-Cell Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -388,14 +391,14 @@ dependency(myScenario) <- c("Run Control [2001-2124; 1000 MC]",
                             "Transition Multipliers",
                             "STSM Transition Pathways",
                             "Flow Multipliers [No PRISM, Uncertainty, Add Prev Wetland]",
-                            "Single Cell: Carbon and LULC: Uncertainty")
+                            vTag("Single Cell: Carbon and LULC: Uncertainty", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 # Wetland: Palustrine Emergent
 
-myScenario <- scenario(myProject, 
-                       scenario="Palustrine Emergent Wetland: Add Uncertainty",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Palustrine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"),
                        folder = "3. Single-Cell Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -407,7 +410,7 @@ dependency(myScenario) <- c("Run Control [2001-2124; 1000 MC]",
                             "Transition Multipliers",
                             "STSM Transition Pathways",
                             "Flow Multipliers [No PRISM, Uncertainty, Add Prev Wetland]",
-                            "Single Cell: Carbon and LULC: Uncertainty")
+                            vTag("Single Cell: Carbon and LULC: Uncertainty", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
@@ -415,7 +418,7 @@ rm(myScenario)
 # Oak gum cypress
 
 myScenario <- scenario(myProject,
-                       scenario="Original Oak Gum Cypress Forest",
+                       scenario=vTag("Original Oak Gum Cypress Forest", gwpVariant, style="bracket"),
                        folder = "3. Single-Cell Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -427,14 +430,14 @@ dependency(myScenario) <- c("Run Control [2001-2124; 1 MC]",
                             "Transition Multipliers",
                             "STSM Transition Pathways",
                             "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
-                            "Single Cell: Carbon and LULC: Mean")
+                            vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 # Palustrine Forested Wetland
 
-myScenario <- scenario(myProject, 
-                       scenario="Palustrine Forested Wetland: Mean",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Palustrine Forested Wetland: Mean", gwpVariant, style="bracket"),
                        folder = "3. Single-Cell Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -446,14 +449,14 @@ dependency(myScenario) <- c("Run Control [2001-2124; 1 MC]",
                             "Transition Multipliers",
                             "STSM Transition Pathways",
                             "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
-                            "Single Cell: Carbon and LULC: Mean")
+                            vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 # Palustrine Forested Wetland Add Uncertainty
 
-myScenario <- scenario(myProject, 
-                       scenario="Palustrine Forested Wetland: Add Uncertainty",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Palustrine Forested Wetland: Add Uncertainty", gwpVariant, style="bracket"),
                        folder = "3. Single-Cell Scenarios")
 
 mergeDependencies(myScenario) <- F
@@ -465,18 +468,18 @@ dependency(myScenario) <- c("Run Control [2001-2124; 1000 MC]",
                             "Transition Multipliers",
                             "STSM Transition Pathways",
                             "Flow Multipliers [No PRISM, Uncertainty, Add Prev Wetland]",
-                            "Single Cell: Carbon and LULC: Uncertainty")
+                            vTag("Single Cell: Carbon and LULC: Uncertainty", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 
-run(myProject, scenario="Estuarine Emergent Wetland: Mean")
-run(myProject, scenario="Palustrine Emergent Wetland: Mean")
-run(myProject, scenario="Estuarine Emergent Wetland: Add Uncertainty")
-run(myProject, scenario="Palustrine Emergent Wetland: Add Uncertainty")
-run(myProject, scenario="Original Oak Gum Cypress Forest")
-run(myProject, scenario="Palustrine Forested Wetland: Mean")
-run(myProject, scenario="Palustrine Forested Wetland: Add Uncertainty")
+run(myProject, scenario=vTag("Estuarine Emergent Wetland: Mean", gwpVariant, style="bracket"))
+run(myProject, scenario=vTag("Palustrine Emergent Wetland: Mean", gwpVariant, style="bracket"))
+run(myProject, scenario=vTag("Estuarine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"))
+run(myProject, scenario=vTag("Palustrine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"))
+run(myProject, scenario=vTag("Original Oak Gum Cypress Forest", gwpVariant, style="bracket"))
+run(myProject, scenario=vTag("Palustrine Forested Wetland: Mean", gwpVariant, style="bracket"))
+run(myProject, scenario=vTag("Palustrine Forested Wetland: Add Uncertainty", gwpVariant, style="bracket"))
 
 transitionTypes <- c("Emergent Wetland to Water",
                      "Emergent Wetland to Unvegetated",
@@ -498,13 +501,13 @@ for (i in 1:length(transitionTypes)){
   }
   
   if (i %in% c(1,2)){
-    
-    myScenario <- scenario(myProject, 
-                           scenario=paste0("Transition: Estuarine ",transitionTypes[i]," S"),
+
+    myScenario <- scenario(myProject,
+                           scenario=vTag(paste0("Transition: Estuarine ",transitionTypes[i]," S"), gwpVariant, style="bracket"),
                            folder = "3. Single-Cell Scenarios")
-    
+
     mergeDependencies(myScenario) <- F
-    
+
     dependency(myScenario) <- c("Run Control [2001-2220; 1 MC]",
                                 "Output Options [Non-Spatial; Summary]",
                                 "SF Output Options [All]",
@@ -512,16 +515,16 @@ for (i in 1:length(transitionTypes)){
                                 paste0("Transition Multipliers: ", transitionTypes[i]),
                                 transitionPathways,
                                 "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
-                                "Single Cell: Carbon and LULC: Mean")
-    
+                                vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
     rm(myScenario)
-    
-    myScenario <- scenario(myProject, 
-                           scenario= paste0("Transition: Palustrine ",transitionTypes[i]," S"),
+
+    myScenario <- scenario(myProject,
+                           scenario= vTag(paste0("Transition: Palustrine ",transitionTypes[i]," S"), gwpVariant, style="bracket"),
                            folder = "3. Single-Cell Scenarios")
-    
+
     mergeDependencies(myScenario) <- F
-    
+
     dependency(myScenario) <- c("Run Control [2001-2220; 1 MC]",
                                 "Output Options [Non-Spatial; Summary]",
                                 "SF Output Options [All]",
@@ -529,16 +532,16 @@ for (i in 1:length(transitionTypes)){
                                 paste0("Transition Multipliers: ", transitionTypes[i]),
                                 transitionPathways,
                                 "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
-                                "Single Cell: Carbon and LULC: Mean")
-    
+                                vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
     rm(myScenario)
-    
-    myScenario <- scenario(myProject, 
-                           scenario=paste0("Transition: Estuarine ",transitionTypes[i]," IPCC"),
+
+    myScenario <- scenario(myProject,
+                           scenario=vTag(paste0("Transition: Estuarine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"),
                            folder = "3. Single-Cell Scenarios")
-    
+
     mergeDependencies(myScenario) <- F
-    
+
     dependency(myScenario) <- c("Run Control [2001-2220; 1 MC]",
                                 "Output Options [Non-Spatial; Summary]",
                                 "SF Output Options [All]",
@@ -546,16 +549,16 @@ for (i in 1:length(transitionTypes)){
                                 paste0("Transition Multipliers: ", transitionTypes[i]),
                                 transitionPathways,
                                 "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland, IPCC]",
-                                "Single Cell: Carbon and LULC: Mean")
-    
+                                vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
     rm(myScenario)
-    
-    myScenario <- scenario(myProject, 
-                           scenario = paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"),
+
+    myScenario <- scenario(myProject,
+                           scenario = vTag(paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"),
                            folder = "3. Single-Cell Scenarios")
-    
+
     mergeDependencies(myScenario) <- F
-    
+
     dependency(myScenario) <- c("Run Control [2001-2220; 1 MC]",
                                 "Output Options [Non-Spatial; Summary]",
                                 "SF Output Options [All]",
@@ -563,23 +566,23 @@ for (i in 1:length(transitionTypes)){
                                 paste0("Transition Multipliers: ", transitionTypes[i]),
                                 transitionPathways,
                                 "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland, IPCC]",
-                                "Single Cell: Carbon and LULC: Mean")
-    
+                                vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
     rm(myScenario)
-    
-    run(myProject, scenario=paste0("Transition: Estuarine ",transitionTypes[i]," S"))
-    run(myProject, scenario=paste0("Transition: Palustrine ",transitionTypes[i]," S"))
-    run(myProject, scenario=paste0("Transition: Estuarine ",transitionTypes[i]," IPCC"))
-    run(myProject, scenario=paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"))
-    
+
+    run(myProject, scenario=vTag(paste0("Transition: Estuarine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
+    run(myProject, scenario=vTag(paste0("Transition: Palustrine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
+    run(myProject, scenario=vTag(paste0("Transition: Estuarine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
+    run(myProject, scenario=vTag(paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
+
   } else if (i %in% c(3,4)){
-    
-    myScenario <- scenario(myProject, 
-                           scenario= paste0("Transition: Palustrine ",transitionTypes[i]," S"),
+
+    myScenario <- scenario(myProject,
+                           scenario= vTag(paste0("Transition: Palustrine ",transitionTypes[i]," S"), gwpVariant, style="bracket"),
                            folder = "3. Single-Cell Scenarios")
-    
+
     mergeDependencies(myScenario) <- F
-    
+
     dependency(myScenario) <- c("Run Control [2001-2220; 1 MC]",
                                 "Output Options [Non-Spatial; Summary]",
                                 "SF Output Options [All]",
@@ -587,16 +590,16 @@ for (i in 1:length(transitionTypes)){
                                 paste0("Transition Multipliers: ", transitionTypes[i]),
                                 transitionPathways,
                                 "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland]",
-                                "Single Cell: Carbon and LULC: Mean")
-    
+                                vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
     rm(myScenario)
-    
-    myScenario <- scenario(myProject, 
-                           scenario = paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"),
+
+    myScenario <- scenario(myProject,
+                           scenario = vTag(paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"),
                            folder = "3. Single-Cell Scenarios")
-    
+
     mergeDependencies(myScenario) <- F
-    
+
     dependency(myScenario) <- c("Run Control [2001-2220; 1 MC]",
                                 "Output Options [Non-Spatial; Summary]",
                                 "SF Output Options [All]",
@@ -604,13 +607,13 @@ for (i in 1:length(transitionTypes)){
                                 paste0("Transition Multipliers: ", transitionTypes[i]),
                                 transitionPathways,
                                 "SF Flow Multipliers [No PRISM, Mean, Add Prev Wetland, IPCC]",
-                                "Single Cell: Carbon and LULC: Mean")
-    
+                                vTag("Single Cell: Carbon and LULC: Mean", gwpVariant, style="bracket"))
+
     rm(myScenario)
-    
-    run(myProject, scenario=paste0("Transition: Palustrine ",transitionTypes[i]," S"))
-    run(myProject, scenario=paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"))
-    
+
+    run(myProject, scenario=vTag(paste0("Transition: Palustrine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
+    run(myProject, scenario=vTag(paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
+
   }
   
 }

@@ -9,6 +9,9 @@ old <- options(pillar.sigfig = 10)
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -76,14 +79,14 @@ rm(myScenario)
 
 # Merge sub-scenarios: Carbon and LULC model
 
-myScenario <- scenario(myProject, 
-                       scenario="SF Flow Pathways [Event, Base, Original]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Flow Pathways [Event, Base, Original]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios Merged")
 
 mergeDependencies(myScenario) <- T
 
 dependency(myScenario) <- c("SF Flow Pathways [Event Flows]",
-                            "SF Flow Pathways [Base Flows, Add Methane]")
+                            vTag("SF Flow Pathways [Base Flows, Add Methane]", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
@@ -97,18 +100,18 @@ saveDatasheet(myScenario, myData, "core_Pipeline", append = FALSE)
 rm(myData)
 
 # Merge flow pathways
-myScenario <- scenario(myProject, 
-                       scenario="Single Cell: Carbon and LULC: Spinup Original",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Single Cell: Carbon and LULC: Spinup Original", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios Merged")
 
 mergeDependencies(myScenario) <- F
 
 dependency(myScenario) <- c("STSM Transition Pathways [Update Harvest: Wetland]",
                             "SF Initial Stocks",
-                            "SF Stock and Flow Group Membership [Add Methane]",
-                            "SF Output Options and Filters [Add Methane]",
+                            vTag("SF Stock and Flow Group Membership [Add Methane]", gwpVariant, style="bracket"),
+                            vTag("SF Output Options and Filters [Add Methane]", gwpVariant, style="bracket"),
                             "SF Flow Order [Updated]",
-                            "SF Flow Pathways [Event, Base, Original]",
+                            vTag("SF Flow Pathways [Event, Base, Original]", gwpVariant, style="bracket"),
                             "Pipeline")
 
 rm(myScenario)
@@ -366,7 +369,7 @@ rm(myScenario,disturbanceYears,myData)
 # Initialize Oak Gum Cypress Upland Forest
 
 myScenario <- scenario(myProject,
-                       scenario="Original Forest: Oak Gum Cypress Spinup: Harvest",
+                       scenario=vTag("Original Forest: Oak Gum Cypress Spinup: Harvest", gwpVariant, style="bracket"),
                        folder = "Single-Cell Spinups")
 
 mergeDependencies(myScenario) <- F
@@ -377,7 +380,7 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-1674; 40
                             "Initial Conditions: Single Cell - Forest: Oak/Gum/Cypress Group [Age 0]",
                             "Transition Multipliers: Single Cell - Forested Wetland Spinup: Harvest",
                             "SF Flow Multipliers [Update Forested Wetland]",
-                            "Single Cell: Carbon and LULC: Spinup Original")
+                            vTag("Single Cell: Carbon and LULC: Spinup Original", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
@@ -526,8 +529,8 @@ rm(myData4,myScenario,myData3,myData2,myData,forestId,scenarioList)
 # saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
 
 # Then run full model
-myScenario <- scenario(myProject, 
-                       scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M", gwpVariant, style="bracket"),
                        folder = "Single-Cell Spinups")
 
 mergeDependencies(myScenario) <- F
@@ -539,7 +542,7 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 
                             "Transition Multipliers: Single Cell - Forested Wetland Spinup: Harvest - more cycles",
                             "Stock Limit [All]",
                             "SF Flow Multipliers [Update Forested Wetland]",
-                            "Single Cell: Carbon and LULC: Spinup Original")
+                            vTag("Single Cell: Carbon and LULC: Spinup Original", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
@@ -650,8 +653,8 @@ calculateDecayRates(
 # 
 # saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
 
-myScenario <- scenario(myProject, 
-                       scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S", gwpVariant, style="bracket"),
                        folder = "Single-Cell Spinups")
 
 mergeDependencies(myScenario) <- F
@@ -663,7 +666,7 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 
                             "Transition Multipliers: Single Cell - Forested Wetland Spinup: Harvest - more cycles",
                             "Stock Limit [All]",
                             "SF Flow Multipliers [Forested Wetland BGS Slower S]",
-                            "Single Cell: Carbon and LULC: Spinup Original")
+                            vTag("Single Cell: Carbon and LULC: Spinup Original", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
@@ -764,8 +767,8 @@ calculateDecayRates(
 # saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
 
 # Run model for W site
-myScenario <- scenario(myProject, 
-                       scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W", gwpVariant, style="bracket"),
                        folder = "Single-Cell Spinups")
 
 mergeDependencies(myScenario) <- F
@@ -777,7 +780,7 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 
                             "Transition Multipliers: Single Cell - Forested Wetland Spinup: Harvest - more cycles",
                             "Stock Limit [All]",
                             "SF Flow Multipliers [Forested Wetland BGS Slower W]",
-                            "Single Cell: Carbon and LULC: Spinup Original")
+                            vTag("Single Cell: Carbon and LULC: Spinup Original", gwpVariant, style="bracket"))
 
 rm(myScenario)
 

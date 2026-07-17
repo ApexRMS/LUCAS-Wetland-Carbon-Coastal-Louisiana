@@ -5,6 +5,12 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+# This file's exported tables (flow-pathway/multiplier parameters, NPP,
+# distributions) are GWP-invariant structural data, so it is pinned to the
+# first/canonical variant and run once rather than looping over both.
+gwpVariant <- gwpVariants$GWP100
+
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
@@ -40,7 +46,7 @@ if (!dir.exists(pathOutTables)) {
 
 myScenario <- scenario(
   myProject,
-  "SF Flow Pathways [Base Flows, Add Methane, Add Ag, Add Water]"
+  vTag("SF Flow Pathways [Base Flows, Add Methane, Add Ag, Add Water]", gwpVariant, style="bracket")
 )
 
 dataDict <- datasheet(myScenario, summary = T)

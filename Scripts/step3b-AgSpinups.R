@@ -7,6 +7,9 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -232,10 +235,10 @@ dependency(myScenario) <- c("SF Flow Multipliers [Non Forest; Updated]",
 
 rm(myScenario)
 
-myScenario <- scenario(myProject, 
-                       scenario="SF Flow Pathways [Base Flows, Add Methane, Add Ag]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Flow Pathways [Base Flows, Add Methane, Add Ag]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios",
-                       sourceScenario = "SF Flow Pathways [Base Flows, Add Methane]")
+                       sourceScenario = vTag("SF Flow Pathways [Base Flows, Add Methane]", gwpVariant, style="bracket"))
 
 myData <- datasheet(myScenario, name = "stsim_FlowPathway")
 
@@ -370,20 +373,20 @@ rm(myScenario,myUpdate,saShore,saWater)
 
 # Merge flow pathways
 
-myScenario <- scenario(myProject, 
-                       scenario="SF Flow Pathways [Event, Base, Updated]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Flow Pathways [Event, Base, Updated]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios Merged")
 
 mergeDependencies(myScenario) <- T
 
 dependency(myScenario) <- c("SF Flow Pathways [Event Flows]",
-                            "SF Flow Pathways [Base Flows, Add Methane, Add Ag]")
+                            vTag("SF Flow Pathways [Base Flows, Add Methane, Add Ag]", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 
-myScenario <- scenario(myProject, 
-                       scenario="SAV: Ag [Update]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SAV: Ag [Update]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios Merged")
 
 mergeDependencies(myScenario) <- T
@@ -392,15 +395,15 @@ dependency(myScenario) <- c("Init C Stocks at Equilibrium Water and Shore [Mean]
                             "SAV: Agriculture [Net Growth]",
                             "SAV: Methane: Forested and Emergent",
                             "STSM State Attributes [Mean Net Growth, Add Wetland]",
-                            "Init C Stocks at Equilibrium [Forest: Oak Gum Cypress Original]",
-                            "Init C Stocks at Equilibrium [Wetland: Palustrine Forested Updated]",
+                            vTag("Init C Stocks at Equilibrium [Forest: Oak Gum Cypress Original]", gwpVariant, style="bracket"),
+                            vTag("Init C Stocks at Equilibrium [Wetland: Palustrine Forested Updated]", gwpVariant, style="bracket"),
                             "Init C Stocks at Equilibrium Emergent Wetland [Mean]")
 
 rm(myScenario)
 
 # Merge flow pathways
-myScenario <- scenario(myProject, 
-                       scenario="Single Cell: Carbon and LULC: Spinup Ag",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Single Cell: Carbon and LULC: Spinup Ag", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios Merged")
 
 mergeDependencies(myScenario) <- F
@@ -408,10 +411,10 @@ mergeDependencies(myScenario) <- F
 dependency(myScenario) <- c("Stock Limit [All]",
                             "STSM Transition Pathways [Update Harvest: Wetland]",
                             "SF Initial Stocks",
-                            "SF Stock and Flow Group Membership [Add Methane]",
-                            "SF Output Options and Filters [Add Methane]",
+                            vTag("SF Stock and Flow Group Membership [Add Methane]", gwpVariant, style="bracket"),
+                            vTag("SF Output Options and Filters [Add Methane]", gwpVariant, style="bracket"),
                             "SF Flow Order [Updated]",
-                            "SF Flow Pathways [Event, Base, Updated]",
+                            vTag("SF Flow Pathways [Event, Base, Updated]", gwpVariant, style="bracket"),
                             "Pipeline")
 
 rm(myScenario)
@@ -419,57 +422,57 @@ rm(myScenario)
 
 # Ag Spinups
 
-myScenario <- scenario(myProject, 
-                       scenario="Original Agriculture: Oak Gum Cypress to Cropland Spinup",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Original Agriculture: Oak Gum Cypress to Cropland Spinup", gwpVariant, style="bracket"),
                        folder = "Single-Cell Spinups")
 
 mergeDependencies(myScenario) <- F
 
 dependency(myScenario) <- c("Run Control [Spinup Agriculture; Non-Spatial; 1850-2001; 40 MC]",
                             "Output Options [Non-Spatial; Summary]",
-                            "SAV: Ag [Update]",
+                            vTag("SAV: Ag [Update]", gwpVariant, style="bracket"),
                             "Initial Conditions: Single Cell - Forest: Oak/Gum/Cypress Group [Age 124]",
                             "Transition Multipliers: Single Cell - Agriculture Spinup",
                             "SF Flow Multipliers [Update Emergent, Ag]",
-                            "Single Cell: Carbon and LULC: Spinup Ag")
+                            vTag("Single Cell: Carbon and LULC: Spinup Ag", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 
 # Ag Spinups
 
-myScenario <- scenario(myProject, 
-                       scenario="Agriculture: Forested Wetland Update to Cropland Spinup",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Agriculture: Forested Wetland Update to Cropland Spinup", gwpVariant, style="bracket"),
                        folder = "Single-Cell Spinups")
 
 mergeDependencies(myScenario) <- F
 
 dependency(myScenario) <- c("Run Control [Spinup Agriculture; Non-Spatial; 1850-2001; 40 MC]",
                             "Output Options [Non-Spatial; Summary]",
-                            "SAV: Ag [Update]",
+                            vTag("SAV: Ag [Update]", gwpVariant, style="bracket"),
                             "Initial Conditions: Single Cell - Wetland: Palustrine Forested [Age 124]",
                             "Transition Multipliers: Single Cell - Agriculture Spinup",
                             "SF Flow Multipliers [Update Emergent, Ag]",
-                            "Single Cell: Carbon and LULC: Spinup Ag")
+                            vTag("Single Cell: Carbon and LULC: Spinup Ag", gwpVariant, style="bracket"))
 
 rm(myScenario)
 
 
 # Ag Spinups
 
-myScenario <- scenario(myProject, 
-                       scenario="Agriculture: Emergent Wetland Update to Cropland Spinup",
+myScenario <- scenario(myProject,
+                       scenario=vTag("Agriculture: Emergent Wetland Update to Cropland Spinup", gwpVariant, style="bracket"),
                        folder = "Single-Cell Spinups")
 
 mergeDependencies(myScenario) <- F
 
 dependency(myScenario) <- c("Run Control [Spinup Agriculture; Non-Spatial; 1850-2001; 40 MC]",
                             "Output Options [Non-Spatial; Summary]",
-                            "SAV: Ag [Update]",
+                            vTag("SAV: Ag [Update]", gwpVariant, style="bracket"),
                             "Initial Conditions: Single Cell - Wetland: Palustrine Emergent",
                             "Transition Multipliers: Single Cell - Agriculture Spinup",
                             "SF Flow Multipliers [Update Emergent, Ag]",
-                            "Single Cell: Carbon and LULC: Spinup Ag")
+                            vTag("Single Cell: Carbon and LULC: Spinup Ag", gwpVariant, style="bracket"))
 
 rm(myScenario)
 

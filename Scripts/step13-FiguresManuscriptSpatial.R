@@ -10,6 +10,8 @@ library(ggplot2)
 options(scipen = 999)
 old <- options(pillar.sigfig = 10)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -29,29 +31,27 @@ myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
 pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/")
 
-pathOutSpatial <- paste0(pathOut,"Spatial/")
-
-if(!dir.exists(pathOutSpatial)){
-  dir.create(pathOutSpatial)
-}
-
-pathOutManuscript <- paste0(pathOutSpatial,"Manuscript")
-
-if(!dir.exists(pathOutManuscript)){
-  dir.create(pathOutManuscript)
-}
-
 scenarioList <- scenario(myProject, summary = T, results = T)
 
-#id1 <- scenarioList$ScenarioId[grep("Basin Climate and No Land Cover Change",scenarioList$Name)]
-id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
-id3 <- scenarioList$ScenarioId[grep("Basin IPCC",scenarioList$Name)]
-id4 <- scenarioList$ScenarioId[grep("Basin No Palustrine Forested Wetland",scenarioList$Name)]
+for (activeGWP in names(gwpVariants)) {
+  gwpVariant <- gwpVariants[[activeGWP]]
 
-#myScenario1 <- scenario(myProject, scenario=max(id1))
-myScenario2 <- scenario(myProject, scenario=max(id2))
-myScenario3 <- scenario(myProject, scenario=max(id3))
-myScenario4 <- scenario(myProject, scenario=max(id4))
+  pathOutSpatial <- paste0(pathOut,gwpVariant$label,"/Spatial/")
+
+  if(!dir.exists(pathOutSpatial)){
+    dir.create(pathOutSpatial, recursive = TRUE)
+  }
+
+  pathOutManuscript <- paste0(pathOutSpatial,"Manuscript")
+
+  if(!dir.exists(pathOutManuscript)){
+    dir.create(pathOutManuscript, recursive = TRUE)
+  }
+
+#myScenario1 <- getScenarioExact(myProject, vTag("Basin Climate and No Land Cover Change", gwpVariant, style="suffix"))
+myScenario2 <- getScenarioExact(myProject, vTag("Basin Baseline", gwpVariant, style="suffix"))
+myScenario3 <- getScenarioExact(myProject, vTag("Basin IPCC", gwpVariant, style="suffix"))
+myScenario4 <- getScenarioExact(myProject, vTag("Basin No Palustrine Forested Wetland", gwpVariant, style="suffix"))
 
 # Summarize Flows
 
@@ -363,12 +363,14 @@ for (i in 1:length(plotFlows)){
     )
   
   nameTabular <- "TgC_yr"
-  
+
   write.csv(
     myDataNECBBwide,
-    paste0(pathOut, "NECB_Comparison_2026-02-18_",nameTabular,".csv"),
+    paste0(pathOutManuscript, "/NECB_Comparison_2026-02-18_",nameTabular,".csv"),
     row.names = F
   )
-  
+
 }
+
+} # end gwpVariants loop
 

@@ -7,6 +7,9 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -147,9 +150,9 @@ saveDatasheet(myScenario, myData, sheetName)
 
 # Update Flow pathways
 
-myScenario <- scenario(myProject, 
-                       scenario="SF Flow Pathways [Base Flows, Add Methane, Add Ag, Add Water]",
-                       source="SF Flow Pathways [Base Flows, Add Methane, Add Ag]",
+myScenario <- scenario(myProject,
+                       scenario=vTag("SF Flow Pathways [Base Flows, Add Methane, Add Ag, Add Water]", gwpVariant, style="bracket"),
+                       source=vTag("SF Flow Pathways [Base Flows, Add Methane, Add Ag]", gwpVariant, style="bracket"),
                        folder = "Single-Cell Sub-Scenarios")
 
 myData <- datasheet(myScenario, name = "stsim_FlowPathway")

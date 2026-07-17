@@ -6,6 +6,9 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+gwpVariant <- gwpVariants[[activeGWP]]
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -23,36 +26,30 @@ myLibrary <- ssimLibrary(name = paste0(modelFullPath, "/", modelName, ".ssim"),
 
 myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
-pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/")
+pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/", gwpVariant$label, "/")
 
 if(!dir.exists(pathOut)){
-  dir.create(pathOut)
+  dir.create(pathOut, recursive = TRUE)
 }
 
 pathOutEmergent <- paste0(pathOut,"Emergent")
 
 if(!dir.exists(pathOutEmergent)){
-  dir.create(pathOutEmergent)
+  dir.create(pathOutEmergent, recursive = TRUE)
 }
 
 pathOutForest <- paste0(pathOut,"Forest")
 
 if(!dir.exists(pathOutForest)){
-  dir.create(pathOutForest)
+  dir.create(pathOutForest, recursive = TRUE)
 }
 
-scenarioList <- scenario(myProject, summary = T, results = T)
-
-estId <- scenarioList$ScenarioId[grep("Estuarine Emergent Wetland: Add Uncertainty",scenarioList$Name)]
-
-myScenarioE <- scenario(myProject, scenario=max(estId))
+myScenarioE <- getScenarioExact(myProject, vTag("Estuarine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"))
 
 myDataStockE <- datasheet(myScenarioE, "stsim_OutputStock")
 myDataFluxE <- datasheet(myScenarioE, "stsim_OutputFlow")
 
-palId <- scenarioList$ScenarioId[grep("Palustrine Emergent Wetland: Add Uncertainty",scenarioList$Name)]
-
-myScenarioP <- scenario(myProject, scenario=max(palId))
+myScenarioP <- getScenarioExact(myProject, vTag("Palustrine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"))
 
 myDataStockP <- datasheet(myScenarioP, "stsim_OutputStock")
 myDataFluxP <- datasheet(myScenarioP, "stsim_OutputFlow")
@@ -359,21 +356,12 @@ rm(myDataStockE,
    myDataFluxP)
 gc()
 
-forId <- scenarioList$ScenarioId[grep("Original Oak Gum Cypress Forest",scenarioList$Name)]
-
-myScenarioF <- scenario(myProject, scenario=max(forId))
+myScenarioF <- getScenarioExact(myProject, vTag("Original Oak Gum Cypress Forest", gwpVariant, style="bracket"))
 
 myDataStockF <- datasheet(myScenarioF, "stsim_OutputStock")
 myDataFluxF <- datasheet(myScenarioF, "stsim_OutputFlow")
 
-excludeId <- scenarioList$ScenarioId[grep("Updated: Ag to Palustrine Forested Wetland",scenarioList$Name)]
-
-forWetId <- scenarioList$ScenarioId[grep("Palustrine Forested Wetland: Add Uncertainty",scenarioList$Name)]
-#forWetId <- scenarioList$ScenarioId[grep("Palustrine Forested Wetland: Mean",scenarioList$Name)]
-
-forWetId <- forWetId[!(forWetId %in% excludeId)]
-
-myScenarioFW <- scenario(myProject, scenario=max(forWetId))
+myScenarioFW <- getScenarioExact(myProject, vTag("Palustrine Forested Wetland: Add Uncertainty", gwpVariant, style="bracket"))
 
 myDataStockFW <- datasheet(myScenarioFW, "stsim_OutputStock")
 myDataFluxFW <- datasheet(myScenarioFW, "stsim_OutputFlow")

@@ -6,6 +6,8 @@ library(rsyncrosim)
 library(tidyverse)
 library(viridis)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -29,12 +31,6 @@ if(!dir.exists(pathOut)){
   dir.create(pathOut)
 }
 
-pathOutSingleCell <- paste0(pathOut,"SingleCell")
-
-if(!dir.exists(pathOutSingleCell)){
-  dir.create(pathOutSingleCell)
-}
-
 scenarioList <- scenario(myProject, summary = T, results = T)
 
 scenarioLetters <- c("a. Upland Forest",
@@ -47,16 +43,23 @@ scenarios <- c("Original Oak Gum Cypress Forest",
                "Palustrine Emergent Wetland: Add Uncertainty",
                "Estuarine Emergent Wetland: Add Uncertainty")
 
+for (activeGWP in names(gwpVariants)) {
+  gwpVariant <- gwpVariants[[activeGWP]]
+
+  pathOutSingleCell <- paste0(pathOut, gwpVariant$label, "/SingleCell")
+
+  if(!dir.exists(pathOutSingleCell)){
+    dir.create(pathOutSingleCell, recursive = TRUE)
+  }
+
 plotName <- "Soil"
 
 for (i in 1:length(scenarios)){
-  
-  sId <- scenarioList$ScenarioId[grep(scenarios[i],scenarioList$Name)]
-  
-  myScenario1 <- scenario(myProject, scenario=max(sId))
-  
+
+  myScenario1 <- getScenarioExact(myProject, vTag(scenarios[i], gwpVariant, style="bracket"))
+
   myDataStock1 <- datasheet(myScenario1, "stsim_OutputStock")
-  
+
   domSoil <- myDataStock1 %>%
     filter(StockGroupId == "DOM: Soil") %>%
     filter(Timestep < 2101) %>%
@@ -163,7 +166,7 @@ for (i in 1:length(scenarios)){
   ggsave(paste0(pathOutSingleCell,"/",plotName,"_Error_",substr(scenarioLetters[i],1,1),".png"), p2, width = 5, height = 3, dpi = 600)
   
 
-  rm(p1,myDataStock3,myDataStock2,domSoil,myDataStock1,myScenario1,sId,p2)
+  rm(p1,myDataStock3,myDataStock2,domSoil,myDataStock1,myScenario1,p2)
   
 }
 
@@ -173,13 +176,11 @@ for (i in 1:length(scenarios)){
 plotName <- "EcosystemCarbonStorage"
 
 for (i in 1:length(scenarios)){
-  
-  sId <- scenarioList$ScenarioId[grep(scenarios[i],scenarioList$Name)]
-  
-  myScenario1 <- scenario(myProject, scenario=max(sId))
-  
+
+  myScenario1 <- getScenarioExact(myProject, vTag(scenarios[i], gwpVariant, style="bracket"))
+
   myDataStock1 <- datasheet(myScenario1, "stsim_OutputStock")
-  
+
   stocksKeep <- data.frame(StockGroupId = c("Biomass: Coarse Root [Type]",
                                              "Biomass: Fine Root [Type]",
                                              "Biomass: Foliage [Type]",
@@ -252,7 +253,7 @@ for (i in 1:length(scenarios)){
   
   ggsave(paste0(pathOutSingleCell,"/",plotName,"_",substr(scenarioLetters[i],1,1),".png"), p1, width = 5, height = 3, dpi = 600)
   
-  rm(p1,myDataStock2,myDataStock1,myScenario1,sId)
+  rm(p1,myDataStock2,myDataStock1,myScenario1)
   
 }
 
@@ -264,9 +265,7 @@ scenariosForest <- c("Original Oak Gum Cypress Forest",
 
 for (i in 1:length(scenarios)){
 
-  sId <- scenarioList$ScenarioId[grep(scenarios[i],scenarioList$Name)]
-
-  myScenario1 <- scenario(myProject, scenario=max(sId))
+  myScenario1 <- getScenarioExact(myProject, vTag(scenarios[i], gwpVariant, style="bracket"))
 
   if (scenarios[i] %in% scenariosForest){
 
@@ -284,7 +283,7 @@ for (i in 1:length(scenarios)){
             paste0(pathOutSingleCell,"/",gsub(":","",gsub(" ","",scenarios[i]),fixed = T),".csv"),
             row.names = F)
 
-  rm(sId,myScenario1,myDataFlux1,yr)
+  rm(myScenario1,myDataFlux1,yr)
   gc()
 
 }
@@ -1001,4 +1000,6 @@ p6 <- ggplot(myDataS, aes(x = ScenarioO, y = mean, fill = GHG)) +
 p6
 
 ggsave(paste0(pathOutSingleCell,"/",plotEName,".png"), p6, width = 3.5, height = 3.5, dpi = 600)
+
+} # end gwpVariants loop
 

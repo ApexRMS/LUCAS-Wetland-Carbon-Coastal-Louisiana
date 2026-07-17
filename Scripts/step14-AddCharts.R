@@ -5,6 +5,8 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
@@ -27,338 +29,337 @@ myProject <- rsyncrosim::project(myLibrary, project = "Definitions")
 # Look at Chart Criteria for the project
 #chartCriteria(myProject)
 
-## Carbon Fluxes: Growth, Emissions, Lateral Flux ----
+# Chart objects are project-level (not scenario-level), so each GWP variant
+# needs its own uniquely-named set of charts to avoid the two variants'
+# charts colliding on the same shared object.
+for (activeGWP in names(gwpVariants)) {
+  gwpVariant <- gwpVariants[[activeGWP]]
 
-myChart <- chart(
-  myProject,
-  chart = "1 ha Growth Emissions and Lateral Flux"
-)
+  ## Carbon Fluxes: Growth, Emissions, Lateral Flux ----
 
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_FlowGroup",
-    timesteps = c(2002, 2124),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_FlowGroup", addFilter = "FlowGroupId") %>%
-  chartInclude(
-    variable = "stsim_FlowGroup",
-    filter = "FlowGroupId",
-    addValue = c(
-      "Annual Emissions: CH4 (tons C per year)",
-      "Annual Emissions: CH4 (tons CO2-eq per year)",
-      "Annual Emissions: CO2 (tons C per year)",
-      "Annual Emissions: CO2 (tons CO2-eq per year)",
-      "Annual Lateral Flux (tons C per year)",
-      "Annual Lateral Flux (tons CO2-eq per year)",
-      "Annual Net Growth (tons C per year)",
-      "Annual Net Growth (tons CO2-eq per year)"
+  myChart <- chart(
+    myProject,
+    chart = paste0("1 ha Growth Emissions and Lateral Flux", " [", gwpVariant$label, "]")
+  )
+
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_FlowGroup",
+      timesteps = c(2002, 2124),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_FlowGroup", addFilter = "FlowGroupId") %>%
+    chartInclude(
+      variable = "stsim_FlowGroup",
+      filter = "FlowGroupId",
+      addValue = c(
+        "Annual Emissions: CH4 (tons C per year)",
+        "Annual Emissions: CH4 (tons CO2-eq per year)",
+        "Annual Emissions: CO2 (tons C per year)",
+        "Annual Emissions: CO2 (tons CO2-eq per year)",
+        "Annual Lateral Flux (tons C per year)",
+        "Annual Lateral Flux (tons CO2-eq per year)",
+        "Annual Net Growth (tons C per year)",
+        "Annual Net Growth (tons CO2-eq per year)"
+      )
     )
-  )
 
-rm(myChart)
+  rm(myChart)
 
-## Carbon Fluxes: Annual Net Ecosystem Carbon Balance ----
-myChart <- chart(myProject, chart = "1 ha NECB")
+  ## Carbon Fluxes: Annual Net Ecosystem Carbon Balance ----
+  myChart <- chart(myProject, chart = paste0("1 ha NECB", " [", gwpVariant$label, "]"))
 
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_FlowGroup",
-    timesteps = c(2002, 2124),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_FlowGroup", addFilter = "FlowGroupId") %>%
-  chartInclude(
-    variable = "stsim_FlowGroup",
-    filter = "FlowGroupId",
-    addValue = c(
-      "Annual Net Ecosystem Carbon Balance (tons C per year)",
-      "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_FlowGroup",
+      timesteps = c(2002, 2124),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_FlowGroup", addFilter = "FlowGroupId") %>%
+    chartInclude(
+      variable = "stsim_FlowGroup",
+      filter = "FlowGroupId",
+      addValue = c(
+        "Annual Net Ecosystem Carbon Balance (tons C per year)",
+        "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
+      )
     )
+
+  rm(myChart)
+
+  ## Carbon Stocks: Ecosystem Carbon Storage ----
+  myChart <- chart(
+    myProject,
+    chart = paste0("1 ha Ecosystem Carbon Storage", " [", gwpVariant$label, "]")
   )
 
-rm(myChart)
-
-## Carbon Stocks: Ecosystem Carbon Storage ----
-myChart <- chart(
-  myProject,
-  chart = "1 ha Ecosystem Carbon Storage"
-)
-
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_StockGroup",
-    timesteps = c(2001, 2124),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
-  chartInclude(
-    variable = "stsim_StockGroup",
-    filter = "StockGroupId",
-    addValue = "Ecosystem Carbon Storage (tons C)"
-  )
-
-rm(myChart)
-
-
-## Carbon Stocks: IPCC ----
-
-myChart <- chart(myProject, chart = "1 ha IPCC Carbon Stocks")
-
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_StockGroup",
-    timesteps = c(2001, 2124),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
-  chartInclude(
-    variable = "stsim_StockGroup",
-    filter = "StockGroupId",
-    addValue = c(
-      "Biomass: Aboveground",
-      "Biomass: Belowground",
-      "DOM: Deadwood",
-      "DOM: Litter",
-      "DOM: Soil"
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_StockGroup",
+      timesteps = c(2001, 2124),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
+    chartInclude(
+      variable = "stsim_StockGroup",
+      filter = "StockGroupId",
+      addValue = "Ecosystem Carbon Storage (tons C)"
     )
-  )
 
-## Carbon Stocks: LUCAS ----
-myChart <- chart(myProject, chart = "1 ha LUCAS Carbon Stocks")
+  rm(myChart)
 
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_StockGroup",
-    timesteps = c(2001, 2124),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
-  chartInclude(
-    variable = "stsim_StockGroup",
-    filter = "StockGroupId",
-    addValue = c(
-      "Biomass: Coarse Root [Type]",
-      "Biomass: Fine Root [Type]",
-      "Biomass: Foliage [Type]",
-      "Biomass: Merchantable [Type]",
-      "Biomass: Other Wood [Type]",
-      "Deep Soil [Type]",
-      "DOM: Aboveground Fast [Type]",
-      "DOM: Aboveground Medium [Type]",
-      "DOM: Aboveground Slow [Type]",
-      "DOM: Aboveground Very Fast [Type]",
-      "DOM: Belowground Fast [Type]",
-      "DOM: Belowground Slow [Type]",
-      "DOM: Belowground Very Fast [Type]",
-      "DOM: Snag Branch [Type]",
-      "DOM: Snag Stem [Type]"
+
+  ## Carbon Stocks: IPCC ----
+
+  myChart <- chart(myProject, chart = paste0("1 ha IPCC Carbon Stocks", " [", gwpVariant$label, "]"))
+
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_StockGroup",
+      timesteps = c(2001, 2124),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
+    chartInclude(
+      variable = "stsim_StockGroup",
+      filter = "StockGroupId",
+      addValue = c(
+        "Biomass: Aboveground",
+        "Biomass: Belowground",
+        "DOM: Deadwood",
+        "DOM: Litter",
+        "DOM: Soil"
+      )
     )
-  )
 
-rm(myChart)
+  ## Carbon Stocks: LUCAS ----
+  myChart <- chart(myProject, chart = paste0("1 ha LUCAS Carbon Stocks", " [", gwpVariant$label, "]"))
 
-## Land Cover Area ----
-myChart <- chart(myProject, chart = "1 ha Land Cover Area")
-
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_StateClass",
-    timesteps = c(2001, 2124),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_StateClass", addFilter = "StateClassId") %>%
-  chartInclude(
-    variable = "stsim_StateClass",
-    filter = "StateClassId",
-    addValue = c(
-      "Forest: Oak/Gum/Cypress Group",
-      "Wetland: Palustrine Forested",
-      "Wetland: Palustrine Emergent",
-      "Wetland: Estuarine Emergent"
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_StockGroup",
+      timesteps = c(2001, 2124),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
+    chartInclude(
+      variable = "stsim_StockGroup",
+      filter = "StockGroupId",
+      addValue = c(
+        "Biomass: Coarse Root [Type]",
+        "Biomass: Fine Root [Type]",
+        "Biomass: Foliage [Type]",
+        "Biomass: Merchantable [Type]",
+        "Biomass: Other Wood [Type]",
+        "Deep Soil [Type]",
+        "DOM: Aboveground Fast [Type]",
+        "DOM: Aboveground Medium [Type]",
+        "DOM: Aboveground Slow [Type]",
+        "DOM: Aboveground Very Fast [Type]",
+        "DOM: Belowground Fast [Type]",
+        "DOM: Belowground Slow [Type]",
+        "DOM: Belowground Very Fast [Type]",
+        "DOM: Snag Branch [Type]",
+        "DOM: Snag Stem [Type]"
+      )
     )
-  )
 
-rm(myChart)
+  rm(myChart)
 
-## Carbon Fluxes: Growth, Emissions, Lateral Flux ----
-myChart <- chart(
-  myProject,
-  chart = "Basin Growth Emissions and Lateral Flux"
-)
+  ## Land Cover Area ----
+  myChart <- chart(myProject, chart = paste0("1 ha Land Cover Area", " [", gwpVariant$label, "]"))
 
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_FlowGroup",
-    timesteps = c(2002, 2016),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_FlowGroup", addFilter = "FlowGroupId") %>%
-  chartInclude(
-    variable = "stsim_FlowGroup",
-    filter = "FlowGroupId",
-    addValue = c(
-      "Annual Emissions: CH4 (tons C per year)",
-      "Annual Emissions: CH4 (tons CO2-eq per year)",
-      "Annual Emissions: CO2 (tons C per year)",
-      "Annual Emissions: CO2 (tons CO2-eq per year)",
-      "Annual Lateral Flux (tons C per year)",
-      "Annual Lateral Flux (tons CO2-eq per year)",
-      "Annual Net Growth (tons C per year)",
-      "Annual Net Growth (tons CO2-eq per year)"
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_StateClass",
+      timesteps = c(2001, 2124),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_StateClass", addFilter = "StateClassId") %>%
+    chartInclude(
+      variable = "stsim_StateClass",
+      filter = "StateClassId",
+      addValue = c(
+        "Forest: Oak/Gum/Cypress Group",
+        "Wetland: Palustrine Forested",
+        "Wetland: Palustrine Emergent",
+        "Wetland: Estuarine Emergent"
+      )
     )
+
+  rm(myChart)
+
+  ## Carbon Fluxes: Growth, Emissions, Lateral Flux ----
+  myChart <- chart(
+    myProject,
+    chart = paste0("Basin Growth Emissions and Lateral Flux", " [", gwpVariant$label, "]")
   )
 
-rm(myChart)
-
-## Carbon Fluxes: Annual Net Ecosystem Carbon Balance ----
-myChart <- chart(myProject, chart = "Basin NECB")
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_FlowGroup",
-    timesteps = c(2002, 2016),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_FlowGroup", addFilter = "FlowGroupId") %>%
-  chartInclude(
-    variable = "stsim_FlowGroup",
-    filter = "FlowGroupId",
-    addValue = c(
-      "Annual Net Ecosystem Carbon Balance (tons C per year)",
-      "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_FlowGroup",
+      timesteps = c(2002, 2016),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_FlowGroup", addFilter = "FlowGroupId") %>%
+    chartInclude(
+      variable = "stsim_FlowGroup",
+      filter = "FlowGroupId",
+      addValue = c(
+        "Annual Emissions: CH4 (tons C per year)",
+        "Annual Emissions: CH4 (tons CO2-eq per year)",
+        "Annual Emissions: CO2 (tons C per year)",
+        "Annual Emissions: CO2 (tons CO2-eq per year)",
+        "Annual Lateral Flux (tons C per year)",
+        "Annual Lateral Flux (tons CO2-eq per year)",
+        "Annual Net Growth (tons C per year)",
+        "Annual Net Growth (tons CO2-eq per year)"
+      )
     )
-  )
 
-rm(myChart)
+  rm(myChart)
 
-## Carbon Stocks: Ecosystem Carbon Storage ----
-myChart <- chart(
-  myProject,
-  chart = "Basin Ecosystem Carbon Storage"
-)
-
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_StockGroup",
-    timesteps = c(2001, 2016),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
-  chartInclude(
-    variable = "stsim_StockGroup",
-    filter = "StockGroupId",
-    addValue = "Ecosystem Carbon Storage (tons C)"
-  )
-
-rm(myChart)
-
-## Carbon Stocks: IPCC ----
-myChart <- chart(myProject, chart = "Basin IPCC Carbon Stocks")
-
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_StockGroup",
-    timesteps = c(2001, 2016),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
-  chartInclude(
-    variable = "stsim_StockGroup",
-    filter = "StockGroupId",
-    addValue = c(
-      "Biomass: Aboveground",
-      "Biomass: Belowground",
-      "DOM: Deadwood",
-      "DOM: Litter",
-      "DOM: Soil"
+  ## Carbon Fluxes: Annual Net Ecosystem Carbon Balance ----
+  myChart <- chart(myProject, chart = paste0("Basin NECB", " [", gwpVariant$label, "]"))
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_FlowGroup",
+      timesteps = c(2002, 2016),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_FlowGroup", addFilter = "FlowGroupId") %>%
+    chartInclude(
+      variable = "stsim_FlowGroup",
+      filter = "FlowGroupId",
+      addValue = c(
+        "Annual Net Ecosystem Carbon Balance (tons C per year)",
+        "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
+      )
     )
+
+  rm(myChart)
+
+  ## Carbon Stocks: Ecosystem Carbon Storage ----
+  myChart <- chart(
+    myProject,
+    chart = paste0("Basin Ecosystem Carbon Storage", " [", gwpVariant$label, "]")
   )
 
-rm(myChart)
-
-## Carbon Stocks: LUCAS ----
-myChart <- chart(myProject, chart = "Basin LUCAS Carbon Stocks")
-
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_StockGroup",
-    timesteps = c(2001, 2016),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
-  chartInclude(
-    variable = "stsim_StockGroup",
-    filter = "StockGroupId",
-    addValue = c(
-      "Biomass: Coarse Root [Type]",
-      "Biomass: Fine Root [Type]",
-      "Biomass: Foliage [Type]",
-      "Biomass: Merchantable [Type]",
-      "Biomass: Other Wood [Type]",
-      "Deep Soil [Type]",
-      "DOM: Aboveground Fast [Type]",
-      "DOM: Aboveground Medium [Type]",
-      "DOM: Aboveground Slow [Type]",
-      "DOM: Aboveground Very Fast [Type]",
-      "DOM: Belowground Fast [Type]",
-      "DOM: Belowground Slow [Type]",
-      "DOM: Belowground Very Fast [Type]",
-      "DOM: Snag Branch [Type]",
-      "DOM: Snag Stem [Type]"
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_StockGroup",
+      timesteps = c(2001, 2016),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
+    chartInclude(
+      variable = "stsim_StockGroup",
+      filter = "StockGroupId",
+      addValue = "Ecosystem Carbon Storage (tons C)"
     )
-  )
 
-rm(myChart)
+  rm(myChart)
 
-## Land Cover Area ----
+  ## Carbon Stocks: IPCC ----
+  myChart <- chart(myProject, chart = paste0("Basin IPCC Carbon Stocks", " [", gwpVariant$label, "]"))
 
-#### Select the land cover types within the area
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_StockGroup",
+      timesteps = c(2001, 2016),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
+    chartInclude(
+      variable = "stsim_StockGroup",
+      filter = "StockGroupId",
+      addValue = c(
+        "Biomass: Aboveground",
+        "Biomass: Belowground",
+        "DOM: Deadwood",
+        "DOM: Litter",
+        "DOM: Soil"
+      )
+    )
 
-# Something like this
-# Load Land Cover Data
+  rm(myChart)
 
-scenarioListAll <- scenario(myProject, summary = T, results = T)
+  ## Carbon Stocks: LUCAS ----
+  myChart <- chart(myProject, chart = paste0("Basin LUCAS Carbon Stocks", " [", gwpVariant$label, "]"))
 
-myScenarioR <- scenario(
-  myProject,
-  scenario = max(scenarioListAll$ScenarioId[grep(
-    "Basin Baseline",
-    scenarioListAll$Name
-  )])
-)
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_StockGroup",
+      timesteps = c(2001, 2016),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_StockGroup", addFilter = "StockGroupId") %>%
+    chartInclude(
+      variable = "stsim_StockGroup",
+      filter = "StockGroupId",
+      addValue = c(
+        "Biomass: Coarse Root [Type]",
+        "Biomass: Fine Root [Type]",
+        "Biomass: Foliage [Type]",
+        "Biomass: Merchantable [Type]",
+        "Biomass: Other Wood [Type]",
+        "Deep Soil [Type]",
+        "DOM: Aboveground Fast [Type]",
+        "DOM: Aboveground Medium [Type]",
+        "DOM: Aboveground Slow [Type]",
+        "DOM: Aboveground Very Fast [Type]",
+        "DOM: Belowground Fast [Type]",
+        "DOM: Belowground Slow [Type]",
+        "DOM: Belowground Very Fast [Type]",
+        "DOM: Snag Branch [Type]",
+        "DOM: Snag Stem [Type]"
+      )
+    )
 
-tabLandR <- datasheet(myScenarioR, "stsim_OutputStratumState")
+  rm(myChart)
 
-stateClassUnique <- unique(tabLandR$StateClassId)
+  ## Land Cover Area ----
 
-myChart <- chart(myProject, chart = "Basin Land Cover Area")
+  #### Select the land cover types within the area
 
-myChart %>%
-  chartData(
-    type = "Line",
-    addY = "stsim_StateClass",
-    timesteps = c(2001, 2016),
-    iterationType = "Mean"
-  ) %>%
-  chartDisagg(variable = "stsim_StateClass", addFilter = "StateClassId") %>%
-  chartInclude(
-    variable = "stsim_StateClass",
-    filter = "StateClassId",
-    addValue = as.character(stateClassUnique)
-  )
+  # Something like this
+  # Load Land Cover Data
 
-rm(myChart)
+  myScenarioR <- getScenarioExact(myProject, vTag("Basin Baseline", gwpVariant, style = "suffix"))
+
+  tabLandR <- datasheet(myScenarioR, "stsim_OutputStratumState")
+
+  stateClassUnique <- unique(tabLandR$StateClassId)
+
+  myChart <- chart(myProject, chart = paste0("Basin Land Cover Area", " [", gwpVariant$label, "]"))
+
+  myChart %>%
+    chartData(
+      type = "Line",
+      addY = "stsim_StateClass",
+      timesteps = c(2001, 2016),
+      iterationType = "Mean"
+    ) %>%
+    chartDisagg(variable = "stsim_StateClass", addFilter = "StateClassId") %>%
+    chartInclude(
+      variable = "stsim_StateClass",
+      filter = "StateClassId",
+      addValue = as.character(stateClassUnique)
+    )
+
+  rm(myChart)
+}
 
 # Maps ----
 

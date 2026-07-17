@@ -5,6 +5,8 @@
 library(rsyncrosim)
 library(tidyverse)
 
+source(paste0(rootPath, "Scripts/gwpConfig.R"))
+
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
@@ -24,92 +26,107 @@ myLibrary <- ssimLibrary(
 
 myProject <- rsyncrosim::project(myLibrary, project = "Definitions")
 
-scenarioListAll <- scenario(myProject, summary = T, results = T)
+uncertaintyResultsList <- list()
 
-scenID <- scenarioListAll$ScenarioId[grep(
-  "Basin Uncertainty Baseline",
-  scenarioListAll$Name
-)]
+for (activeGWP in names(gwpVariants)) {
+  gwpVariant <- gwpVariants[[activeGWP]]
 
-# Compare results with mean model
-
-# scenID <- scenarioListAll$ScenarioId[grep(
-#   "Basin Baseline",
-#   scenarioListAll$Name
-# )]
-
-myScenario <- scenario(myProject, scenario = max(scenID))
-
-# Load Flux Data
-tabFlux <- datasheet(
-  myScenario,
-  "stsim_OutputFlow",
-  filterColumn = "FlowGroupId",
-  filterValue = "Annual Net Ecosystem Carbon Balance (tons C per year)"
-)
-
-# should be true
-table(tabFlux$ToStateClassId == tabFlux$FromStateClassId)
-
-names(tabFlux)
-
-unique(tabFlux$ToStateClassId)
-
-stateClassDev <- c(
-  "Agriculture: Cropland",
-  "Developed: Medium Intensity",
-  "Water: All",
-  "Wetland: Unconsolidated Shore",
-  "Water: Previously Emergent Wetland",
-  "Water: Previously Forested Wetland",
-  "Wetland: Unvegetated Emergent",
-  "Wetland: Unvegetated Forested"
-)
-
-tabFluxDev <- tabFlux %>%
-  filter(ToStateClassId %in% stateClassDev) %>%
-  group_by(Iteration) %>%
-  summarize(totalC = (sum(Amount, na.rm = T) / 1000000)) %>%
-  ungroup() %>%
-  summarize(
-    mean = mean(totalC, na.rm = T),
-    low = quantile(totalC, 0.025, na.rm = T),
-    high = quantile(totalC, 0.975, na.rm = T)
+  myScenario <- getScenarioExact(
+    myProject,
+    vTag("Basin Uncertainty Baseline", gwpVariant, style = "suffix")
   )
 
-tabFluxEco <- tabFlux %>%
-  filter(!(ToStateClassId %in% stateClassDev)) %>%
-  group_by(Iteration) %>%
-  summarize(totalC = (sum(Amount, na.rm = T) / 1000000)) %>%
-  ungroup() %>%
-  summarize(
-    mean = mean(totalC, na.rm = T),
-    low = quantile(totalC, 0.025, na.rm = T),
-    high = quantile(totalC, 0.975, na.rm = T)
+  # Compare results with mean model
+
+  # scenID <- scenarioListAll$ScenarioId[grep(
+  #   "Basin Baseline",
+  #   scenarioListAll$Name
+  # )]
+
+  # Load Flux Data
+  tabFlux <- datasheet(
+    myScenario,
+    "stsim_OutputFlow",
+    filterColumn = "FlowGroupId",
+    filterValue = "Annual Net Ecosystem Carbon Balance (tons C per year)"
   )
 
-tabFluxNet <- tabFlux %>%
-  group_by(Iteration) %>%
-  summarize(totalC = (sum(Amount, na.rm = T) / 1000000)) %>%
-  ungroup() %>%
-  summarize(
-    mean = mean(totalC, na.rm = T),
-    low = quantile(totalC, 0.025, na.rm = T),
-    high = quantile(totalC, 0.975, na.rm = T)
+  # should be true
+  print(table(tabFlux$ToStateClassId == tabFlux$FromStateClassId))
+
+  print(names(tabFlux))
+
+  print(unique(tabFlux$ToStateClassId))
+
+  stateClassDev <- c(
+    "Agriculture: Cropland",
+    "Developed: Medium Intensity",
+    "Water: All",
+    "Wetland: Unconsolidated Shore",
+    "Water: Previously Emergent Wetland",
+    "Water: Previously Forested Wetland",
+    "Wetland: Unvegetated Emergent",
+    "Wetland: Unvegetated Forested"
   )
 
+  tabFluxDev <- tabFlux %>%
+    filter(ToStateClassId %in% stateClassDev) %>%
+    group_by(Iteration) %>%
+    summarize(totalC = (sum(Amount, na.rm = T) / 1000000)) %>%
+    ungroup() %>%
+    summarize(
+      mean = mean(totalC, na.rm = T),
+      low = quantile(totalC, 0.025, na.rm = T),
+      high = quantile(totalC, 0.975, na.rm = T)
+    ) %>%
+    mutate(Group = "Dev")
 
-tabFluxDev
+  tabFluxEco <- tabFlux %>%
+    filter(!(ToStateClassId %in% stateClassDev)) %>%
+    group_by(Iteration) %>%
+    summarize(totalC = (sum(Amount, na.rm = T) / 1000000)) %>%
+    ungroup() %>%
+    summarize(
+      mean = mean(totalC, na.rm = T),
+      low = quantile(totalC, 0.025, na.rm = T),
+      high = quantile(totalC, 0.975, na.rm = T)
+    ) %>%
+    mutate(Group = "Eco")
 
-tabFluxEco
+  tabFluxNet <- tabFlux %>%
+    group_by(Iteration) %>%
+    summarize(totalC = (sum(Amount, na.rm = T) / 1000000)) %>%
+    ungroup() %>%
+    summarize(
+      mean = mean(totalC, na.rm = T),
+      low = quantile(totalC, 0.025, na.rm = T),
+      high = quantile(totalC, 0.975, na.rm = T)
+    ) %>%
+    mutate(Group = "Net")
 
-tabFluxNet
+  print(tabFluxDev)
 
-as.data.frame(tabFluxDev)
+  print(tabFluxEco)
 
-as.data.frame(tabFluxEco)
+  print(tabFluxNet)
 
-as.data.frame(tabFluxNet)
+  print(as.data.frame(tabFluxDev))
 
-table(tabFlux$Iteration)
-length(unique(tabFlux$Iteration))
+  print(as.data.frame(tabFluxEco))
+
+  print(as.data.frame(tabFluxNet))
+
+  print(table(tabFlux$Iteration))
+  print(length(unique(tabFlux$Iteration)))
+
+  # Combine this variant's three summaries and tag with the active GWP so the
+  # final data frame (below) can distinguish GWP-100 vs GWP-20 rows.
+  tabFluxCombined <- bind_rows(tabFluxDev, tabFluxEco, tabFluxNet) %>%
+    mutate(GWP = gwpVariant$label)
+
+  uncertaintyResultsList[[activeGWP]] <- tabFluxCombined
+}
+
+uncertaintyResultsAll <- bind_rows(uncertaintyResultsList)
+
+uncertaintyResultsAll
