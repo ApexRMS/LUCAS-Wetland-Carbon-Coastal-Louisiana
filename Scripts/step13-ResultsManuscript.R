@@ -33,8 +33,6 @@ myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/")
 
 # Extract stocks
-scenarioList <- scenario(myProject, summary = T, results = T)
-
 scenariosTable <- c("Original Oak Gum Cypress Forest",
                     "Palustrine Forested Wetland: Add Uncertainty",
                     "Palustrine Emergent Wetland: Add Uncertainty",

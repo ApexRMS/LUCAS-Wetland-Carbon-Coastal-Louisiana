@@ -38,3 +38,27 @@ getScenarioExact <- function(proj, name) {
   if (length(ids) == 0) stop("Expected at least 1 scenario named '", name, "', found 0")
   scenario(proj, scenario = max(ids))
 }
+
+# Toggle: set to FALSE to skip re-running a single-cell scenario (or, for
+# calculateDecayRates(), skip the whole calibration) when it already has at
+# least one result scenario. Useful when iterating on downstream steps without
+# wanting to re-run slow spinup/single-cell scenarios every time. Set back to
+# TRUE to force everything to (re)run regardless of existing results.
+rerunScenariosWithResults <- TRUE
+
+# TRUE if `name` already has at least one associated result scenario (a
+# scenario that has been run() at least once).
+hasResults <- function(proj, name) {
+  existingResults <- scenario(proj, summary = TRUE, results = TRUE)
+  name %in% existingResults$Name
+}
+
+# Runs `name` via run(), unless rerunScenariosWithResults is FALSE and results
+# already exist for this exact scenario name.
+runIfNeeded <- function(proj, name, ...) {
+  if (!rerunScenariosWithResults && hasResults(proj, name)) {
+    message("Skipping run() for '", name, "' -- results already exist (set rerunScenariosWithResults <- TRUE in gwpConfig.R to force a rerun)")
+    return(invisible(NULL))
+  }
+  run(proj, scenario = name, ...)
+}

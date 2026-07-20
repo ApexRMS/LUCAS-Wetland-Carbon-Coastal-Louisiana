@@ -31,8 +31,6 @@ myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
 pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/")
 
-scenarioList <- scenario(myProject, summary = T, results = T)
-
 for (activeGWP in names(gwpVariants)) {
   gwpVariant <- gwpVariants[[activeGWP]]
 

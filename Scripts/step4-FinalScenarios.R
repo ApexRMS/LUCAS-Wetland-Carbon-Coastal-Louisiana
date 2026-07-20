@@ -473,13 +473,13 @@ dependency(myScenario) <- c("Run Control [2001-2124; 1000 MC]",
 rm(myScenario)
 
 
-run(myProject, scenario=vTag("Estuarine Emergent Wetland: Mean", gwpVariant, style="bracket"))
-run(myProject, scenario=vTag("Palustrine Emergent Wetland: Mean", gwpVariant, style="bracket"))
-run(myProject, scenario=vTag("Estuarine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"))
-run(myProject, scenario=vTag("Palustrine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"))
-run(myProject, scenario=vTag("Original Oak Gum Cypress Forest", gwpVariant, style="bracket"))
-run(myProject, scenario=vTag("Palustrine Forested Wetland: Mean", gwpVariant, style="bracket"))
-run(myProject, scenario=vTag("Palustrine Forested Wetland: Add Uncertainty", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Estuarine Emergent Wetland: Mean", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Palustrine Emergent Wetland: Mean", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Estuarine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Palustrine Emergent Wetland: Add Uncertainty", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Original Oak Gum Cypress Forest", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Palustrine Forested Wetland: Mean", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Palustrine Forested Wetland: Add Uncertainty", gwpVariant, style="bracket"))
 
 transitionTypes <- c("Emergent Wetland to Water",
                      "Emergent Wetland to Unvegetated",
@@ -570,10 +570,10 @@ for (i in 1:length(transitionTypes)){
 
     rm(myScenario)
 
-    run(myProject, scenario=vTag(paste0("Transition: Estuarine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
-    run(myProject, scenario=vTag(paste0("Transition: Palustrine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
-    run(myProject, scenario=vTag(paste0("Transition: Estuarine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
-    run(myProject, scenario=vTag(paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
+    runIfNeeded(myProject, vTag(paste0("Transition: Estuarine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
+    runIfNeeded(myProject, vTag(paste0("Transition: Palustrine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
+    runIfNeeded(myProject, vTag(paste0("Transition: Estuarine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
+    runIfNeeded(myProject, vTag(paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
 
   } else if (i %in% c(3,4)){
 
@@ -611,8 +611,8 @@ for (i in 1:length(transitionTypes)){
 
     rm(myScenario)
 
-    run(myProject, scenario=vTag(paste0("Transition: Palustrine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
-    run(myProject, scenario=vTag(paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
+    runIfNeeded(myProject, vTag(paste0("Transition: Palustrine ",transitionTypes[i]," S"), gwpVariant, style="bracket"))
+    runIfNeeded(myProject, vTag(paste0("Transition: Palustrine ",transitionTypes[i]," IPCC"), gwpVariant, style="bracket"))
 
   }
   

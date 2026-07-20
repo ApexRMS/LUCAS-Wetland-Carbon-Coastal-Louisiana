@@ -21,11 +21,7 @@ calculateDecayRates <- function(
 ) {
   run(projectName, scenario = scenarioName)
 
-  scenarioList <- scenario(projectName, summary = T, results = T)
-
-  forestId <- scenarioList$ScenarioId[grep(scenarioName, scenarioList$Name)]
-
-  myScenario <- scenario(projectName, scenario = max(forestId))
+  myScenario <- getScenarioExact(projectName, scenarioName)
 
   myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 
@@ -78,15 +74,11 @@ calculateDecayRates <- function(
   rm(myScenario, myData)
   
   run(projectName, scenario = scenarioName)
-  
-  scenarioList <- scenario(projectName, summary = T, results = T)
-  
-  forestId <- scenarioList$ScenarioId[grep(scenarioName, scenarioList$Name)]
-  
-  myScenario <- scenario(projectName, scenario = max(forestId))
-  
+
+  myScenario <- getScenarioExact(projectName, scenarioName)
+
   myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
-  
+
   # Has equilibrium been reached, difference is less than 1%, (difference in peaks, year prior to disturbance)
   peaks <- seq(125, 3500, 125) - 1
   
@@ -137,11 +129,7 @@ calculateDecayRates <- function(
     
     run(projectName, scenario = scenarioName)
 
-    scenarioList <- scenario(projectName, summary = T, results = T)
-
-    forestId <- scenarioList$ScenarioId[grep(scenarioName, scenarioList$Name)]
-
-    myScenario <- scenario(projectName, scenario = max(forestId))
+    myScenario <- getScenarioExact(projectName, scenarioName)
 
     myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 

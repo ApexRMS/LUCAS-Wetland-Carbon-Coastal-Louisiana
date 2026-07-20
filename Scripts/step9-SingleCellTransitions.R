@@ -171,8 +171,8 @@ for (i in 1:length(transitionsList)){
 
   }
 
-  run(myProject,
-      scenario=vTag(paste0("Transition: ",transitionName), gwpVariant, style="bracket"))
+  runIfNeeded(myProject,
+      vTag(paste0("Transition: ",transitionName), gwpVariant, style="bracket"))
   
   
 }
@@ -196,11 +196,7 @@ for (i in 1:length(transitionsList)){
   
   transitionName <- gsub(" [Type]","",gsub("LULCC: ","",transitionsList[i]),fixed = T)
   
-  scenarioList <- scenario(myProject, summary = T, results = T)
-  
-  tId <- scenarioList$ScenarioId[grep(paste0("Transition: ",transitionName),scenarioList$Name)]
-  
-  myScenario <- scenario(myProject, scenario=max(tId))
+  myScenario <- getScenarioExact(myProject, vTag(paste0("Transition: ",transitionName), gwpVariant, style="bracket"))
   
   myDataStock <- datasheet(myScenario, "stsim_OutputStock")
   

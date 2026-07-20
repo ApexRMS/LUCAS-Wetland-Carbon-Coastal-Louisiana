@@ -384,15 +384,11 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-1674; 40
 
 rm(myScenario)
 
-run(myProject, scenario="Original Forest: Oak Gum Cypress Spinup: Harvest")
+runIfNeeded(myProject, vTag("Original Forest: Oak Gum Cypress Spinup: Harvest", gwpVariant, style="bracket"))
 
 # Grab output data: Oak Gum Cypress Spinup
 
-scenarioList <- scenario(myProject, summary = T, results = T)
-
-forestId <- scenarioList$ScenarioId[grep("Original Forest: Oak Gum Cypress Spinup: Harvest",scenarioList$Name)]
-
-myScenario <- scenario(myProject, scenario=max(forestId))
+myScenario <- getScenarioExact(myProject, vTag("Original Forest: Oak Gum Cypress Spinup: Harvest", gwpVariant, style="bracket"))
 
 myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 
@@ -554,15 +550,19 @@ rm(myScenario)
 # emissionsStart: Starting value for emissions flux
 # meanBurial: Burial rate
 
-calculateDecayRates(
-  projectName = myProject,
-  scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M",
-  targetValue = ((628.4 + 127.1) / 2),
-  convergenceLevel = 0.01,
-  scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower]",
-  emissionsStart = 1.457301,
-  meanBurial = mean(c((628.4/1290),(127.1/1295)))
-)
+if (rerunScenariosWithResults || !hasResults(myProject, vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M", gwpVariant, style="bracket"))) {
+  calculateDecayRates(
+    projectName = myProject,
+    scenarioName = vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M", gwpVariant, style="bracket"),
+    targetValue = ((628.4 + 127.1) / 2),
+    convergenceLevel = 0.01,
+    scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower]",
+    emissionsStart = 1.457301,
+    meanBurial = mean(c((628.4/1290),(127.1/1295)))
+  )
+} else {
+  message("Skipping calculateDecayRates() for 'Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M [", gwpVariant$label, "]' -- results already exist")
+}
 
 #run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M")
 
@@ -670,15 +670,19 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 
 
 rm(myScenario)
 
-calculateDecayRates(
-  projectName = myProject,
-  scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S",
-  targetValue = 628.4,
-  convergenceLevel = 0.01,
-  scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower S]",
-  emissionsStart = 0.9080549,
-  meanBurial = 628.4/1290 #0.4871318
-)
+if (rerunScenariosWithResults || !hasResults(myProject, vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S", gwpVariant, style="bracket"))) {
+  calculateDecayRates(
+    projectName = myProject,
+    scenarioName = vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S", gwpVariant, style="bracket"),
+    targetValue = 628.4,
+    convergenceLevel = 0.01,
+    scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower S]",
+    emissionsStart = 0.9080549,
+    meanBurial = 628.4/1290 #0.4871318
+  )
+} else {
+  message("Skipping calculateDecayRates() for 'Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S [", gwpVariant$label, "]' -- results already exist")
+}
 
 
 #run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S")
@@ -784,15 +788,19 @@ dependency(myScenario) <- c("Run Control [Spinup Forest; Non-Spatial; 0-3799; 1 
 
 rm(myScenario)
 
-calculateDecayRates(
-  projectName = myProject,
-  scenarioName = "Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W",
-  targetValue = 127.1,
-  convergenceLevel = 0.01,
-  scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower W]",
-  emissionsStart = 1.924325,
-  meanBurial = 127.1/1295 #0.09814672
-)
+if (rerunScenariosWithResults || !hasResults(myProject, vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W", gwpVariant, style="bracket"))) {
+  calculateDecayRates(
+    projectName = myProject,
+    scenarioName = vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W", gwpVariant, style="bracket"),
+    targetValue = 127.1,
+    convergenceLevel = 0.01,
+    scenarioMult = "SF Flow Multipliers [Forested Wetland BGS Slower W]",
+    emissionsStart = 1.924325,
+    meanBurial = 127.1/1295 #0.09814672
+  )
+} else {
+  message("Skipping calculateDecayRates() for 'Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W [", gwpVariant$label, "]' -- results already exist")
+}
 
 
 #run(myProject, scenario="Updated Wetland: Palustrine Forested Spinup: Limit: Harvest W")
@@ -827,11 +835,7 @@ latMean <- mean(c(latW,latS))
 
 # Grab output data: Wetland: Palustrine Forested Spinup
 
-scenarioList <- scenario(myProject, summary = T, results = T)
-
-forestId <- scenarioList$ScenarioId[grep("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M",scenarioList$Name)]
-
-myScenario <- scenario(myProject, scenario=max(forestId))
+myScenario <- getScenarioExact(myProject, vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest M", gwpVariant, style="bracket"))
 
 myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 

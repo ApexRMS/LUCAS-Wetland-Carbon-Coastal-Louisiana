@@ -476,17 +476,13 @@ dependency(myScenario) <- c("Run Control [Spinup Agriculture; Non-Spatial; 1850-
 
 rm(myScenario)
 
-run(myProject, scenario="Original Agriculture: Oak Gum Cypress to Cropland Spinup")
-run(myProject, scenario="Agriculture: Forested Wetland Update to Cropland Spinup")
-run(myProject, scenario="Agriculture: Emergent Wetland Update to Cropland Spinup")
+runIfNeeded(myProject, vTag("Original Agriculture: Oak Gum Cypress to Cropland Spinup", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Agriculture: Forested Wetland Update to Cropland Spinup", gwpVariant, style="bracket"))
+runIfNeeded(myProject, vTag("Agriculture: Emergent Wetland Update to Cropland Spinup", gwpVariant, style="bracket"))
 
 
 # Grab output data: Ag spinup
-scenarioList <- scenario(myProject, summary = T, results = T)
-
-forestId <- scenarioList$ScenarioId[grep("Original Agriculture: Oak Gum Cypress to Cropland Spinup",scenarioList$Name)]
-
-myScenario <- scenario(myProject, scenario=max(forestId))
+myScenario <- getScenarioExact(myProject, vTag("Original Agriculture: Oak Gum Cypress to Cropland Spinup", gwpVariant, style="bracket"))
 
 myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 
@@ -531,14 +527,10 @@ saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
 tail(myData4)
 mean(myData$Amount[myData$StockGroupId == "DOM: Snag Stem [Type]"])
 
-rm(myData4,myScenario,myData3,myData2,myData,forestId,scenarioList)
+rm(myData4,myScenario,myData3,myData2,myData)
 
 # Grab output data: Ag spinup
-scenarioList <- scenario(myProject, summary = T, results = T)
-
-forestId <- scenarioList$ScenarioId[grep("Agriculture: Forested Wetland Update to Cropland Spinup",scenarioList$Name)]
-
-myScenario <- scenario(myProject, scenario=max(forestId))
+myScenario <- getScenarioExact(myProject, vTag("Agriculture: Forested Wetland Update to Cropland Spinup", gwpVariant, style="bracket"))
 
 myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 
@@ -585,14 +577,10 @@ saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
 tail(myData4)
 mean(myData$Amount[myData$StockGroupId == "DOM: Snag Stem [Type]"])
 
-rm(myData4,myScenario,myData3,myData2,myData,forestId,scenarioList)
+rm(myData4,myScenario,myData3,myData2,myData)
 
 # Grab output data: Ag spinup
-scenarioList <- scenario(myProject, summary = T, results = T)
-
-forestId <- scenarioList$ScenarioId[grep("Agriculture: Emergent Wetland Update to Cropland Spinup",scenarioList$Name)]
-
-myScenario <- scenario(myProject, scenario=max(forestId))
+myScenario <- getScenarioExact(myProject, vTag("Agriculture: Emergent Wetland Update to Cropland Spinup", gwpVariant, style="bracket"))
 
 myData <- datasheet(myScenario, "stsim_OutputStock", optional = T)
 
@@ -639,5 +627,5 @@ saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
 tail(myData4)
 mean(myData$Amount[myData$StockGroupId == "DOM: Snag Stem [Type]"])
 
-rm(myData4,myScenario,myData3,myData2,myData,forestId,scenarioList)
+rm(myData4,myScenario,myData3,myData2,myData)
 

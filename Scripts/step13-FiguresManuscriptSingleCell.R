@@ -31,8 +31,6 @@ if(!dir.exists(pathOut)){
   dir.create(pathOut)
 }
 
-scenarioList <- scenario(myProject, summary = T, results = T)
-
 scenarioLetters <- c("a. Upland Forest",
                      "b. Palustrine Forested Wetland",
                      "c. Palustrine Emergent Wetland",
