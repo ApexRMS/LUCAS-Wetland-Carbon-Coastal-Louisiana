@@ -41,7 +41,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2100,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -57,7 +57,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2124,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -73,7 +73,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2100,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -89,7 +89,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2124,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -186,7 +186,7 @@ myScenario <- scenario(myProject,
 myData <- datasheet(myScenario,"stsim_StateAttributeValue", optional = T, empty = T) %>%
   addRow(stockTableForest)
 
-saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, stockTableGrassShrub , "stsim_StateAttributeValue", append = TRUE)
 
 
@@ -280,7 +280,7 @@ for (i in 1:length(scen)){
   print(range(myData$Value, na.rm = T))
   myData$Value[myData$Value < 0 & !(is.na(myData$Value))] <- 0
   print(range(myData$Value, na.rm = T))
-  saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE)
+  saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
   
   rm(myScenario, myData)
   

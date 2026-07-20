@@ -40,7 +40,7 @@ multiTab <- datasheet(myLibrary,name = sheetName)
 multiTab$EnableMultiprocessing <- TRUE
 multiTab$MaximumJobs <- numberOfJobs
 
-saveDatasheet(myLibrary, multiTab, sheetName, append = FALSE)
+saveDatasheet(myLibrary, multiTab, sheetName, append = FALSE, force = TRUE)
 
 rm(multiTab,sheetName)
 
@@ -432,7 +432,7 @@ sheetName <- "stsim_DeterministicTransition"
 myData <- datasheet(myScenario, sheetName) %>%
   addRow(data.frame(StateClassIdSource = stateClassTable$Name,
                     Location = paste0("A",1:length(stateClassTable$Name))))
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 sheetName <- "stsim_Transition"
 
@@ -446,7 +446,7 @@ myData <- datasheet(myScenario, sheetName, optional = T) %>%
                     TransitionTypeId = gsub(" [Type]","",transitionTypes,fixed = T),
                     Probability = 0))
 
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 # Transition pathways
 myScenario <- scenario(myProject, 
@@ -459,7 +459,7 @@ sheetName <- "stsim_Transition"
 myData <- datasheet(myScenario, sheetName, optional = T) %>%
   mutate(Probability = 1)
 
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 # Turn off transition multipliers
 myScenario <- scenario(myProject, 
@@ -490,7 +490,7 @@ myData <- datasheet(myScenario, sheetName, optional = T) %>%
                   TransitionGroupId = transitionTypes,
                   Amount = 0))
 
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 # Spatial multipliers table
 myScenario <- scenario(myProject, 
@@ -499,7 +499,7 @@ myScenario <- scenario(myProject,
 
 sheetName <- "stsim_TransitionSpatialMultiplier"
 
-saveDatasheet(myScenario, fileNamesTable, sheetName, append = F)
+saveDatasheet(myScenario, fileNamesTable, sheetName, append = F, force = TRUE)
 
 # sub-scenario: 1 MC
 myScenario <- scenario(myProject, 
@@ -513,7 +513,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2016,
                     IsSpatial = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -529,7 +529,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2016,
                     IsSpatial = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -618,14 +618,14 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     SummaryOutputTRTimesteps = 1,
                     SummaryOutputEV = TRUE,
                     SummaryOutputEVTimesteps = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 sheetName <- "stsim_OutputOptionsSpatial"
 
 myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>% 
   addRow(data.frame(RasterOutputSC = TRUE,
                     RasterOutputSCTimesteps = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -642,14 +642,14 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     SummaryOutputTRTimesteps = 1,
                     SummaryOutputEV = TRUE,
                     SummaryOutputEVTimesteps = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 sheetName <- "stsim_OutputOptionsSpatial"
 
 myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>% 
   addRow(data.frame(RasterOutputSC = TRUE,
                     RasterOutputSCTimesteps = 15))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -757,7 +757,7 @@ myDataOrig$Spatial <- FALSE
 myDataOrig$AvgSpatial <- FALSE
 myDataOrig$AvgSpatial[myDataOrig$FlowGroupId %in% flowGroupsAdd1] <- TRUE
 
-saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterFlows", append = FALSE)
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterFlows", append = FALSE, force = TRUE)
 
 rm(myDataOrig,flowGroupsAdd1)
 
@@ -774,7 +774,7 @@ myDataOrig$Spatial <- FALSE
 myDataOrig$AvgSpatial <- FALSE
 myDataOrig$AvgSpatial[myDataOrig$StockGroupId %in% stockGroupsAdd1] <- TRUE
 
-saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterStocks", append = FALSE)
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterStocks", append = FALSE, force = TRUE)
 
 rm(myDataOrig, stockGroupsAdd1)
 
@@ -787,7 +787,7 @@ myDataOrig$AvgSpatialOutputFLTimesteps <- 1
 myDataOrig$SummaryOutputFLOmitFromST <- TRUE
 myDataOrig$SummaryOutputFLOmitToST <- TRUE
 
-saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = FALSE)
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = FALSE, force = TRUE)
 
 rm(myDataOrig, myScenario)
 
@@ -806,7 +806,7 @@ myDataOrig$Spatial <- FALSE
 myDataOrig$AvgSpatial <- FALSE
 myDataOrig$Spatial[myDataOrig$FlowGroupId %in% flowGroupsAdd1] <- TRUE
 
-saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterFlows", append = FALSE)
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterFlows", append = FALSE, force = TRUE)
 
 rm(myDataOrig,flowGroupsAdd1)
 
@@ -815,7 +815,7 @@ myDataOrig <- datasheet(myScenario, name = "stsim_OutputFilterStocks")
 myDataOrig$Spatial <- FALSE
 myDataOrig$AvgSpatial <- FALSE
 
-saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterStocks", append = FALSE)
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputFilterStocks", append = FALSE, force = TRUE)
 
 rm(myDataOrig)
 
@@ -830,7 +830,7 @@ myDataOrig$AvgSpatialOutputFLTimesteps <- 15
 myDataOrig$SummaryOutputFLOmitFromST <- TRUE
 myDataOrig$SummaryOutputFLOmitToST <- TRUE
 
-saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = FALSE)
+saveDatasheet(myScenario, myDataOrig, "stsim_OutputOptionsStockFlow", append = FALSE, force = TRUE)
 
 rm(myDataOrig, myScenario)
 
@@ -856,7 +856,7 @@ myData <- tibble(StockTypeId = c("DOM: Belowground Slow",
                                  "DOM: Snag Stem"),
                  StockMinimum = 0)
 
-saveDatasheet(myScenario, myData, "stsim_StockLimit", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StockLimit", append = FALSE, force = TRUE)
 
 rm(myScenario,myData)
 

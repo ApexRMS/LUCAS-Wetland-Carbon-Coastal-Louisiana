@@ -93,7 +93,7 @@ myData <- datasheet(myScenario, "stsim_StateAttributeValue", optional = T, empty
   addRow(wetlandTab) %>%
   addRow(myUpdate)
 
-saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 rm(myData,myScenario,myUpdate,myOrig,wetlandTab)
 
@@ -133,7 +133,7 @@ myData <- myData %>%
   addRow(myDataPalustrineForested) %>%
   addRow(myDataEstuarineForested)
 
-saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 rm(myData, myScenario, myUpdate, myDataPalustrineForested, myDataEstuarineForested)
 
@@ -211,7 +211,7 @@ myData <- datasheet(myScenario,"stsim_FlowMultiplier", optional = T, empty = T) 
   addRow(myUpdate) %>%
   addRow(emergentWetland)
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 rm(myScenario,myData,emergentWetland, myUpdate, flowMultipliersAg, flowMultipliersAg2)
 
@@ -235,7 +235,7 @@ myUpdateSub <- myUpdate %>%
   filter(!StateClassId %in% c("Wetland: Estuarine Emergent",
                               "Wetland: Palustrine Emergent"))
 
-saveDatasheet(myScenario, myUpdateEmergent, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myUpdateEmergent, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, myUpdateSub, "stsim_StateAttributeValue", append = TRUE)
 
 rm(myUpdate,myScenario,myUpdateSub,myUpdateEmergent)
@@ -253,7 +253,7 @@ distNPPLatTab <- distNPPLat %>%
 myData <- datasheet(myScenario, "stsim_DistributionValue", optional = T, empty = T) %>%
   addRow(distNPPLatTab)
 
-saveDatasheet(myScenario, myData, "stsim_DistributionValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_DistributionValue", append = FALSE, force = TRUE)
 
 rm(myData,myScenario)
 
@@ -267,7 +267,7 @@ distInitialCLatTab <- distInitialCLat %>%
 myData <- datasheet(myScenario, "stsim_DistributionValue", optional = T, empty = T) %>%
   addRow(distInitialCLatTab)
 
-saveDatasheet(myScenario, myData, "stsim_DistributionValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_DistributionValue", append = FALSE, force = TRUE)
 
 rm(myData,myScenario)
 
@@ -279,7 +279,7 @@ myScenario <- scenario(myProject,
 myData <- datasheet(myScenario, "stsim_DistributionValue", optional = T, empty = T) %>%
   addRow(distFlowMultLat)
 
-saveDatasheet(myScenario, myData, "stsim_DistributionValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_DistributionValue", append = FALSE, force = TRUE)
 
 rm(myData,myScenario)
 
@@ -299,7 +299,7 @@ myUpdate <- myUpdate %>%
                                    "Emission: Atmosphere Temp -> Atmosphere: CH4",
                                    DistributionTypeId))
 
-saveDatasheet(myScenario, myUpdate, "stsim_DistributionValue", append = FALSE)
+saveDatasheet(myScenario, myUpdate, "stsim_DistributionValue", append = FALSE, force = TRUE)
 
 rm(myUpdate,myScenario)
 
@@ -334,7 +334,7 @@ myUpdate <- data.frame(ExternalVariableTypeId = c("Site ID Wetland: Palustrine E
 myData <- myData %>%
   addRow(myUpdate)
 
-saveDatasheet(myScenario, myData, "core_ExternalVariableValue", append = FALSE)
+saveDatasheet(myScenario, myData, "core_ExternalVariableValue", append = FALSE, force = TRUE)
 
 rm(myScenario,myData,myUpdate)
 
@@ -355,7 +355,7 @@ myUpdate <- data.frame(Iteration = c(1:1000),
                     ExternalVariableTypeId = "Site ID Wetland: Estuarine Emergent",
                     ExternalVariableValue = sample(c(1:162),1000,replace = TRUE)))
 
-saveDatasheet(myScenario, myUpdate, "core_ExternalVariableValue", append = FALSE)
+saveDatasheet(myScenario, myUpdate, "core_ExternalVariableValue", append = FALSE, force = TRUE)
 
 rm(myScenario,myData,myUpdate)
 

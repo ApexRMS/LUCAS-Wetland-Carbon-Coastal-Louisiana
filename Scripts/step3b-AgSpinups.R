@@ -43,7 +43,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 1850,
                     MaximumTimestep = 2001,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -64,7 +64,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE, optional = TRUE)
                                      "Developed: Open Space"),
                     StateAttributeTypeId = "Net Growth",
                     Value = 0))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -87,7 +87,7 @@ myData <- datasheet(myScenario, "stsim_TransitionMultiplierValue", optional = T,
                                           "Ag Expansion: Cropland [Type]"),
                     Amount = c(1,0)))
 
-saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE, force = TRUE)
 
 rm(myScenario,myData)
 
@@ -102,7 +102,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(TotalAmount = 1,
                     NumCells = 1,
                     CalcFromDist = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myData, sheetName)
 
@@ -113,7 +113,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE, optional = TRUE)
                     AgeMin = 124,
                     AgeMax = 124,
                     RelativeAmount = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -128,7 +128,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(TotalAmount = 1,
                     NumCells = 1,
                     CalcFromDist = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myData, sheetName)
 
@@ -139,7 +139,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE, optional = TRUE)
                     AgeMin = 124,
                     AgeMax = 124,
                     RelativeAmount = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -211,7 +211,7 @@ myData <- datasheet(myScenario, "stsim_FlowMultiplier", optional = T, empty = T)
   addRow(flowMultipliersShore) %>%
   addRow(flowMultipliersWater)
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 rm(myScenario, myData,flowMultipliers,flowMultipliersAgCrop,flowMultipliersAgPast,
    flowMultipliersBarren,flowMultipliersDevHigh,flowMultipliersDevLow,
@@ -369,7 +369,7 @@ myData <- datasheet(myScenario, "stsim_StateAttributeValue", optional = T, empty
   addRow(saShore) %>%
   addRow(saWater)
 
-saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 rm(myScenario,myUpdate,saShore,saWater)
 
@@ -524,7 +524,7 @@ myData4 <- datasheet(myScenario, "stsim_StateAttributeValue", optional = T, empt
 
 myData4$Value[myData4$Value < 0] <- 0
 
-saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 tail(myData4)
 mean(myData$Amount[myData$StockGroupId == "DOM: Snag Stem [Type]"])
@@ -574,7 +574,7 @@ myData4 <- datasheet(myScenario, "stsim_StateAttributeValue", optional = T, empt
 
 myData4$Value[myData4$Value < 0] <- 0
 
-saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 tail(myData4)
 mean(myData$Amount[myData$StockGroupId == "DOM: Snag Stem [Type]"])
@@ -624,7 +624,7 @@ myData4 <- datasheet(myScenario, "stsim_StateAttributeValue", optional = T, empt
 
 myData4$Value[myData4$Value < 0] <- 0
 
-saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 tail(myData4)
 mean(myData$Amount[myData$StockGroupId == "DOM: Snag Stem [Type]"])

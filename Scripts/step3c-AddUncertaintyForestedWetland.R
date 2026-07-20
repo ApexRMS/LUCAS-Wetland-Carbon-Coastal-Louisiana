@@ -131,7 +131,7 @@ myUpdateS <- myCSVall %>%
 distBGS <- myUpdateW %>%
   addRow(myUpdateS)
 
-saveDatasheet(myScenario, myUpdateBGS, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myUpdateBGS, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 myDataE <- datasheet(myScenario,"stsim_StateAttributeValue") %>%
   mutate(StateClassId = "Wetland: Estuarine Forested")
@@ -161,7 +161,7 @@ myUpdateSub <- myUpdate %>%
   filter(!StateClassId %in% c("Wetland: Palustrine Forested",
                              "Wetland: Estuarine Forested"))
 
-saveDatasheet(myScenario, myUpdateForest, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myUpdateForest, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, myUpdateSub, "stsim_StateAttributeValue", append = TRUE)
 
 rm(myUpdate,myScenario,myUpdateSub,myUpdateForest)
@@ -282,7 +282,7 @@ myScenario <- scenario(myProject,
                        scenario="SF Flow Multipliers [Forested Wetland BGS Slower; Add Lat; Site]",
                        folder = "Single-Cell Sub-Scenarios")
 
-saveDatasheet(myScenario, myUpdateSub, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myUpdateSub, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, myUpdateFlowsAdd, "stsim_FlowMultiplier", append = TRUE)
 saveDatasheet(myScenario, myUpdateFlowsAdd2, "stsim_FlowMultiplier", append = TRUE)
 
@@ -294,7 +294,7 @@ myScenario <- scenario(myProject,
 
 head(distBGS)
 
-saveDatasheet(myScenario, distBGS, "stsim_DistributionValue", append = FALSE)
+saveDatasheet(myScenario, distBGS, "stsim_DistributionValue", append = FALSE, force = TRUE)
 
 rm(distBGS,myScenario)
 
@@ -314,7 +314,7 @@ distCH4 <- data.frame(DistributionTypeId = "Wetland: Palustrine Forested Emissio
                      Value = c(1.047,0.008),
                      ValueDistributionRelativeFrequency = 1)
 
-saveDatasheet(myScenario, distCH4, "stsim_DistributionValue", append = FALSE)
+saveDatasheet(myScenario, distCH4, "stsim_DistributionValue", append = FALSE, force = TRUE)
 
 rm(distCH4,myScenario)
 
@@ -370,7 +370,7 @@ myDataNewW <- myDataKeepW %>%
 
 myDataNewW <- myDataNewW[!(duplicated(myDataNewW)),]
   
-saveDatasheet(myScenario, myDataNewW, "stsim_DistributionValue", append = FALSE)
+saveDatasheet(myScenario, myDataNewW, "stsim_DistributionValue", append = FALSE, force = TRUE)
   
 myDataLatPartitionS <- read.csv(paste0(outpathDatasheets,"LatPartitionS.csv"),
                                   stringsAsFactors = F)

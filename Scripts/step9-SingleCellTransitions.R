@@ -72,7 +72,7 @@ for (i in 1:length(stateClassList)){
     addRow(data.frame(TotalAmount = 1,
                       NumCells = 1,
                       CalcFromDist = TRUE))
-  saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+  saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
   
   rm(myData, sheetName)
   
@@ -81,7 +81,7 @@ for (i in 1:length(stateClassList)){
     addRow(data.frame(StratumId = "Study Area",
                       StateClassId = stateClassList[i],
                       RelativeAmount = 1))
-  saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+  saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
   
   rm(myScenario, myData, sheetName)
   
@@ -112,7 +112,7 @@ for (i in 1:length(transitionsList)){
                       TransitionGroupId = transitionsList[i],
                       Amount = c(1,0)))
   
-  saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE)
+  saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE, force = TRUE)
   
   rm(myScenario,myData)
   

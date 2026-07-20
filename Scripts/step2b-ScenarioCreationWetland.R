@@ -76,7 +76,7 @@ myCSV <- read.csv(paste0(outpathDatasheets,"stsim_StateAttributeValue_EmergentWe
 myData <- datasheet(myScenario, "stsim_StateAttributeValue", optional = T, empty = T) %>%
   addRow(myCSV)
 
-saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 rm(myData,myScenario,myUpdate,myOrig,wetlandTab, myCSV)
 
@@ -115,7 +115,7 @@ myData <- myData %>%
   addRow(myDataPalustrineForested) %>%
   addRow(myDataEstuarineForested)
 
-saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 rm(myData, myScenario, myUpdate, myCSV, myDataPalustrineForested, myDataEstuarineForested)
 
@@ -197,7 +197,7 @@ myCSV <- read.csv(paste0(outpathDatasheets,"stsim_FlowMultiplier_EmergentWetland
 myData <- datasheet(myScenario,"stsim_FlowMultiplier", optional = T, empty = T) %>%
   addRow(myCSV)
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 rm(myScenario,myData,emergentWetland, myUpdate, myCSV,flowMultipliersAg,flowMultipliersAg2)
 
@@ -241,7 +241,7 @@ myCSV <- read.csv(paste0(outpathDatasheets,"stsim_StateAttributeValue_CH4.csv"))
 myData <- datasheet(myScenario,"stsim_StateAttributeValue", optional = T, empty = T) %>%
   addRow(myCSV)
 
-saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 rm(myScenario,dataAll,methaneTab,methaneTab2,myData,myCSV)
 
@@ -256,7 +256,7 @@ methaneTab <- tibble(StateClassId = c("Wetland: Palustrine Forested",
                      StateAttributeTypeId = "Methane Emissions",
                      Value = c(0.008))#0.008 (Savannah Site)
 
-saveDatasheet(myScenario, methaneTab, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, methaneTab, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 rm(myScenario,methaneTab)
 
@@ -270,7 +270,7 @@ methaneTab <- tibble(StateClassId = c("Wetland: Palustrine Forested",
                      StateAttributeTypeId = "Methane Emissions",
                      Value = c(1.047))#0.008 (Savannah Site)
 
-saveDatasheet(myScenario, methaneTab, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, methaneTab, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 rm(myScenario,methaneTab)
 
@@ -325,7 +325,7 @@ myCSV <- read.csv(paste0(outpathDatasheets,"stsim_FlowMultiplier_ForestedWetland
 myData <- datasheet(myScenario, "stsim_FlowMultiplier", optional = TRUE, empty = TRUE) %>%
   addRow(myCSV)
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 rm(myScenario,myData,myOrig,addFlows,addFlowsCO2,myDataPalustrine,myDataEstuarine, myCSV,addFlowsLat)
 
@@ -608,7 +608,7 @@ myData <- myData %>%
 
 
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 rm(myScenario,myData)
 
@@ -776,7 +776,7 @@ myData <- myData %>%
                               "Net Growth Forest: Atmosphere -> Other Wood [Type]"))) %>%
   addRow(netGrowth2)
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 rm(myScenario,myData)
 
@@ -944,7 +944,7 @@ myData <- myData %>%
                               "Net Growth Forest: Atmosphere -> Other Wood [Type]"))) %>%
   addRow(netGrowth2)
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 rm(myScenario,myData)
 

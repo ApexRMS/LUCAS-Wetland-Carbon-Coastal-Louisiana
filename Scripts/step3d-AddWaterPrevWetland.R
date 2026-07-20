@@ -105,7 +105,7 @@ sheetName <- "stsim_DeterministicTransition"
 myData <- datasheet(myScenario, sheetName) %>%
   addRow(data.frame(StateClassIdSource = stateClassTable$Name,
                     Location = paste0("A",1:length(stateClassTable$Name))))
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 sheetName <- "stsim_Transition"
 
@@ -131,7 +131,7 @@ sheetName <- "stsim_DeterministicTransition"
 myData <- datasheet(myScenario, sheetName) %>%
   addRow(data.frame(StateClassIdSource = stateClassTable$Name,
                     Location = paste0("A",1:length(stateClassTable$Name))))
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 sheetName <- "stsim_Transition"
 
@@ -294,7 +294,7 @@ myData <- flowMultipliersWater %>%
 myDataUnVeg <- myData %>%
   mutate(StateClassId = "Wetland: Unvegetated Emergent")
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, myDataUnVeg, "stsim_FlowMultiplier", append = TRUE)
 
 # Calculate transitions
@@ -321,7 +321,7 @@ for (i in 1:length(landCoverTypes)){
                       TransitionGroupId = paste0(landCoverTypes[i], " [Type]"),
                       Amount = c(1,0)))
 
-  saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE)
+  saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE, force = TRUE)
 
   rm(myScenario,myData)
 
@@ -339,7 +339,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2220,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -355,7 +355,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2220,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -371,7 +371,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2220,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -387,7 +387,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 2001,
                     MaximumTimestep = 2800,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -435,7 +435,7 @@ myData4 <- data.frame(StateClassId = "Water: Previously Forested Wetland",
                                       "Stabilization: BG Slow -> Deep Soil [Type]"),
                       FlowMultiplierTypeId = "Wetland to Water Limit")
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplierByStock", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplierByStock", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, myData2, "stsim_FlowMultiplierByStock", append = TRUE)
 saveDatasheet(myScenario, myData3, "stsim_FlowMultiplierByStock", append = TRUE)
 saveDatasheet(myScenario, myData4, "stsim_FlowMultiplierByStock", append = TRUE)
@@ -500,7 +500,7 @@ myData$Value[myData$FlowGroupId %in% c("Biomass Turnover: Other Wood -> Snag Bra
 
 myData
 
-saveDatasheet(myScenario, myDataKeep, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myDataKeep, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = TRUE)
 
 # to calculate a 40% reduction after 200 years
@@ -589,7 +589,7 @@ myData <- flowMultipliersWaterKeep %>%
 myDataUnVeg <- myData %>%
   mutate(StateClassId = "Wetland: Unvegetated Forested")
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, myDataUnVeg, "stsim_FlowMultiplier", append = TRUE)
 
 
@@ -637,5 +637,5 @@ myData$Value[myData$FlowGroupId %in% c("Emission: AG Slow -> Atmosphere [Type]")
 
 myData[,c("StateClassId","FlowGroupId","Value")]
 
-saveDatasheet(myScenario, myDataKeep, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myDataKeep, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = TRUE)

@@ -99,7 +99,7 @@ myScenario <- scenario(myProject,
                        folder = "Single-Cell Sub-Scenarios")
 myData <- data.frame(StageNameId = "ST-Sim",
                      RunOrder = 1)
-saveDatasheet(myScenario, myData, "core_Pipeline", append = FALSE)
+saveDatasheet(myScenario, myData, "core_Pipeline", append = FALSE, force = TRUE)
 rm(myData)
 
 # Merge flow pathways
@@ -134,7 +134,7 @@ myData <- tibble(StateClassId = rep(c("Wetland: Palustrine Forested",
                                      "Deep Soil"), each = 4),
                  StockMinimum = 0)
 
-saveDatasheet(myScenario, myData, "stsim_StockLimit", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StockLimit", append = FALSE, force = TRUE)
 
 rm(myScenario,myData)
 
@@ -160,7 +160,7 @@ myData <- tibble(StockTypeId = c("DOM: Belowground Slow",
                                  "DOM: Snag Stem"),
                  StockMinimum = 0)
 
-saveDatasheet(myScenario, myData, "stsim_StockLimit", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_StockLimit", append = FALSE, force = TRUE)
 
 rm(myScenario,myData)
 
@@ -208,7 +208,7 @@ multiTab <- datasheet(myLibrary,name = sheetName)
 multiTab$EnableMultiprocessing <- TRUE
 multiTab$MaximumJobs <- numberOfJobs
 
-saveDatasheet(myLibrary, multiTab, sheetName, append = FALSE)
+saveDatasheet(myLibrary, multiTab, sheetName, append = FALSE, force = TRUE)
 
 rm(multiTab,sheetName)
 
@@ -226,7 +226,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 0,
                     MaximumTimestep = 1674,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -242,7 +242,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 0,
                     MaximumTimestep = 3799,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -258,7 +258,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     MinimumTimestep = 0,
                     MaximumTimestep = 124,
                     IsSpatial = FALSE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -273,7 +273,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(TotalAmount = 1,
                     NumCells = 1,
                     CalcFromDist = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myData, sheetName)
 
@@ -284,7 +284,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE, optional = TRUE)
                     AgeMin = 0,
                     AgeMax = 0,
                     RelativeAmount = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -299,7 +299,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(TotalAmount = 1,
                     NumCells = 1,
                     CalcFromDist = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myData, sheetName)
 
@@ -310,7 +310,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE, optional = TRUE)
                     AgeMin = 0,
                     AgeMax = 0,
                     RelativeAmount = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -338,7 +338,7 @@ myData <- datasheet(myScenario, "stsim_TransitionMultiplierValue", optional = T,
 myData$TransitionGroupId[myData$Timestep == 1375] <- "Forest Harvest: Forest Clearcut [Type]"
 myData$TransitionGroupId[myData$Timestep == 1376] <- "Forest Harvest: Forest Clearcut [Type]"
 
-saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE, force = TRUE)
 
 rm(myScenario,disturbanceYears,myData)
 
@@ -365,7 +365,7 @@ myData <- datasheet(myScenario, "stsim_TransitionMultiplierValue", optional = T,
 myData$TransitionGroupId[myData$Timestep == 3500] <- "Forest Harvest: Forest Clearcut [Type]"
 myData$TransitionGroupId[myData$Timestep == 3501] <- "Forest Harvest: Forest Clearcut [Type]"
 
-saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE, force = TRUE)
 
 rm(myScenario,disturbanceYears,myData)
 
@@ -459,7 +459,7 @@ myScenario <- scenario(myProject,
 myData4 <- datasheet(myScenario, "stsim_StateAttributeValue", optional = T, empty = T) %>%
   addRow(myData3)
 
-saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 tail(myData4)
 mean(myData$Amount[myData$AgeMin == 300 & myData$StockGroupId == "DOM: Snag Stem [Type]"])
@@ -525,7 +525,7 @@ rm(myData4,myScenario,myData3,myData2,myData,forestId,scenarioList)
 # myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
 # myData$Value[myData$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- flowMultBGStoDeep
 # 
-# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 # Then run full model
 myScenario <- scenario(myProject,
@@ -589,7 +589,7 @@ if (rerunScenariosWithResults || !hasResults(myProject, vTag("Updated Wetland: P
 # 
 # myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
 # 
-# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 
 # Updated spinup for S
@@ -654,7 +654,7 @@ if (rerunScenariosWithResults || !hasResults(myProject, vTag("Updated Wetland: P
 # myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
 # myData$Value[myData$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- flowMultBGStoDeep
 # 
-# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 myScenario <- scenario(myProject,
                        scenario=vTag("Updated Wetland: Palustrine Forested Spinup: Limit: Harvest S", gwpVariant, style="bracket"),
@@ -709,7 +709,7 @@ if (rerunScenariosWithResults || !hasResults(myProject, vTag("Updated Wetland: P
 # 
 # myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
 # 
-# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 # Updated Spinup for W
 # # Only run to calculate equilibrium DOM pools
@@ -771,7 +771,7 @@ if (rerunScenariosWithResults || !hasResults(myProject, vTag("Updated Wetland: P
 # myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
 # myData$Value[myData$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"] <- flowMultBGStoDeep
 # 
-# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 # Run model for W site
 myScenario <- scenario(myProject,
@@ -828,7 +828,7 @@ if (rerunScenariosWithResults || !hasResults(myProject, vTag("Updated Wetland: P
 # 
 # myData$Value[myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"] <- flowMultBGStoAtm
 # 
-# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+# saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 
 # Calculate Lateral Flux average
@@ -993,7 +993,7 @@ myData4 <- datasheet(myScenario, "stsim_StateAttributeValue", optional = T, empt
   addRow(myCSV) %>%
   addRow(myCSV2)
 
-saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
+saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
 
 tail(myData4)
 mean(myData$Amount[myData$AgeMin == 300 & myData$StockGroupId == "DOM: Snag Stem [Type]"])

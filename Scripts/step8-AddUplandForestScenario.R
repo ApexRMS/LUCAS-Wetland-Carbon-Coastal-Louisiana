@@ -218,7 +218,7 @@ sheetName <- "stsim_DeterministicTransition"
 myData <- datasheet(myScenario, sheetName) %>%
   addRow(data.frame(StateClassIdSource = stateClassTable$Name,
                     Location = paste0("A",1:length(stateClassTable$Name))))
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 sheetName <- "stsim_Transition"
 
@@ -232,7 +232,7 @@ myData <- datasheet(myScenario, sheetName, optional = T) %>%
                     TransitionTypeId = gsub(" [Type]","",transitionTypes,fixed = T),
                     Probability = 1))
 
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 # Turn off transition multipliers
 myScenario <- scenario(myProject, 
@@ -263,7 +263,7 @@ myData <- datasheet(myScenario, sheetName, optional = T) %>%
                     TransitionGroupId = transitionTypes,
                     Amount = 0))
 
-saveDatasheet(myScenario, myData, sheetName, append = F)
+saveDatasheet(myScenario, myData, sheetName, append = F, force = TRUE)
 
 # Spatial multipliers table
 myScenario <- scenario(myProject, 

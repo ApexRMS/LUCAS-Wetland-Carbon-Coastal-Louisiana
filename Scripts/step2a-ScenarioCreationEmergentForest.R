@@ -206,7 +206,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(TotalAmount = 1,
                     NumCells = 1,
                     CalcFromDist = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myData, sheetName)
 
@@ -215,7 +215,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(StratumId = "Study Area",
                     StateClassId = "Wetland: Estuarine Emergent",
                     RelativeAmount = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -229,7 +229,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(TotalAmount = 1,
                     NumCells = 1,
                     CalcFromDist = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myData, sheetName)
 
@@ -238,7 +238,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(StratumId = "Study Area",
                     StateClassId = "Wetland: Palustrine Emergent",
                     RelativeAmount = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -252,7 +252,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(TotalAmount = 1,
                     NumCells = 1,
                     CalcFromDist = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myData, sheetName)
 
@@ -263,7 +263,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE, optional = TRUE)
                     AgeMin = 1,
                     AgeMax = 1,
                     RelativeAmount = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -278,7 +278,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(data.frame(TotalAmount = 1,
                     NumCells = 1,
                     CalcFromDist = TRUE))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myData, sheetName)
 
@@ -289,7 +289,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE, optional = TRUE)
                     AgeMin = 1,
                     AgeMax = 1,
                     RelativeAmount = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -309,7 +309,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
                     SummaryOutputTRTimesteps = 1,
                     SummaryOutputEV = TRUE,
                     SummaryOutputEVTimesteps = 1))
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName)
 
@@ -331,7 +331,7 @@ myData <- datasheet(myScenario, name = sheetName, empty = TRUE) %>%
   addRow(tibble(StockTypeId = "Deep Soil",
                 StateAttributeTypeId = "Carbon Initial Conditions: Deep Soil"))
 
-saveDatasheet(myScenario, myData, sheetName, append = FALSE)
+saveDatasheet(myScenario, myData, sheetName, append = FALSE, force = TRUE)
 
 rm(myScenario, myData, sheetName, myCSV)
 
@@ -393,7 +393,7 @@ myCSV <- read.csv(paste0(outpathDatasheets,"stsim_FlowOrder.csv"))
 myData <- datasheet(myScenario,"stsim_FlowOrder", empty = TRUE, optional = TRUE) %>%
   addRow(myCSV)
 
-saveDatasheet(myScenario, myData, "stsim_FlowOrder", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowOrder", append = FALSE, force = TRUE)
 
 rm(myData, sheetName, myCSV, myDataAddForest, myDataAddCO2,
    myDataAddLatCH4, myDataAddAtm, myDataAll,myDataAddLat2)
@@ -402,7 +402,7 @@ myData <- datasheet(myScenario, name = "stsim_FlowOrderOptions")
 
 myData$ApplyBeforeTransitions <- FALSE
 
-saveDatasheet(myScenario, myData, "stsim_FlowOrderOptions", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowOrderOptions", append = FALSE, force = TRUE)
 
 rm(myScenario,myData)
 
@@ -421,7 +421,7 @@ myData <- datasheet(myScenario, "stsim_TransitionMultiplierValue", optional = T,
                     TransitionGroupId = transitionTypes,
                     Amount = 0))
 
-saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_TransitionMultiplierValue", append = FALSE, force = TRUE)
 
 rm(myScenario,myData,transitionTypeGroup,transitionTypes)
 
@@ -589,7 +589,7 @@ myData <- myData %>%
   addRow(myCSV1) %>%
   addRow(myCSV2)
 
-saveDatasheet(myScenario, myData, "stsim_FlowPathway", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowPathway", append = FALSE, force = TRUE)
 
 rm(myScenario,flowTypesAddEmergent,myData,flowTypesAddForest1,flowTypesAddForest2,flowTypesAddCO2,
    flowTypesMethane,flowTypesLateral,flowTypesAtm,myDataState,myDataAll, myCSV1,myCSV2)
@@ -696,7 +696,7 @@ myData$Value[myData$FlowTypeId %in% c("LULC: Emission DOM CH4",
                                       "LULC: Emission Live CH4") &
                myData$Value %in% c(-33.5)] <- -GWPmethane
 
-saveDatasheet(myScenario, myData, "stsim_FlowTypeGroupMembership", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowTypeGroupMembership", append = FALSE, force = TRUE)
 
 myData <- datasheet(myScenario, name = sheetName)
 

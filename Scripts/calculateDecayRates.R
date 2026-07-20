@@ -69,7 +69,7 @@ calculateDecayRates <- function(
     myData$FlowGroupId == "Stabilization: BG Slow -> Deep Soil [Type]"
   ] <- flowMultBGStoDeep
   
-  saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+  saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
   
   rm(myScenario, myData)
   
@@ -123,7 +123,7 @@ calculateDecayRates <- function(
       myData$FlowGroupId == "Emission: BG Slow -> Atmosphere Temp [Type]"
     ] <- flowMultBGStoAtm
     
-    saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+    saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
     
     rm(myScenario,myData)
     

@@ -91,7 +91,7 @@ myCSV <- read.csv(paste0(outpathDatasheets,"stsim_FlowMultiplier_ForestedWetland
 myData <- datasheet(myScenario, "stsim_FlowMultiplier", optional = TRUE, empty = TRUE) %>%
   addRow(myCSV)
 
-saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE)
+saveDatasheet(myScenario, myData, "stsim_FlowMultiplier", append = FALSE, force = TRUE)
 
 # Add Uncertainty
 # Grab output data: Wetland: Palustrine Forested Spinup
@@ -260,7 +260,7 @@ for (i in 1:length(scenNamesForestedWetland)){
     addRow(myCSV) %>%
     addRow(myCSV2)
   
-  saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE)
+  saveDatasheet(myScenario, myData4, "stsim_StateAttributeValue", append = FALSE, force = TRUE)
   
   tail(myData4)
   mean(myData$Amount[myData$AgeMin == 300 & myData$StockGroupId == "DOM: Snag Stem [Type]"])
