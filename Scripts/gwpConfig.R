@@ -19,10 +19,22 @@ vTag <- function(base, variant, style = c("bracket", "suffix")) {
   paste0(base, " [", variant$label, "]")
 }
 
-# Exact-match replacement for the ambiguous grep(scenarioList$Name)+max(ScenarioId) pattern
+# Exact-match replacement for the ambiguous grep(scenarioList$Name)+max(ScenarioId) pattern.
+# Two things the original grep()+max(ScenarioId) pattern relied on that this must preserve:
+#   1. A result scenario keeps the SAME Name as its parent (distinguished only by
+#      ScenarioId), so a scenario that has been run() one or more times will have
+#      multiple rows sharing this exact name -- that's expected, not an error.
+#   2. When multiple rows share the name (parent + result(s), or several results from
+#      repeated runs), we want the most recent one, i.e. max(ScenarioId).
+# `results` is intentionally omitted here (defaults to FALSE = return everything,
+# both definition and result scenarios) -- results=TRUE would exclude scenarios that
+# have been created but not yet run(), which is what originally broke this.
+# The actual bug this function exists to fix is grep()'s ambiguous SUBSTRING matching
+# (e.g. "Basin Baseline" matching "Basin Baseline - Revised GWP-100" too) -- using an
+# exact `==` match on Name fixes that while still allowing multiple ScenarioId matches.
 getScenarioExact <- function(proj, name) {
-  sl <- scenario(proj, summary = TRUE, results = TRUE)
+  sl <- scenario(proj, summary = TRUE)
   ids <- sl$ScenarioId[sl$Name == name]
-  if (length(ids) != 1) stop("Expected exactly 1 scenario named '", name, "', found ", length(ids))
-  scenario(proj, scenario = ids)
+  if (length(ids) == 0) stop("Expected at least 1 scenario named '", name, "', found 0")
+  scenario(proj, scenario = max(ids))
 }
