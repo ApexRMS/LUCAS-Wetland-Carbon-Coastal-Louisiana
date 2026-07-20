@@ -440,12 +440,15 @@ write.csv(tibble(StockTypeId = "Atmosphere Temp",
 # Add to model
 myCSV <- read.csv(paste0(outpathDatasheets,"stsim_FlowPathwayDiagram.csv"))
 
+myDataExisting <- datasheet(myScenario, name = "stsim_FlowPathwayDiagram")
+
 myData <- datasheet(myScenario, name = "stsim_FlowPathwayDiagram", empty = TRUE, optional = TRUE) %>%
-  addRow(myCSV)
+  addRow(myCSV) %>%
+  anti_join(myDataExisting)
 
 saveDatasheet(myScenario, myData, "stsim_FlowPathwayDiagram", append = TRUE)
 
-rm(myData, myCSV)
+rm(myData, myCSV, myDataExisting)
 
 myData <- datasheet(myScenario, name = "stsim_FlowPathway")
 
@@ -640,7 +643,8 @@ write.csv(myDataAdd,
 myCSV <- read.csv(paste0(outpathDatasheets,"stsim_OutputFilterStocks.csv"))
 
 myData <- datasheet(myScenario, name = "stsim_OutputFilterStocks", empty = TRUE, optional = TRUE, lookupsAsFactors = F) %>%
-  addRow(myCSV)
+  addRow(myCSV) %>%
+  filter(!(StockGroupId %in% myDataOrig$StockGroupId))
 
 saveDatasheet(myScenario, myData, "stsim_OutputFilterStocks", append = TRUE)
 
@@ -695,6 +699,8 @@ myData$Value[myData$FlowTypeId %in% c("LULC: Emission DOM CH4",
 saveDatasheet(myScenario, myData, "stsim_FlowTypeGroupMembership", append = FALSE)
 
 myData <- datasheet(myScenario, name = sheetName)
+
+myDataExisting <- myData
 
 myDataEmissionsCH4forest <- myData %>%
   filter(FlowTypeId %in% c("Emission: AG Very Fast -> Atmosphere")) %>%
@@ -752,16 +758,18 @@ write.csv(myDataAll,
 myCSV <- read.csv(paste0(outpathDatasheets,"stsim_FlowTypeGroupMembership1.csv"))
 
 myData <- datasheet(myScenario, name = "stsim_FlowTypeGroupMembership", empty = TRUE, optional = TRUE) %>%
-  addRow(myCSV)
+  addRow(myCSV) %>%
+  anti_join(myDataExisting)
 
 saveDatasheet(myScenario, myData,"stsim_FlowTypeGroupMembership", append = TRUE)
 
-rm(myData,myCSV,myDataAll, myDataEmissionsCH4forest, 
+rm(myData,myCSV,myDataAll, myDataEmissionsCH4forest, myDataExisting,
    myDataEmissionsCO2forest, myFlowsForest, myDataLateralForest,myDataLateralForest1,myDataLateralForest2,myDataLateralForest3,
    myDataLateralEmergent4,myDataEmissionsCO2b)
 
 myData <- datasheet(myScenario, name = "stsim_FlowTypeGroupMembership")
 
+myDataExisting <- myData
 
 renameStocks <- c("Net Biome Productivity (CO2e)",
                   "Net Biome Productivity",
@@ -861,16 +869,19 @@ write.csv(myDataAll,
 myCSV2 <- read.csv(paste0(outpathDatasheets,"stsim_FlowTypeGroupMembership2.csv"))
 
 myData <- datasheet(myScenario, name = "stsim_FlowTypeGroupMembership", empty = TRUE, optional = TRUE) %>%
-  addRow(myCSV2)
+  addRow(myCSV2) %>%
+  anti_join(myDataExisting)
 
 saveDatasheet(myScenario, myData, "stsim_FlowTypeGroupMembership", append = TRUE)
 
-rm(myData, sheetName, myFlowsRename, myFlowsNetMethane, myDataAll,
+rm(myData, sheetName, myFlowsRename, myFlowsNetMethane, myDataAll, myDataExisting,
    myCSV2,myDataAdd1,myDataAdd2,myDataAdd3,myDataAdd4,myDataAdd5,myDataAdd6,myDataAdd7)
 
 # Update stock group membership
 
 myData <- datasheet(myScenario, name = "stsim_StockTypeGroupMembership")
+
+myDataExisting <- myData
 
 myStocksRename <- myData %>%
   filter(StockGroupId == "Total Ecosystem") %>%
@@ -935,10 +946,11 @@ write.csv(myDataAll,
 myCSV <- read.csv(paste0(outpathDatasheets,"stsim_StockTypeGroupMembership.csv"))
 
 myData <- datasheet(myScenario, name = "stsim_StockTypeGroupMembership", empty = TRUE, optional = TRUE) %>%
-  addRow(myCSV)
+  addRow(myCSV) %>%
+  anti_join(myDataExisting)
 
 saveDatasheet(myScenario, myData, "stsim_StockTypeGroupMembership", append = TRUE)
 
-rm(myScenario, myData, myCSV, myStocksRename, myStocksLat, myStocksCH4, myStocksCO2, myStocksAll, myDataAll,myDataAdd1,myDataAdd2)
+rm(myScenario, myData, myCSV, myStocksRename, myStocksLat, myStocksCH4, myStocksCO2, myStocksAll, myDataAll,myDataAdd1,myDataAdd2,myDataExisting)
 
 

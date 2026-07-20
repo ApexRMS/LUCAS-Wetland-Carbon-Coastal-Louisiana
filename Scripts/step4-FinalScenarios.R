@@ -198,6 +198,8 @@ myScenario <- scenario(myProject,
 
 myData <- datasheet(myScenario,"stsim_StateAttributeValue")
 
+myDataExisting <- myData
+
 myDataAdd <- myData %>%
   mutate(StateClassId = "Agriculture: Pasture")
 
@@ -222,7 +224,8 @@ myDataAdd <- myDataAdd %>%
   addRow(myDataAdd3) %>%
   addRow(myDataAdd4) %>%
   addRow(myDataAdd5) %>%
-  addRow(myDataAdd6)
+  addRow(myDataAdd6) %>%
+  anti_join(myDataExisting)
 
 saveDatasheet(myScenario, myDataAdd, "stsim_StateAttributeValue", append = TRUE)
 

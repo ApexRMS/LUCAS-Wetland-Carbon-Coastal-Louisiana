@@ -51,15 +51,18 @@ myScenario <- scenario(myProject,
 sheetName <- "stsim_Transition"
 myData <- datasheet(myScenario, name = sheetName)
 
+myDataExisting <- myData
+
 myData <- myData %>%
   filter(StateClassIdSource == "Forest: Oak/Gum/Cypress Group",
          TransitionTypeId == "Forest Harvest: Forest Clearcut") %>%
   mutate(StateClassIdSource = "Wetland: Palustrine Forested",
-         StateClassIdDest = "Wetland: Palustrine Forested")
+         StateClassIdDest = "Wetland: Palustrine Forested") %>%
+  anti_join(myDataExisting)
 
 saveDatasheet(myScenario, myData, sheetName, append = TRUE)
 
-rm(myScenario, myData, sheetName)
+rm(myScenario, myData, sheetName, myDataExisting)
 
 # Merge Scenarios
 myScenario <- scenario(myProject, 

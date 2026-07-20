@@ -157,6 +157,8 @@ myScenario <- scenario(myProject,
 
 myData <- datasheet(myScenario, name = "stsim_FlowPathway")
 
+myDataExisting <- myData
+
 myDataWater <- myData %>%
   filter(FromStateClassId == "Water: All") %>%
   mutate(FromStateClassId = "Water: Previously Emergent Wetland") %>%
@@ -182,8 +184,8 @@ myDataWater <- myDataWater %>%
 myDataUnVeg <- myDataWater %>%
   mutate(FromStateClassId = "Wetland: Unvegetated Emergent")
 
-saveDatasheet(myScenario, myDataWater, "stsim_FlowPathway", append = TRUE)
-saveDatasheet(myScenario, myDataUnVeg, "stsim_FlowPathway", append = TRUE)
+saveDatasheet(myScenario, anti_join(myDataWater, myDataExisting), "stsim_FlowPathway", append = TRUE)
+saveDatasheet(myScenario, anti_join(myDataUnVeg, myDataExisting), "stsim_FlowPathway", append = TRUE)
 
 myDataForestedWater <- myData %>%
   filter(FromStateClassId == "Wetland: Palustrine Forested") %>%
@@ -198,8 +200,8 @@ myDataForestedWater <- myData %>%
 myDataUnVegForested <- myDataForestedWater %>%
   mutate(FromStateClassId = "Wetland: Unvegetated Forested")
 
-saveDatasheet(myScenario, myDataForestedWater, "stsim_FlowPathway", append = TRUE)
-saveDatasheet(myScenario, myDataUnVegForested, "stsim_FlowPathway", append = TRUE)
+saveDatasheet(myScenario, anti_join(myDataForestedWater, myDataExisting), "stsim_FlowPathway", append = TRUE)
+saveDatasheet(myScenario, anti_join(myDataUnVegForested, myDataExisting), "stsim_FlowPathway", append = TRUE)
 
 # Calculate the correct partitions between lateral and emissions
 

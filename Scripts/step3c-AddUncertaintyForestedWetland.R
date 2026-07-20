@@ -439,13 +439,16 @@ myScenario <- scenario(myProject,
                        folder = "Single-Cell Sub-Scenarios",
                        source = "External Variable: Site ID Lat Flux Estimate Set Seed")
 
+myDataExisting <- datasheet(myScenario, "core_ExternalVariableValue")
+
 myUpdate <- data.frame(Iteration = c(1:1000),
                        ExternalVariableTypeId = "Site ID Wetland: Palustrine Forested",
-                       ExternalVariableValue = sample(c(1:2),1000,replace = TRUE))
+                       ExternalVariableValue = sample(c(1:2),1000,replace = TRUE)) %>%
+  anti_join(myDataExisting)
 
 saveDatasheet(myScenario, myUpdate, "core_ExternalVariableValue", append = TRUE)
 
-rm(myScenario,myUpdate)
+rm(myScenario,myUpdate,myDataExisting)
 
 # Distributions merge all
 

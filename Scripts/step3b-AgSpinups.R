@@ -240,7 +240,7 @@ myScenario <- scenario(myProject,
                        folder = "Single-Cell Sub-Scenarios",
                        sourceScenario = vTag("SF Flow Pathways [Base Flows, Add Methane]", gwpVariant, style="bracket"))
 
-myData <- datasheet(myScenario, name = "stsim_FlowPathway")
+myDataExisting <- datasheet(myScenario, name = "stsim_FlowPathway")
 
 flowPathways <- read.csv(paste0(pathInDatasheets,"FlowPathwaysLAModel.csv"), stringsAsFactors = F)
 names(flowPathways) <- gsub("ID","Id",names(flowPathways))
@@ -321,7 +321,8 @@ myData1 <- datasheet(myScenario, "stsim_FlowPathway", optional = T, empty = T) %
   addRow(flowPathwaysDevHighNG) %>%
   addRow(flowPathwaysDevLowNG) %>%
   addRow(flowPathwaysDevMedNG) %>%
-  addRow(flowPathwaysDevOpenNG)
+  addRow(flowPathwaysDevOpenNG) %>%
+  anti_join(myDataExisting)
 
 myData2 <- datasheet(myScenario, "stsim_FlowPathway", optional = T, empty = T) %>%
   addRow(flowPathwaysBarrenO) %>%
@@ -332,12 +333,13 @@ myData2 <- datasheet(myScenario, "stsim_FlowPathway", optional = T, empty = T) %
   addRow(flowPathwaysShore) %>%
   addRow(flowPathwaysWater) %>%
   addRow(flowPathwaysAgCropO) %>%
-  addRow(flowPathwaysAgPastO)
+  addRow(flowPathwaysAgPastO) %>%
+  anti_join(myDataExisting)
 
 saveDatasheet(myScenario, myData1, "stsim_FlowPathway", append = TRUE)
 saveDatasheet(myScenario, myData2, "stsim_FlowPathway", append = TRUE)
 
-rm(myScenario,myData1,myData2,flowPathways,flowPathwaysBarrenO,flowPathwaysDevHighO,
+rm(myScenario,myData1,myData2,myDataExisting,flowPathways,flowPathwaysBarrenO,flowPathwaysDevHighO,
    flowPathwaysDevLowO,flowPathwaysDevMedO,flowPathwaysDevOpenO,flowPathwaysShore,flowPathwaysWater,
    flowPathwaysAgCropO,flowPathwaysAgPastO,flowPathwaysAgCropNG,flowPathwaysAgPastNG,
    flowPathwaysBarrenNG,flowPathwaysDevHighNG,

@@ -116,7 +116,8 @@ myData <- datasheet(myScenario, sheetName)
 
 myDataNew <- data.frame(Timestep = 2002,
                         FlowGroupId = "Net Growth Wetland Emergent: Total",
-                        Value = 0.01)
+                        Value = 0.01) %>%
+  anti_join(myData)
 
 saveDatasheet(myScenario, myDataNew, sheetName, append = T)
 
