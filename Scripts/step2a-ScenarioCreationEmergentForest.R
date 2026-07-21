@@ -382,7 +382,8 @@ myDataAll <- myData %>%
             myDataAddCO2,
             myDataAddLatCH4,
             myDataAddAtm,
-            myDataAddLat2)
+            myDataAddLat2) %>%
+  distinct(FlowTypeId, .keep_all = TRUE)
 
 write.csv(myDataAll,
           paste0(outpathDatasheets,"stsim_FlowOrder.csv"), row.names = FALSE)
