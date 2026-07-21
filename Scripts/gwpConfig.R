@@ -20,23 +20,22 @@ vTag <- function(base, variant, style = c("bracket", "suffix")) {
 }
 
 # Exact-match replacement for the ambiguous grep(scenarioList$Name)+max(ScenarioId) pattern.
-# Two things the original grep()+max(ScenarioId) pattern relied on that this must preserve:
-#   1. A result scenario keeps the SAME Name as its parent (distinguished only by
-#      ScenarioId), so a scenario that has been run() one or more times will have
-#      multiple rows sharing this exact name -- that's expected, not an error.
-#   2. When multiple rows share the name (parent + result(s), or several results from
-#      repeated runs), we want the most recent one, i.e. max(ScenarioId).
-# `results` is intentionally omitted here (defaults to FALSE = return everything,
-# both definition and result scenarios) -- results=TRUE would exclude scenarios that
-# have been created but not yet run(), which is what originally broke this.
-# The actual bug this function exists to fix is grep()'s ambiguous SUBSTRING matching
-# (e.g. "Basin Baseline" matching "Basin Baseline - Revised GWP-100" too) -- using an
-# exact `==` match on Name fixes that while still allowing multiple ScenarioId matches.
+# IMPORTANT: a result scenario does NOT share its parent's Name -- SyncroSim appends a
+# date/time suffix, e.g. parent "X" produces results named "X ([<parentId>] @ <date> <time>)".
+# This is why the original grep()+max(ScenarioId) pattern used substring matching (every
+# result's name contains the parent's name as a prefix) despite the ambiguity risk that
+# motivated this replacement (e.g. "Basin Baseline" matching "Basin Baseline - Revised
+# GWP-100" too). The fix here uses the structured ParentId column instead of string
+# matching: find the unique top-level scenario (ParentId is NA) with an exact Name match,
+# then return the highest-ScenarioId row among it and its actual result children (i.e.
+# the latest result if it's been run, or the parent itself if it hasn't).
 getScenarioExact <- function(proj, name) {
   sl <- scenario(proj, summary = TRUE)
-  ids <- sl$ScenarioId[sl$Name == name]
-  if (length(ids) == 0) stop("Expected at least 1 scenario named '", name, "', found 0")
-  scenario(proj, scenario = max(ids))
+  parentIds <- sl$ScenarioId[sl$Name == name & is.na(sl$ParentId)]
+  if (length(parentIds) != 1) stop("Expected exactly 1 top-level scenario named '", name, "', found ", length(parentIds))
+  parentId <- parentIds[1]
+  childIds <- sl$ScenarioId[!is.na(sl$ParentId) & sl$ParentId == parentId]
+  scenario(proj, scenario = max(c(parentId, childIds)))
 }
 
 # Toggle: set to FALSE to skip re-running a single-cell scenario (or, for
@@ -47,10 +46,13 @@ getScenarioExact <- function(proj, name) {
 rerunScenariosWithResults <- TRUE
 
 # TRUE if `name` already has at least one associated result scenario (a
-# scenario that has been run() at least once).
+# scenario that has been run() at least once). Uses ParentId, not Name, for the
+# same reason as getScenarioExact() above -- results don't share their parent's Name.
 hasResults <- function(proj, name) {
-  existingResults <- scenario(proj, summary = TRUE, results = TRUE)
-  name %in% existingResults$Name
+  sl <- scenario(proj, summary = TRUE)
+  parentIds <- sl$ScenarioId[sl$Name == name & is.na(sl$ParentId)]
+  if (length(parentIds) != 1) return(FALSE)
+  any(!is.na(sl$ParentId) & sl$ParentId == parentIds[1])
 }
 
 # Runs `name` via run(), unless rerunScenariosWithResults is FALSE and results
