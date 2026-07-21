@@ -31,14 +31,10 @@ myLibrary <- ssimLibrary(name = paste0(modelFullPath, "/", modelName, ".ssim"),
 myProject <- rsyncrosim::project(myLibrary, project="Definitions")
 
 
-if (activeGWP == "GWP100") {
-
-# Add Flow Type
-flowTypes <- read_csv(paste0(rootPathUpdatedTables,"stsimsf_FlowMultiplier/stsimsf_FlowMultiplier Wetland Emergent Mean IPCC.csv"))
-flowTypes <- unique(flowTypes$FlowGroupID)
-
-flowTypesEmergent <- grep("Emission",flowTypes, value = T)
-
+# These vectors are pure computation (no library side effects) and are also
+# referenced later in this script outside the activeGWP == "GWP100" gate below
+# (e.g. the "SF Flow Order [Updated]" and "[Add Methane]" blocks, which run on
+# every GWP pass) -- so they must be (re)computed on every pass, not just once.
 flowTypesDecay <- c("Decay: AG Fast -> BG Slow",
                     "Decay: AG Medium -> BG Slow",
                     "Decay: AG Very Fast -> BG Slow",
@@ -72,6 +68,43 @@ flowTypesAdd <- c(flowTypesDecay,
                   flowTypesAtm,
                   flowTypesUpdate)
 
+flowGroupsAdd <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+                   "Annual Net Ecosystem Carbon Balance (tons C per year)",
+                   "Annual Emissions: CH4 (tons C per year)",
+                   "Annual Emissions: CH4 (tons CO2-eq per year)",
+                   "Annual Lateral Flux (tons C per year)",
+                   "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
+                   "Annual Emissions: CO2, CO, and CH4 (tons CO2-eq per year)",
+                   "Annual Net Growth (tons CO2-eq per year)",
+                   "Annual Emissions: CO2 and CH4 (tons C per year)",
+                   "Annual Emissions: CO2, CO, and CH4 (tons C per year)",
+                   "Annual Emissions: CO2 (tons C per year)",
+                   "Annual Emissions: CO2 (tons CO2-eq per year)",
+                   "Annual Net Growth (tons C per year)",
+                   "Annual Lateral Flux (tons CO2-eq per year)",
+                   "Annual Net Flux (tons C per year)",
+                   "Annual Net Flux (tons CO2-eq per year)",
+                   "Net Growth Wetland Emergent: Total")
+
+stockGroupsAdd <- c("Ecosystem Carbon Storage (tons C)",
+                    "Cumulative Emissions (tons C)",
+                    "Cumulative Emissions (tons CO2-eq)",
+                    "Cumulative Emissions: CH4 (tons CO2-eq)",
+                    "Cumulative Emissions: CH4 (tons C)",
+                    "Cumulative Emissions: CO2 (tons CO2-eq)",
+                    "Cumulative Emissions: CO2 (tons C)",
+                    "Cumulative Lateral Flux (tons C)",
+                    "Cumulative Change in Net Carbon Sequestration (tons CO2-eq)",
+                    "Cumulative Change in Net Carbon Sequestration (tons C)")
+
+if (activeGWP == "GWP100") {
+
+# Add Flow Type
+flowTypes <- read_csv(paste0(rootPathUpdatedTables,"stsimsf_FlowMultiplier/stsimsf_FlowMultiplier Wetland Emergent Mean IPCC.csv"))
+flowTypes <- unique(flowTypes$FlowGroupID)
+
+flowTypesEmergent <- grep("Emission",flowTypes, value = T)
+
 write.csv(tibble(Name = flowTypesAdd),paste0(outpathDatasheets,"stsim_FlowType.csv"), row.names = FALSE)
 
 # Add to model
@@ -93,24 +126,6 @@ saveDatasheet(myProject, myData, "stsim_FlowType", append = TRUE)
 rm(myData, myCSV)
 
 # Add a new flow group
-
-flowGroupsAdd <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
-                   "Annual Net Ecosystem Carbon Balance (tons C per year)",
-                   "Annual Emissions: CH4 (tons C per year)",
-                   "Annual Emissions: CH4 (tons CO2-eq per year)",
-                   "Annual Lateral Flux (tons C per year)",
-                   "Annual Emissions: CO2 and CH4 (tons CO2-eq per year)",
-                   "Annual Emissions: CO2, CO, and CH4 (tons CO2-eq per year)",
-                   "Annual Net Growth (tons CO2-eq per year)",
-                   "Annual Emissions: CO2 and CH4 (tons C per year)",
-                   "Annual Emissions: CO2, CO, and CH4 (tons C per year)",
-                   "Annual Emissions: CO2 (tons C per year)",
-                   "Annual Emissions: CO2 (tons CO2-eq per year)",
-                   "Annual Net Growth (tons C per year)",
-                   "Annual Lateral Flux (tons CO2-eq per year)",
-                   "Annual Net Flux (tons C per year)",
-                   "Annual Net Flux (tons CO2-eq per year)",
-                   "Net Growth Wetland Emergent: Total")
 
 write.csv(tibble(Name = flowGroupsAdd),paste0(outpathDatasheets,"stsim_FlowGroup.csv"), row.names = FALSE)
 
@@ -139,17 +154,6 @@ myData <- datasheet(myProject,"stsim_StockType", empty = TRUE, optional = TRUE) 
 saveDatasheet(myProject, myData, "stsim_StockType", append = TRUE)
 
 # Add Stock Groups
-
-stockGroupsAdd <- c("Ecosystem Carbon Storage (tons C)",
-                    "Cumulative Emissions (tons C)",
-                    "Cumulative Emissions (tons CO2-eq)",
-                    "Cumulative Emissions: CH4 (tons CO2-eq)",
-                    "Cumulative Emissions: CH4 (tons C)",
-                    "Cumulative Emissions: CO2 (tons CO2-eq)",
-                    "Cumulative Emissions: CO2 (tons C)",
-                    "Cumulative Lateral Flux (tons C)",
-                    "Cumulative Change in Net Carbon Sequestration (tons CO2-eq)",
-                    "Cumulative Change in Net Carbon Sequestration (tons C)")
 
 write.csv(tibble(Name = stockGroupsAdd),
           paste0(outpathDatasheets,"stsim_StockGroup.csv"), row.names = FALSE)
