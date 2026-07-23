@@ -14,7 +14,7 @@ library(sf)
 library(terra)
 
 # Specify file paths
-sourceDataPath <- "E:/Data Sources/"
+sourceDataPath <- "D:/Barataria/Data Sources/"
 studyAreaFullPath <- paste0(rootPath,"StudyArea/BasinsCoastal.shp")
 
 applyCoarserGrid <- FALSE
@@ -23,7 +23,7 @@ spatialResMult <- 3 #10 # Only used when applyCoarserGrid == TRUE
 dataPath <- "Data/"
 modelPath <- "Models/"
 
-modelName <- "Barataria"
+#modelName <- "Barataria"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 
@@ -39,7 +39,7 @@ studyAreaShape$primaryStrata <- "Study Area"
 studyAreaShape$primaryStrataId <- 1
 
 # Specify the spatial reference
-projectionCRS <- crs("+init=epsg:5070")
+projectionCRS <- crs("EPSG:5070")
 
 ## Creates a raster from the analysis area shapefile specified in the InputParameters section
 

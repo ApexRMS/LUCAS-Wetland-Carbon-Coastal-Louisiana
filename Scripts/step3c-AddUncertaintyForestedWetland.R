@@ -17,7 +17,7 @@ rootPathUpdatedTables <- paste0(rootPath,"Data/Datasheets Wetland/Emergent/")
 dataPath <- "Data/"
 modelPath <- "Models/"
 
-modelName <- "Barataria"
+# modelName <- "Barataria"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 

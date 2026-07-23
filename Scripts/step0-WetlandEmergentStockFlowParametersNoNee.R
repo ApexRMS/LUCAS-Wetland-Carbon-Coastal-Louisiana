@@ -153,8 +153,8 @@ lateralFluxRaw <- read_csv(paste0(cleanDataDir, "wetlandHerbaceousSummary_StockB
 
 methaneRaw <- LUCASWetlandSubclassRaw %>%
   select(`Site.ID`, `Habitat Type 2014`,`Wetland Subclass LUCAS`) %>%
-  mutate(MethaneFlux = case_when(`Habitat Type 2014` == "Saline"~ 0,
-                                  `Habitat Type 2014` != "Saline" ~ 14.50)) %>%
+  mutate(MethaneFlux = case_when(`Habitat Type 2014` == "Saline"~ 11.1,
+                                  `Habitat Type 2014` != "Saline" ~ 47.1)) %>%
   select(Site.ID,`Wetland Subclass LUCAS`,MethaneFlux)
 
 # methaneRaw <- tibble(

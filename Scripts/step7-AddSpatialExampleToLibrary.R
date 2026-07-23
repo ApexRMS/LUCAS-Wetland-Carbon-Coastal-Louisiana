@@ -21,7 +21,7 @@ signIn(mySession)
 dataPath <- "Data/"
 modelPath <- "Models/"
 
-modelName <- "Barataria"
+#modelName <- "Barataria"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 

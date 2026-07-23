@@ -18,7 +18,7 @@ rootPathUpdatedTables <- paste0(rootPath,"Data/Datasheets Wetland/Emergent/")
 dataPath <- "Data/"
 modelPath <- "Models/"
 
-modelName <- "Barataria"
+#modelName <- "Barataria"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 
@@ -664,7 +664,8 @@ myData <- data.frame(SummaryOutputST	= "Yes",
 saveDatasheet(myScenario, myData, sheetName)
 
 # Calculate new GWP for methane
-GWPmethane <- round((16.043/12.011)*27,2)
+#GWPmethane <- round((16.043/12.011)*27,2) # GWP-100
+GWPmethane <- round((16.043/12.011)*79.7,2) # GWP-20
 
 # Update stock flow group membership
 myScenario <- scenario(myProject, 

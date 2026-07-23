@@ -2,10 +2,14 @@
 # ApexRMS
 # Nov 2025
 
-rootPath <- "E:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
+rootPath <- "D:/Barataria/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
 scriptsPath <- paste0(rootPath, "Scripts/")
 
-varsKeep <- c("scriptsPath", "varsKeep", "rootPath")
+modelName <- "Barataria LocalCH4 GWP-20"
+# Methane defined in step0 R:154
+# GWP defined in step2a R:667
+
+varsKeep <- c("scriptsPath", "varsKeep", "rootPath", "modelName")
 
 # 0. Pre-process wetland data
 source(paste0(scriptsPath, "step0-WetlandEmergentStockFlowParametersNoNee.R"))
