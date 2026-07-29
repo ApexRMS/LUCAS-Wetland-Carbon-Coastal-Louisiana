@@ -2,8 +2,10 @@
 # ApexRMS
 # Nov 2025
 
-rootPath <- "D:/Barataria/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
-scriptsPath <- paste0(rootPath, "Scripts/")
+#rootPath <- "D:/Barataria/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
+rootPath <- "~/A379/Barataria_LocalCH4/"
+#scriptsPath <- paste0(rootPath, "Scripts/")
+scriptsPath <- "C:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana"
 
 modelName <- "Barataria LocalCH4 GWP-20"
 # Methane defined in step0 R:154
