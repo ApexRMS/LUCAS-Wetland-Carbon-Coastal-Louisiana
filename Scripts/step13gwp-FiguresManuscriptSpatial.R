@@ -25,15 +25,15 @@ modelFullPath <- paste0(rootPath, modelPath, modelName)
 myLibrary_GWP100 <- ssimLibrary(file.path(
   path.expand("~"),
   "A379",
-  "Barataria_LocalCH4/Models",
-  "Barataria LocalCH4 GWP-100.ssim"
+  "Local_CH4_newCO/Barataria_LocalCH4_GWP100_newCO_baseline",
+  "Barataria LocalCH4 GWP-100 newCO.ssim"
 ))
 
 myLibrary_GWP20 <- ssimLibrary(file.path(
   path.expand("~"),
   "A379",
-  "Barataria_LocalCH4/Models",
-  "Barataria LocalCH4 GWP-20.ssim"
+  "Local_CH4_newCO/Barataria_LocalCH4_GWP20_newCO_baseline",
+  "Barataria LocalCH4 GWP-20 newCO.ssim"
 ))
 
 
@@ -43,7 +43,7 @@ myProject_GWP100 <- rsyncrosim::project(
 )
 myProject_GWP20 <- rsyncrosim::project(myLibrary_GWP20, project = "Definitions")
 
-pathOut <- paste0(rootPath, "Models/", "OutputFigures/")
+pathOut <- file.path(path.expand("~"), "A379/Local_CH4_newCO", "OutputFigures")
 
 pathOutSpatial <- paste0(pathOut, "Spatial/")
 
@@ -51,7 +51,7 @@ if (!dir.exists(pathOutSpatial)) {
   dir.create(pathOutSpatial, recursive = TRUE)
 }
 
-pathOutManuscript <- paste0(pathOutSpatial, "Manuscript")
+pathOutManuscript <- paste0(pathOutSpatial, "/Manuscript")
 
 if (!dir.exists(pathOutManuscript)) {
   dir.create(pathOutManuscript)

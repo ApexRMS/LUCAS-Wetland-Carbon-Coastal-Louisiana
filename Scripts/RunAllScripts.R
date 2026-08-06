@@ -7,89 +7,100 @@ rootPath <- "~/A379/Barataria_LocalCH4/"
 #scriptsPath <- paste0(rootPath, "Scripts/")
 scriptsPath <- "C:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana"
 
-modelName <- "Barataria LocalCH4 GWP-20"
-# Methane defined in step0 R:154
-# GWP defined in step2a R:667
+gwpModels <- c("Barataria LocalCH4 GWP-20", "Barataria LocalCH4 GWP-100")
+# Methane defined in step0 R:203-219
+# GWP defined in step2a R:930
 
-varsKeep <- c("scriptsPath", "varsKeep", "rootPath", "modelName")
+varsKeep <- c(
+  "scriptsPath",
+  "varsKeep",
+  "rootPath",
+  "modelName",
+  "gwpModels",
+  "m"
+)
 
-# 0. Pre-process wetland data
-source(paste0(scriptsPath, "step0-WetlandEmergentStockFlowParametersNoNee.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:tidyverse)
+# Build both GWP-variant libraries
+for (m in seq_along(gwpModels)) {
+  modelName <- gwpModels[m]
 
-# 1. Build the base model
-source(paste0(scriptsPath, "step1-LibraryCreation.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 0. Pre-process wetland data
+  source(paste0(scriptsPath, "step0-WetlandEmergentStockFlowParametersNoNee.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:tidyverse)
 
-# 2a. Build the base wetland sub-models
-source(paste0(scriptsPath, "step2a-ScenarioCreationEmergentForest.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 1. Build the base model
+  source(paste0(scriptsPath, "step1-LibraryCreation.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 2b. Update the flow multipliers and state attributes for the wetland sub-models
-source(paste0(scriptsPath, "step2b-ScenarioCreationWetland.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 2a. Build the base wetland sub-models
+  source(paste0(scriptsPath, "step2a-ScenarioCreationEmergentForest.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 2c. Add the emergent wetland uncertainty parameters
-source(paste0(scriptsPath, "step2c-AddUncertainty.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 2b. Update the flow multipliers and state attributes for the wetland sub-models
+  source(paste0(scriptsPath, "step2b-ScenarioCreationWetland.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 2d. Spin-up the mean forested wetland model
-source(paste0(scriptsPath, "step2d-ForestSpinups.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 2c. Add the emergent wetland uncertainty parameters
+  source(paste0(scriptsPath, "step2c-AddUncertainty.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 3a. Add uncertainty to forested wetland model
-source(paste0(scriptsPath, "step3a-ForestSpinupsUncertainty.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 2d. Spin-up the mean forested wetland model
+  source(paste0(scriptsPath, "step2d-ForestSpinups.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 3b. Spin-up the Ag model
-source(paste0(scriptsPath, "step3b-AgSpinups.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 3a. Add uncertainty to forested wetland model
+  source(paste0(scriptsPath, "step3a-ForestSpinupsUncertainty.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 3c. Add lateral flux uncertainty to forested wetland model
-source(paste0(scriptsPath, "step3c-AddUncertaintyForestedWetland.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 3b. Spin-up the Ag model
+  source(paste0(scriptsPath, "step3b-AgSpinups.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 3d. Add parameters for water previously wetland classes
-source(paste0(scriptsPath, "step3d-AddWaterPrevWetland.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 3c. Add lateral flux uncertainty to forested wetland model
+  source(paste0(scriptsPath, "step3c-AddUncertaintyForestedWetland.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 4. Run single-cell scenarios for validation
-source(paste0(scriptsPath, "step4-FinalScenarios.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 3d. Add parameters for water previously wetland classes
+  source(paste0(scriptsPath, "step3d-AddWaterPrevWetland.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 5a. Create charts (png files) for single-cell scenarios
-source(paste0(scriptsPath, "step5a-SingleCellPlots.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 4. Run single-cell scenarios for validation
+  source(paste0(scriptsPath, "step4-FinalScenarios.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 5b. Create charts (png files) for single cell transition scenarios
-source(paste0(scriptsPath, "step5b-SingleCellPlots.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
+  # 5a. Create charts (png files) for single-cell scenarios
+  source(paste0(scriptsPath, "step5a-SingleCellPlots.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 6. Create spatial input data
-source(paste0(scriptsPath, "step6-AddSpatialExampleBasin.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:tidyverse)
-detach(package:sf)
-detach(package:terra)
+  # 5b. Create charts (png files) for single cell transition scenarios
+  source(paste0(scriptsPath, "step5b-SingleCellPlots.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
 
-# 7. Add spatial scenarios
-source(paste0(scriptsPath, "step7-AddSpatialExampleToLibrary.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 6. Create spatial input data
+  source(paste0(scriptsPath, "step6-AddSpatialExampleBasin.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:tidyverse)
+  detach(package:sf)
+  detach(package:terra)
 
-# 8. Add spatial scenarios - no forested wetland
-source(paste0(scriptsPath, "step8-AddUplandForestScenario.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 7. Add spatial scenarios
+  source(paste0(scriptsPath, "step7-AddSpatialExampleToLibrary.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 9. Add single-cell models for all transitions in spatial scenarios
-source(paste0(scriptsPath, "step9-SingleCellTransitions.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
-detach(package:terra)
+  # 8. Add spatial scenarios - no forested wetland
+  source(paste0(scriptsPath, "step8-AddUplandForestScenario.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
+  # 9. Add single-cell models for all transitions in spatial scenarios
+  source(paste0(scriptsPath, "step9-SingleCellTransitions.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
+  detach(package:terra)
+}
 # Increase the size of your instance and run spatial scenarios using SyncroSim Studio
 
 # 10. Create charts (png files) for spatial scenarios: carbon

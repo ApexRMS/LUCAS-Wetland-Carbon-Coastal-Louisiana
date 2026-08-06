@@ -21,32 +21,37 @@ modelPath <- "Models/"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 
-myLibrary_Avg <- ssimLibrary(file.path(
-  path.expand("~"),
-  "A379",
-  "Barataria_LocalCH4/Models",
-  "Barataria LocalCH4 GWP-100.ssim"
-))
+# myLibrary_Avg <- ssimLibrary(file.path(
+#   path.expand("~"),
+#   "A379",
+#   "Barataria_LocalCH4/Models",
+#   "Barataria LocalCH4 GWP-100.ssim"
+# ))
+#
+# myLibrary_Uncert <- ssimLibrary(file.path(
+#   path.expand("~"),
+#   "A379",
+#   "Barataria_LocalCH4/Models",
+#   "Uncertainty",
+#   "Barataria LocalCH4 GWP-100.ssim"
+# ))
 
-myLibrary_Uncert <- ssimLibrary(file.path(
-  path.expand("~"),
-  "A379",
-  "Barataria_LocalCH4/Models",
-  "Uncertainty",
-  "Barataria LocalCH4 GWP-100.ssim"
-))
-
-
-myProject_Avg <- rsyncrosim::project(
-  myLibrary_Avg,
-  project = "Definitions"
+myLibrary <- ssimLibrary(
+  "C:\\Users\\DiegoBilski\\Documents\\A379\\Barataria_LocalCH4\\Barataria_LocalCH4_GWP-100\\Barataria LocalCH4 GWP-100.ssim"
 )
-myProject_Uncert <- rsyncrosim::project(
-  myLibrary_Uncert,
-  project = "Definitions"
-)
+
+myProject <- rsyncrosim::project(myLibrary, project = "Definitions")
+# myProject_Avg <- rsyncrosim::project(
+#   myLibrary_Avg,
+#   project = "Definitions"
+# )
+# myProject_Uncert <- rsyncrosim::project(
+#   myLibrary_Uncert,
+#   project = "Definitions"
+# )
 
 pathOut <- paste0(rootPath, "Models/", "Uncertainty/", "OutputFigures/")
+pathOut <- paste0(pathOut, "Uncertainty/")
 
 pathOutSpatial <- paste0(pathOut, "Spatial/")
 
@@ -60,20 +65,22 @@ if (!dir.exists(pathOutManuscript)) {
   dir.create(pathOutManuscript)
 }
 
-scenarioList_Avg <- scenario(myProject_Avg, summary = TRUE, results = TRUE)
-scenarioList_Unc <- scenario(myProject_Uncert, summary = TRUE, results = TRUE)
+#scenarioList_Avg <- scenario(myProject_Avg, summary = TRUE, results = TRUE)
+#scenarioList_Unc <- scenario(myProject_Uncert, summary = TRUE, results = TRUE)
 
-idBslUnc <- scenarioList_Unc$ScenarioId[grep(
+scenarioList <- scenario(myProject, summary = TRUE, results = TRUE)
+
+idBslUnc <- scenarioList$ScenarioId[grep(
   "Basin Uncertainty Baseline",
-  scenarioList_Unc$Name
+  scenarioList$Name
 )]
-idBslAvg <- scenarioList_Avg$ScenarioId[grep(
+idBslAvg <- scenarioList$ScenarioId[grep(
   "Basin Baseline",
-  scenarioList_Avg$Name
+  scenarioList$Name
 )]
 
-uncertaintyScn <- scenario(myProject_Uncert, scenario = max(idBslUnc))
-averageScn <- scenario(myProject_Avg, scenario = max(idBslAvg))
+uncertaintyScn <- scenario(myProject, scenario = max(idBslUnc))
+averageScn <- scenario(myProject, scenario = max(idBslAvg))
 
 # Summarize Flows
 
