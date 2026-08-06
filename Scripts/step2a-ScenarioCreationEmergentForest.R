@@ -1293,7 +1293,8 @@ myStocksAll <- tibble(
     c("Cumulative Emissions (tons C)", "Cumulative Emissions (tons CO2-eq)"),
     4
   ),
-  Value = c(1, 3.67, 1, GWPmethane, 1, 4.66, 1, 3.67)
+  #Value = c(1, 3.67, 1, GWPmethane, 1, 4.66, 1, 3.67)
+  Value = c(1, 3.67, 1, GWPmethane, 1, 3.67, 1, 3.67) # CO value changed to CO2-eq 2026-08-06
 )
 
 myDataAll <- myStocksAll %>%
