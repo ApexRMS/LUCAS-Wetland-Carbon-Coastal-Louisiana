@@ -16,42 +16,47 @@ mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
 dataPath <- "Data/"
-modelPath <- "Models/"
+modelPath <- "Models/BaratariaNewCO/"
 
 #modelName <- "Barataria"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 
-myLibrary <- ssimLibrary(name = paste0(modelFullPath, "/", modelName, ".ssim"),
-                         session = mySession)
+myLibrary <- ssimLibrary(
+  name = paste0(modelFullPath, "/", modelName, ".ssim"),
+  session = mySession
+)
 
-myProject <- rsyncrosim::project(myLibrary, project="Definitions")
+myProject <- rsyncrosim::project(myLibrary, project = "Definitions")
 
-pathOut <- paste0(rootPath,"Models/",modelName,"/OutputFigures/")
+pathOut <- paste0(rootPath, "Models/", modelName, "/OutputFigures/")
 
-pathOutSpatial <- paste0(pathOut,"Spatial/")
+pathOutSpatial <- paste0(pathOut, "Spatial/")
 
-if(!dir.exists(pathOutSpatial)){
+if (!dir.exists(pathOutSpatial)) {
   dir.create(pathOutSpatial)
 }
 
-pathOutManuscript <- paste0(pathOutSpatial,"Manuscript")
+pathOutManuscript <- paste0(pathOutSpatial, "Manuscript")
 
-if(!dir.exists(pathOutManuscript)){
+if (!dir.exists(pathOutManuscript)) {
   dir.create(pathOutManuscript)
 }
 
 scenarioList <- scenario(myProject, summary = T, results = T)
 
 #id1 <- scenarioList$ScenarioId[grep("Basin Climate and No Land Cover Change",scenarioList$Name)]
-id2 <- scenarioList$ScenarioId[grep("Basin Baseline",scenarioList$Name)]
-id3 <- scenarioList$ScenarioId[grep("Basin IPCC",scenarioList$Name)]
-id4 <- scenarioList$ScenarioId[grep("Basin No Palustrine Forested Wetland",scenarioList$Name)]
+id2 <- scenarioList$ScenarioId[grep("Basin Baseline", scenarioList$Name)]
+id3 <- scenarioList$ScenarioId[grep("Basin IPCC", scenarioList$Name)]
+id4 <- scenarioList$ScenarioId[grep(
+  "Basin No Palustrine Forested Wetland",
+  scenarioList$Name
+)]
 
 #myScenario1 <- scenario(myProject, scenario=max(id1))
-myScenario2 <- scenario(myProject, scenario=max(id2))
-myScenario3 <- scenario(myProject, scenario=max(id3))
-myScenario4 <- scenario(myProject, scenario=max(id4))
+myScenario2 <- scenario(myProject, scenario = max(id2))
+myScenario3 <- scenario(myProject, scenario = max(id3))
+myScenario4 <- scenario(myProject, scenario = max(id4))
 
 # Summarize Flows
 
@@ -62,298 +67,421 @@ myDataFlux4 <- datasheet(myScenario4, "stsim_OutputFlow")
 
 #unique(myDataFlux1$FlowGroupId)
 
-plotFlows<- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
+plotFlows <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
 
-for (i in 1:length(plotFlows)){
-  
-  plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
-  
+for (i in 1:length(plotFlows)) {
+  plotName <- gsub(
+    " ",
+    "",
+    gsub(
+      ")",
+      "",
+      gsub("(", "", gsub(": ", " ", plotFlows[i]), fixed = T),
+      fixed = T
+    )
+  )
+
   myDataFlux2c <- myDataFlux2 %>%
     filter(FlowGroupId == plotFlows[i]) %>%
-    group_by(Timestep,Iteration) %>%
+    group_by(Timestep, Iteration) %>%
     summarize(totalC = sum(Amount, na.rm = T)) %>%
     ungroup() %>%
     group_by(Timestep) %>%
-    summarize(mean = mean(totalC),
-              min = min(totalC),
-              max = max(totalC)) %>%
-    mutate(Scenario = "Schoolmaster",
-           Color = "Black",
-           Type = "solid")
-  
+    summarize(mean = mean(totalC), min = min(totalC), max = max(totalC)) %>%
+    mutate(Scenario = "Schoolmaster", Color = "Black", Type = "solid")
+
   myDataFlux3c <- myDataFlux3 %>%
     filter(FlowGroupId == plotFlows[i]) %>%
-    group_by(Timestep,Iteration) %>%
+    group_by(Timestep, Iteration) %>%
     summarize(totalC = sum(Amount, na.rm = T)) %>%
     ungroup() %>%
     group_by(Timestep) %>%
-    summarize(mean = mean(totalC),
-              min = min(totalC),
-              max = max(totalC)) %>%
-    mutate(Scenario = "IPCC",
-           Color = "gray40",
-           Type = "dotted")
-  
+    summarize(mean = mean(totalC), min = min(totalC), max = max(totalC)) %>%
+    mutate(Scenario = "IPCC", Color = "gray40", Type = "dotted")
+
   myDataNECBA <- myDataFlux2c %>%
     bind_rows(myDataFlux3c)
-  
-  myDataNECBA$mean <- myDataNECBA$mean/1000000
-  myDataNECBA$min <- myDataNECBA$min/1000000
-  myDataNECBA$max <- myDataNECBA$max/1000000
-  
+
+  myDataNECBA$mean <- myDataNECBA$mean / 1000000
+  myDataNECBA$min <- myDataNECBA$min / 1000000
+  myDataNECBA$max <- myDataNECBA$max / 1000000
+
   minVal <- min(myDataNECBA$min)
   maxVal <- max(myDataNECBA$max)
-  
-  if(minVal > 0 & maxVal >0){
+
+  if (minVal > 0 & maxVal > 0) {
     minVal = 0
-  } else if (minVal < 0 & maxVal < 0){
+  } else if (minVal < 0 & maxVal < 0) {
     maxVal = 0
-  } 
-  
+  }
+
   col <- as.character(myDataNECBA$Color)
   names(col) <- as.character(myDataNECBA$Scenario)
-  
+
   lineType <- as.character(myDataNECBA$Type)
   names(lineType) <- as.character(myDataNECBA$Scenario)
-  
-  p6 <- ggplot(myDataNECBA, aes(x = Timestep, y = mean, color = Scenario, group = Scenario, linetype = Scenario)) +
+
+  p6 <- ggplot(
+    myDataNECBA,
+    aes(
+      x = Timestep,
+      y = mean,
+      color = Scenario,
+      group = Scenario,
+      linetype = Scenario
+    )
+  ) +
     geom_line(linewidth = 0.8) +
     theme_bw() +
-    scale_color_manual(values=col, breaks = c("Schoolmaster",
-                                              "IPCC")) +
-    scale_linetype_manual(values=lineType, breaks = c("Schoolmaster",
-                                                      "IPCC")) +
-    scale_x_continuous(limits = c(2001, 2016),
-                       breaks = c(2001,2006,2010,2016)) +
-    theme(panel.border = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.line = element_line(colour = "black"),
-          legend.position="bottom",
-          legend.title=element_blank()) +
-    guides(colour = guide_legend(nrow = 2,
-                                 keywidth=0.4,
-                                 keyheight=0.1,
-                                 default.unit="inch")) +
-    xlab("\nYear") + 
-    ylab(as.expression(bquote(atop("Net Radiative Balance","(Tg "~CO[2-eq]~yr^-1*")"))))+
-    ylim(minVal,maxVal)
-  
+    scale_color_manual(values = col, breaks = c("Schoolmaster", "IPCC")) +
+    scale_linetype_manual(
+      values = lineType,
+      breaks = c("Schoolmaster", "IPCC")
+    ) +
+    scale_x_continuous(
+      limits = c(2001, 2016),
+      breaks = c(2001, 2006, 2010, 2016)
+    ) +
+    theme(
+      panel.border = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.line = element_line(colour = "black"),
+      legend.position = "bottom",
+      legend.title = element_blank()
+    ) +
+    guides(
+      colour = guide_legend(
+        nrow = 2,
+        keywidth = 0.4,
+        keyheight = 0.1,
+        default.unit = "inch"
+      )
+    ) +
+    xlab("\nYear") +
+    ylab(as.expression(bquote(atop(
+      "Net Radiative Balance",
+      "(Tg " ~ CO[2 - eq] ~ yr^-1 * ")"
+    )))) +
+    ylim(minVal, maxVal)
+
   p6
-  
-  ggsave(paste0(pathOutManuscript,"/",plotName,"_","LandCover",".png"), p6, width = 3.5, height = 3.5, dpi = 600)
-  
-  rm(minVal,maxVal,col,lineType)
-  
+
+  ggsave(
+    paste0(pathOutManuscript, "/", plotName, "_", "LandCover", ".png"),
+    p6,
+    width = 3.5,
+    height = 3.5,
+    dpi = 600
+  )
+
+  rm(minVal, maxVal, col, lineType)
 }
 
-plotFlows<- c("Annual Net Ecosystem Carbon Balance (tons C per year)",
-              "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
+plotFlows <- c(
+  "Annual Net Ecosystem Carbon Balance (tons C per year)",
+  "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
+)
 
-plotFlowsLetters <- c("a. ","b. ")
+plotFlowsLetters <- c("a. ", "b. ")
 
-for (i in 1:length(plotFlows)){
-  
-  plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
-  
+for (i in 1:length(plotFlows)) {
+  plotName <- gsub(
+    " ",
+    "",
+    gsub(
+      ")",
+      "",
+      gsub("(", "", gsub(": ", " ", plotFlows[i]), fixed = T),
+      fixed = T
+    )
+  )
+
   myDataFlux2c <- myDataFlux2 %>%
     filter(FlowGroupId == plotFlows[i]) %>%
-    group_by(Timestep,Iteration) %>%
+    group_by(Timestep, Iteration) %>%
     summarize(totalC = sum(Amount, na.rm = T)) %>%
     ungroup() %>%
     group_by(Timestep) %>%
-    summarize(mean = mean(totalC),
-              min = min(totalC),
-              max = max(totalC)) %>%
-    mutate(Scenario = "With Palustrine Forested Wetlands",
-           Color = "Black",
-           Type = "solid")
-  
+    summarize(mean = mean(totalC), min = min(totalC), max = max(totalC)) %>%
+    mutate(
+      Scenario = "With Palustrine Forested Wetlands",
+      Color = "Black",
+      Type = "solid"
+    )
+
   myDataFlux4c <- myDataFlux4 %>%
     filter(FlowGroupId == plotFlows[i]) %>%
-    group_by(Timestep,Iteration) %>%
+    group_by(Timestep, Iteration) %>%
     summarize(totalC = sum(Amount, na.rm = T)) %>%
     ungroup() %>%
     group_by(Timestep) %>%
-    summarize(mean = mean(totalC),
-              min = min(totalC),
-              max = max(totalC)) %>%
-    mutate(Scenario = "Without Palustrine Forested Wetlands",
-           Color = "gray40",
-           Type = "dotted")
-  
+    summarize(mean = mean(totalC), min = min(totalC), max = max(totalC)) %>%
+    mutate(
+      Scenario = "Without Palustrine Forested Wetlands",
+      Color = "gray40",
+      Type = "dotted"
+    )
+
   myDataNECBB <- myDataFlux2c %>%
     bind_rows(myDataFlux4c)
-  
-  myDataNECBB$mean <- myDataNECBB$mean/1000000
-  myDataNECBB$min <- myDataNECBB$min/1000000
-  myDataNECBB$max <- myDataNECBB$max/1000000
-  
+
+  myDataNECBB$mean <- myDataNECBB$mean / 1000000
+  myDataNECBB$min <- myDataNECBB$min / 1000000
+  myDataNECBB$max <- myDataNECBB$max / 1000000
+
   minVal <- min(myDataNECBB$min)
   maxVal <- max(myDataNECBB$max)
-  
-  if(minVal > 0 & maxVal >0){
+
+  if (minVal > 0 & maxVal > 0) {
     minVal = 0
-  } else if (minVal < 0 & maxVal < 0){
+  } else if (minVal < 0 & maxVal < 0) {
     maxVal = 0
-  } 
-  
+  }
+
   col <- as.character(myDataNECBB$Color)
   names(col) <- as.character(myDataNECBB$Scenario)
-  
+
   lineType <- as.character(myDataNECBB$Type)
   names(lineType) <- as.character(myDataNECBB$Scenario)
-  
-  if (plotFlows[i] == "Annual Net Ecosystem Carbon Balance (tons C per year)"){
-    
-    p7 <- ggplot(myDataNECBB, aes(x = Timestep, y = mean, color = Scenario, group = Scenario, linetype = Scenario)) +
+
+  if (plotFlows[i] == "Annual Net Ecosystem Carbon Balance (tons C per year)") {
+    p7 <- ggplot(
+      myDataNECBB,
+      aes(
+        x = Timestep,
+        y = mean,
+        color = Scenario,
+        group = Scenario,
+        linetype = Scenario
+      )
+    ) +
       geom_line(linewidth = 0.8) +
       theme_bw() +
-      scale_color_manual(values=col, breaks = c("With Palustrine Forested Wetlands",
-                                                "Without Palustrine Forested Wetlands")) +
-      scale_linetype_manual(values=lineType, breaks = c("With Palustrine Forested Wetlands",
-                                                        "Without Palustrine Forested Wetlands")) +
-      scale_x_continuous(limits = c(2001, 2016),
-                         breaks = c(2001,2006,2010,2016)) +
-      theme(panel.border = element_blank(),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            axis.line = element_line(colour = "black"),
-            legend.position="bottom",
-            legend.title=element_blank()) +
-      guides(colour = guide_legend(nrow = 2,
-                                   keywidth=0.4,
-                                   keyheight=0.1,
-                                   default.unit="inch")) +
-      xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg C"~yr^-1*")"))))+
-      ylim(-5.1,4) +
+      scale_color_manual(
+        values = col,
+        breaks = c(
+          "With Palustrine Forested Wetlands",
+          "Without Palustrine Forested Wetlands"
+        )
+      ) +
+      scale_linetype_manual(
+        values = lineType,
+        breaks = c(
+          "With Palustrine Forested Wetlands",
+          "Without Palustrine Forested Wetlands"
+        )
+      ) +
+      scale_x_continuous(
+        limits = c(2001, 2016),
+        breaks = c(2001, 2006, 2010, 2016)
+      ) +
+      theme(
+        panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        legend.position = "bottom",
+        legend.title = element_blank()
+      ) +
+      guides(
+        colour = guide_legend(
+          nrow = 2,
+          keywidth = 0.4,
+          keyheight = 0.1,
+          default.unit = "inch"
+        )
+      ) +
+      xlab("\nYear") +
+      ylab(as.expression(bquote(atop(
+        "Net Ecosystem Carbon Balance",
+        "(Tg C" ~ yr^-1 * ")"
+      )))) +
+      ylim(-5.1, 4) +
       ggtitle("a.")
-    
-  } else if (plotFlows[i] == "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"){
-    
-    p7 <- ggplot(myDataNECBB, aes(x = Timestep, y = mean, color = Scenario, group = Scenario, linetype = Scenario)) +
+  } else if (
+    plotFlows[i] == "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)"
+  ) {
+    p7 <- ggplot(
+      myDataNECBB,
+      aes(
+        x = Timestep,
+        y = mean,
+        color = Scenario,
+        group = Scenario,
+        linetype = Scenario
+      )
+    ) +
       geom_line(linewidth = 0.8) +
       theme_bw() +
-      scale_color_manual(values=col, breaks = c("With Palustrine Forested Wetlands",
-                                                "Without Palustrine Forested Wetlands")) +
-      scale_linetype_manual(values=lineType, breaks = c("With Palustrine Forested Wetlands",
-                                                        "Without Palustrine Forested Wetlands")) +
-      scale_x_continuous(limits = c(2001, 2016),
-                         breaks = c(2001,2006,2010,2016)) +
-      theme(panel.border = element_blank(),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            axis.line = element_line(colour = "black"),
-            legend.position="bottom",
-            legend.title=element_blank()) +
-      guides(colour = guide_legend(nrow = 2,
-                                   keywidth=0.4,
-                                   keyheight=0.1,
-                                   default.unit="inch")) +
-      xlab("\nYear") + 
-      ylab(as.expression(bquote(atop("Net Radiative Balance","(Tg "~CO[2-eq]~yr^-1*")"))))+
-      ylim(-5.1,4)+
+      scale_color_manual(
+        values = col,
+        breaks = c(
+          "With Palustrine Forested Wetlands",
+          "Without Palustrine Forested Wetlands"
+        )
+      ) +
+      scale_linetype_manual(
+        values = lineType,
+        breaks = c(
+          "With Palustrine Forested Wetlands",
+          "Without Palustrine Forested Wetlands"
+        )
+      ) +
+      scale_x_continuous(
+        limits = c(2001, 2016),
+        breaks = c(2001, 2006, 2010, 2016)
+      ) +
+      theme(
+        panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        legend.position = "bottom",
+        legend.title = element_blank()
+      ) +
+      guides(
+        colour = guide_legend(
+          nrow = 2,
+          keywidth = 0.4,
+          keyheight = 0.1,
+          default.unit = "inch"
+        )
+      ) +
+      xlab("\nYear") +
+      ylab(as.expression(bquote(atop(
+        "Net Radiative Balance",
+        "(Tg " ~ CO[2 - eq] ~ yr^-1 * ")"
+      )))) +
+      ylim(-5.1, 4) +
       ggtitle("b.")
   }
-  
-  
-  
+
   p7
-  
-  ggsave(paste0(pathOutManuscript,"/",plotName,"_","NoForestWetland",".png"), p7, width = 3.5, height = 3.5, dpi = 600)
-  
-  
-  rm(myDataFlux2c,myDataFlux4c,
-     myDataNECBB,plotName,p7,col,lineType)
-  
+
+  ggsave(
+    paste0(pathOutManuscript, "/", plotName, "_", "NoForestWetland", ".png"),
+    p7,
+    width = 3.5,
+    height = 3.5,
+    dpi = 600
+  )
+
+  rm(myDataFlux2c, myDataFlux4c, myDataNECBB, plotName, p7, col, lineType)
 }
 
-plotFlows<- c("Annual Net Ecosystem Carbon Balance (tons C per year)")
+plotFlows <- c("Annual Net Ecosystem Carbon Balance (tons C per year)")
 
-for (i in 1:length(plotFlows)){
-  
-  plotName <- gsub(" ","",gsub(")","",gsub("(","",gsub(": "," ",plotFlows[i]), fixed = T),fixed = T))
-  
+for (i in 1:length(plotFlows)) {
+  plotName <- gsub(
+    " ",
+    "",
+    gsub(
+      ")",
+      "",
+      gsub("(", "", gsub(": ", " ", plotFlows[i]), fixed = T),
+      fixed = T
+    )
+  )
+
   myDataFlux2c <- myDataFlux2 %>%
     filter(FlowGroupId == plotFlows[i]) %>%
-    group_by(Timestep,Iteration) %>%
+    group_by(Timestep, Iteration) %>%
     summarize(totalC = sum(Amount, na.rm = T)) %>%
     ungroup() %>%
     group_by(Timestep) %>%
-    summarize(mean = mean(totalC),
-              min = min(totalC),
-              max = max(totalC)) %>%
-    mutate(Scenario = "Schoolmaster",
-           Color = "Black",
-           Type = "solid")
-  
+    summarize(mean = mean(totalC), min = min(totalC), max = max(totalC)) %>%
+    mutate(Scenario = "Schoolmaster", Color = "Black", Type = "solid")
+
   myDataFlux3c <- myDataFlux3 %>%
     filter(FlowGroupId == plotFlows[i]) %>%
-    group_by(Timestep,Iteration) %>%
+    group_by(Timestep, Iteration) %>%
     summarize(totalC = sum(Amount, na.rm = T)) %>%
     ungroup() %>%
     group_by(Timestep) %>%
-    summarize(mean = mean(totalC),
-              min = min(totalC),
-              max = max(totalC)) %>%
-    mutate(Scenario = "IPCC",
-           Color = "gray40",
-           Type = "dotted")
-  
+    summarize(mean = mean(totalC), min = min(totalC), max = max(totalC)) %>%
+    mutate(Scenario = "IPCC", Color = "gray40", Type = "dotted")
+
   myDataNECBA <- myDataFlux2c %>%
     bind_rows(myDataFlux3c)
-  
-  myDataNECBA$mean <- myDataNECBA$mean/1000000
-  myDataNECBA$min <- myDataNECBA$min/1000000
-  myDataNECBA$max <- myDataNECBA$max/1000000
-  
+
+  myDataNECBA$mean <- myDataNECBA$mean / 1000000
+  myDataNECBA$min <- myDataNECBA$min / 1000000
+  myDataNECBA$max <- myDataNECBA$max / 1000000
+
   minVal <- min(myDataNECBA$min)
   maxVal <- max(myDataNECBA$max)
-  
-  if(minVal > 0 & maxVal >0){
+
+  if (minVal > 0 & maxVal > 0) {
     minVal = 0
-  } else if (minVal < 0 & maxVal < 0){
+  } else if (minVal < 0 & maxVal < 0) {
     maxVal = 0
-  } 
-  
+  }
+
   col <- as.character(myDataNECBA$Color)
   names(col) <- as.character(myDataNECBA$Scenario)
-  
+
   lineType <- as.character(myDataNECBA$Type)
   names(lineType) <- as.character(myDataNECBA$Scenario)
-  
-  p6 <- ggplot(myDataNECBA, aes(x = Timestep, y = mean, color = Scenario, group = Scenario, linetype = Scenario)) +
+
+  p6 <- ggplot(
+    myDataNECBA,
+    aes(
+      x = Timestep,
+      y = mean,
+      color = Scenario,
+      group = Scenario,
+      linetype = Scenario
+    )
+  ) +
     geom_line(linewidth = 0.8) +
     theme_bw() +
-    scale_color_manual(values=col, breaks = c("Schoolmaster",
-                                              "IPCC")) +
-    scale_linetype_manual(values=lineType, breaks = c("Schoolmaster",
-                                                      "IPCC")) +
-    scale_x_continuous(limits = c(2001, 2016),
-                       breaks = c(2001,2006,2010,2016)) +
-    theme(panel.border = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.line = element_line(colour = "black"),
-          legend.position="bottom",
-          legend.title=element_blank()) +
-    guides(colour = guide_legend(nrow = 2,
-                                 keywidth=0.4,
-                                 keyheight=0.1,
-                                 default.unit="inch")) +
-    xlab("\nYear") + 
-    ylab(as.expression(bquote(atop("Net Ecosystem Carbon Balance","(Tg "~C~yr^-1*")"))))+
-    ylim(minVal,maxVal)
-  
+    scale_color_manual(values = col, breaks = c("Schoolmaster", "IPCC")) +
+    scale_linetype_manual(
+      values = lineType,
+      breaks = c("Schoolmaster", "IPCC")
+    ) +
+    scale_x_continuous(
+      limits = c(2001, 2016),
+      breaks = c(2001, 2006, 2010, 2016)
+    ) +
+    theme(
+      panel.border = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.line = element_line(colour = "black"),
+      legend.position = "bottom",
+      legend.title = element_blank()
+    ) +
+    guides(
+      colour = guide_legend(
+        nrow = 2,
+        keywidth = 0.4,
+        keyheight = 0.1,
+        default.unit = "inch"
+      )
+    ) +
+    xlab("\nYear") +
+    ylab(as.expression(bquote(atop(
+      "Net Ecosystem Carbon Balance",
+      "(Tg " ~ C ~ yr^-1 * ")"
+    )))) +
+    ylim(minVal, maxVal)
+
   p6
-  
-  ggsave(paste0(pathOutManuscript,"/",plotName,"_","LandCover",".png"), p6, width = 3.5, height = 3.5, dpi = 600)
-  
-  rm(minVal,maxVal,col,lineType)
-  
+
+  ggsave(
+    paste0(pathOutManuscript, "/", plotName, "_", "LandCover", ".png"),
+    p6,
+    width = 3.5,
+    height = 3.5,
+    dpi = 600
+  )
+
+  rm(minVal, maxVal, col, lineType)
+
   # Create table of cumulative NECB differences
-  
+
   myDataNECBBwide <- myDataNECBA %>%
     select(Scenario, Timestep, mean) %>%
     pivot_wider(names_from = Scenario, values_from = mean) %>%
@@ -361,14 +489,12 @@ for (i in 1:length(plotFlows)){
     mutate(
       ScenDiff = Schoolmaster - IPCC
     )
-  
+
   nameTabular <- "TgC_yr"
-  
+
   write.csv(
     myDataNECBBwide,
-    paste0(pathOut, "NECB_Comparison_2026-02-18_",nameTabular,".csv"),
+    paste0(pathOut, "NECB_Comparison_2026-02-18_", nameTabular, ".csv"),
     row.names = F
   )
-  
 }
-

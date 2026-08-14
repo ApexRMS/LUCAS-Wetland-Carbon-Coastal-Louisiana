@@ -3,11 +3,13 @@
 # Nov 2025
 
 #rootPath <- "D:/Barataria/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
-rootPath <- "~/A379/Barataria_LocalCH4/"
-#scriptsPath <- paste0(rootPath, "Scripts/")
-scriptsPath <- "C:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana"
+#rootPath <- "~/A379/Barataria_LocalCH4/"
+rootPath <- "C:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
+scriptsPath <- paste0(rootPath, "Scripts/")
+#scriptsPath <- "C:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana/Scripts/"
 
-gwpModels <- c("Barataria LocalCH4 GWP-20", "Barataria LocalCH4 GWP-100")
+gwpModels <- c("Barataria LocalCH4 GWP-20")
+gwpModels <- "Barataria LocalCH4 GWP-100"
 # Methane defined in step0 R:203-219
 # GWP defined in step2a R:930
 
@@ -102,6 +104,7 @@ for (m in seq_along(gwpModels)) {
   detach(package:terra)
 }
 # Increase the size of your instance and run spatial scenarios using SyncroSim Studio
+# c6a.32xlarge to run with 62 tiles
 
 # 10. Create charts (png files) for spatial scenarios: carbon
 source(paste0(scriptsPath, "step10-SpatialFigures.R"))

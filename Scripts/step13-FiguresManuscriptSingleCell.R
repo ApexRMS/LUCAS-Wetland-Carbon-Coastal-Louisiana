@@ -13,7 +13,6 @@ signIn(mySession)
 
 dataPath <- "Data/"
 modelPath <- "Models/"
-modelPath <- "Barataria_LocalCH4_GWP-100/"
 
 #modelName <- "Barataria"
 
@@ -861,7 +860,7 @@ for (i in 1:length(plotFlows)) {
     p5
 
     ggsave(
-      paste0(pathOutSingleCell, "/", plotName, ".png"),
+      paste0(pathOutSingleCell, "/", "Fig4-", plotName, ".png"),
       p5,
       width = 3.5,
       height = 3.5,
@@ -898,7 +897,7 @@ for (i in 1:length(plotFlows)) {
     p5
 
     ggsave(
-      paste0(pathOutSingleCell, "/", plotName, ".png"),
+      paste0(pathOutSingleCell, "/", "Fig4-", plotName, ".png"),
       p5,
       width = 3.5,
       height = 3.5,

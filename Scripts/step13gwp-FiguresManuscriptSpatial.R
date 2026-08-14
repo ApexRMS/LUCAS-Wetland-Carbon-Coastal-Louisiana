@@ -23,17 +23,15 @@ modelPath <- "Models/"
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 
 myLibrary_GWP100 <- ssimLibrary(file.path(
-  path.expand("~"),
-  "A379",
-  "Local_CH4_newCO/Barataria_LocalCH4_GWP100_newCO_baseline",
-  "Barataria LocalCH4 GWP-100 newCO.ssim"
+  "Models",
+  "BaratariaNewCO",
+  "Barataria LocalCH4 GWP-100.ssim"
 ))
 
 myLibrary_GWP20 <- ssimLibrary(file.path(
-  path.expand("~"),
-  "A379",
-  "Local_CH4_newCO/Barataria_LocalCH4_GWP20_newCO_baseline",
-  "Barataria LocalCH4 GWP-20 newCO.ssim"
+  "Models",
+  "BaratariaNewCO",
+  "Barataria LocalCH4 GWP-20.ssim"
 ))
 
 
@@ -43,9 +41,9 @@ myProject_GWP100 <- rsyncrosim::project(
 )
 myProject_GWP20 <- rsyncrosim::project(myLibrary_GWP20, project = "Definitions")
 
-pathOut <- file.path(path.expand("~"), "A379/Local_CH4_newCO", "OutputFigures")
+pathOut <- file.path("Models", "BaratariaNewCO", "OutputFigures")
 
-pathOutSpatial <- paste0(pathOut, "Spatial/")
+pathOutSpatial <- paste0(pathOut, "/Spatial/")
 
 if (!dir.exists(pathOutSpatial)) {
   dir.create(pathOutSpatial, recursive = TRUE)
@@ -119,7 +117,7 @@ for (i in 1:length(plotFlows)) {
     group_by(Timestep) %>%
     summarize(mean = mean(totalC), min = min(totalC), max = max(totalC)) %>%
     mutate(
-      Scenario = "GWP-100", #IPCC
+      Scenario = "GWP-100", #Schoolmaster
       Color = "black",
       Type = "solid"
     )
@@ -244,7 +242,7 @@ for (i in 1:length(plotFlows)) {
     group_by(Timestep) %>%
     summarize(mean = mean(totalC), min = min(totalC), max = max(totalC)) %>%
     mutate(
-      Scenario = "GWP-100", #IPCC
+      Scenario = "GWP-100", #Schoolmaster
       Color = "black",
       Type = "solid"
     )
@@ -389,7 +387,7 @@ for (i in 1:length(plotFlows)) {
     dpi = 600
   )
 
-  rm(myDataFlux2c, myDataFlux4c, myDataNECBB, plotName, p7, col, lineType)
+  #rm(myDataFlux2c, myDataFlux4c, myDataNECBB, plotName, p7, col, lineType)
 }
 
 plotFlows <- c("Annual Net Ecosystem Carbon Balance (tons C per year)")
