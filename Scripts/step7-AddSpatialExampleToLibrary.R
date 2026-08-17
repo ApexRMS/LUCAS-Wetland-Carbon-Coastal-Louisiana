@@ -1241,7 +1241,7 @@ dependency(myScenario) <- c(
 
 rm(myScenario)
 
-# LULC, Climate
+# LULC, Climate, Uncertainty
 myScenario <- scenario(
   myProject,
   scenario = "Basin Uncertainty Baseline",
@@ -1261,6 +1261,30 @@ dependency(myScenario) <- c(
   "SF Flow Spatial Multipliers [PRISM Historical]",
   "SF Output Options and Filters [Only 2016; Uncertainty]",
   "Flow Multipliers [PRISM, Uncertainty, Add Prev Wetland]",
+  "Stock Limit [All]",
+  "Single Cell: Carbon and LULC: Uncertainty"
+)
+
+# LULC, Climate, IPCC, Uncertainty
+myScenario <- scenario(
+  myProject,
+  scenario = "Basin Uncertainty IPCC",
+  folder = "4. Final Spatial Scenarios"
+)
+
+mergeDependencies(myScenario) <- F
+
+dependency(myScenario) <- c(
+  "Spatial Multiprocessing",
+  "Run Control [2001-2016; 40 MC; Spatial]",
+  "Output Options [Spatial; Summary; Uncertainty]",
+  "STSM Initial Conditions [Spatial]",
+  "STSM Spatial Multipliers [LA]",
+  "STSM Transition Multipliers [LA]",
+  "STSM Transition Pathways [LA]",
+  "SF Flow Spatial Multipliers [PRISM Historical]",
+  "SF Output Options and Filters [Only 2016; Uncertainty]",
+  "Flow Multipliers [PRISM, Uncertainty, Add Prev Wetland, IPCC]",
   "Stock Limit [All]",
   "Single Cell: Carbon and LULC: Uncertainty"
 )

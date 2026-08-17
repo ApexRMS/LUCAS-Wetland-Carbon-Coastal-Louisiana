@@ -48,10 +48,10 @@ Emission: BG Very Fast -> Atmosphere,Emission: Total (CO2e),3.67
 Emission: Snag Branch -> Atmosphere,Emission: Total (CO2e),3.67
 Emission: Snag Stem -> Atmosphere,Emission: Total (CO2e),3.67
 LULC: Emission DOM CH4,Emission: Total (CO2e),33.5
-LULC: Emission DOM CO,Emission: Total (CO2e),3.67
+LULC: Emission DOM CO,Emission: Total (CO2e),4.66
 LULC: Emission DOM CO2,Emission: Total (CO2e),3.67
 LULC: Emission Live CH4,Emission: Total (CO2e),33.5
-LULC: Emission Live CO,Emission: Total (CO2e),3.67
+LULC: Emission Live CO,Emission: Total (CO2e),4.66
 LULC: Emission Live CO2,Emission: Total (CO2e),3.67
 Emission: AG Fast -> Atmosphere,Emission: Total Rh,1
 Emission: AG Medium -> Atmosphere,Emission: Total Rh,1
@@ -78,10 +78,10 @@ LULC: Emission Live CH4,LULC: Emission,1
 LULC: Emission Live CO,LULC: Emission,1
 LULC: Emission Live CO2,LULC: Emission,1
 LULC: Emission DOM CH4,LULC: Emission (CO2e),33.5
-LULC: Emission DOM CO,LULC: Emission (CO2e),3.67
+LULC: Emission DOM CO,LULC: Emission (CO2e),4.66
 LULC: Emission DOM CO2,LULC: Emission (CO2e),3.67
 LULC: Emission Live CH4,LULC: Emission (CO2e),33.5
-LULC: Emission Live CO,LULC: Emission (CO2e),3.67
+LULC: Emission Live CO,LULC: Emission (CO2e),4.66
 LULC: Emission Live CO2,LULC: Emission (CO2e),3.67
 LULC: Emission DOM CH4,LULC: Emission CH4,1
 LULC: Emission Live CH4,LULC: Emission CH4,1
@@ -89,8 +89,8 @@ LULC: Emission DOM CH4,LULC: Emission CH4 (CO2e),33.5
 LULC: Emission Live CH4,LULC: Emission CH4 (CO2e),33.5
 LULC: Emission DOM CO,LULC: Emission CO,1
 LULC: Emission Live CO,LULC: Emission CO,1
-LULC: Emission DOM CO,LULC: Emission CO (CO2e),3.67
-LULC: Emission Live CO,LULC: Emission CO (CO2e),3.67
+LULC: Emission DOM CO,LULC: Emission CO (CO2e),4.66
+LULC: Emission Live CO,LULC: Emission CO (CO2e),4.66
 LULC: Emission DOM CO2,LULC: Emission CO2,1
 LULC: Emission Live CO2,LULC: Emission CO2,1
 LULC: Emission DOM CO2,LULC: Emission CO2 (CO2e),3.67
@@ -99,13 +99,13 @@ LULC: Emission DOM CH4,LULC: Emission DOM,1
 LULC: Emission DOM CO,LULC: Emission DOM,1
 LULC: Emission DOM CO2,LULC: Emission DOM,1
 LULC: Emission DOM CH4,LULC: Emission DOM (CO2e),33.5
-LULC: Emission DOM CO,LULC: Emission DOM (CO2e),3.67
+LULC: Emission DOM CO,LULC: Emission DOM (CO2e),4.66
 LULC: Emission DOM CO2,LULC: Emission DOM (CO2e),3.67
 LULC: Emission Live CH4,LULC: Emission Live,1
 LULC: Emission Live CO,LULC: Emission Live,1
 LULC: Emission Live CO2,LULC: Emission Live,1
 LULC: Emission Live CH4,LULC: Emission Live (CO2e),33.5
-LULC: Emission Live CO,LULC: Emission Live (CO2e),3.67
+LULC: Emission Live CO,LULC: Emission Live (CO2e),4.66
 LULC: Emission Live CO2,LULC: Emission Live (CO2e),3.67
 LULC: Harvest DOM,LULC: Harvest,1
 LULC: Harvest Live,LULC: Harvest,1
@@ -153,10 +153,10 @@ Emission: BG Very Fast -> Atmosphere,Net Biome Productivity (CO2e),-3.67
 Emission: Snag Branch -> Atmosphere,Net Biome Productivity (CO2e),-3.67
 Emission: Snag Stem -> Atmosphere,Net Biome Productivity (CO2e),-3.67
 LULC: Emission DOM CH4,Net Biome Productivity (CO2e),-33.5
-LULC: Emission DOM CO,Net Biome Productivity (CO2e),-3.67
+LULC: Emission DOM CO,Net Biome Productivity (CO2e),-4.66
 LULC: Emission DOM CO2,Net Biome Productivity (CO2e),-3.67
 LULC: Emission Live CH4,Net Biome Productivity (CO2e),-33.5
-LULC: Emission Live CO,Net Biome Productivity (CO2e),-3.67
+LULC: Emission Live CO,Net Biome Productivity (CO2e),-4.66
 LULC: Emission Live CO2,Net Biome Productivity (CO2e),-3.67
 LULC: Harvest DOM,Net Biome Productivity (CO2e),-3.67
 LULC: Harvest Live,Net Biome Productivity (CO2e),-3.67
