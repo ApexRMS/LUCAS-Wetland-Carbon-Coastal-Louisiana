@@ -178,39 +178,102 @@ for (k in 1:length(keepFluxesSpatial)) {
   )
   fluxName <- gsub(" CO2 and CH4", "", fluxName)
 
-  r1 <- rast(listFluxesSub)
+  if (k != 4) {
+    r1 <- rast(listFluxesSub)
 
-  png(
-    filename = paste0(pathOutMaps, gsub(" ", "", fluxName), "_flux.png"),
-    width = 3.5,
-    height = 2.5,
-    units = "in",
-    res = 600
-  )
-  plot(
-    r1,
-    plg = list(
-      title = as.expression(bquote("Mg C" ~ ha^-1 ~ y^-1)),
-      title.cex = 0.65
-    ),
-    type = "continuous",
-    axes = FALSE,
-    main = paste0(fluxNameLetters[k], fluxName),
-    col = rev(mako(n = 100)),
-    cex.main = 0.8,
-    maxcell = 10000000
-  )
-  # north(type =1,cex = 0.7, "bottomleft")
-  sbar(
-    40000,
-    xy = c(500000, 694000),
-    divs = 2,
-    cex = 0.8,
-    type = "bar",
-    below = "km",
-    label = c(0, 20, 40)
-  )
-  dev.off()
+    png(
+      filename = paste0(pathOutMaps, gsub(" ", "", fluxName), "_flux.png"),
+      width = 3.5,
+      height = 2.5,
+      units = "in",
+      res = 600
+    )
+    plot(
+      r1,
+      plg = list(
+        title = as.expression(bquote("Mg C" ~ ha^-1 ~ y^-1)),
+        title.cex = 0.65
+      ),
+      type = "continuous",
+      axes = FALSE,
+      main = paste0(fluxNameLetters[k], fluxName),
+      col = rev(mako(n = 100)),
+      cex.main = 0.8,
+      maxcell = 10000000
+    )
+    # north(type =1,cex = 0.7, "bottomleft")
+    sbar(
+      40000,
+      xy = c(500000, 694000),
+      divs = 2,
+      cex = 0.8,
+      type = "bar",
+      below = "km",
+      label = c(0, 20, 40)
+    )
+    dev.off()
+  } else if (k == 4) {
+    #different plot scale for Annual Emissions: CH4 (tons C per year)
+    r1 <- rast(listFluxesSub)
+
+    vals <- values(r1, na.rm = TRUE)
+    uvals <- sort(unique(vals))
+    gaps <- diff(uvals)
+
+    # values are distributed 0-0.11, 0.43-0.53, so we compress the interval
+    compress_gap <- function(g, thresh = 0.05, rate = 0.15) {
+      ifelse(g <= thresh, g, thresh + rate * (g - thresh))
+    }
+    comp_gaps <- compress_gap(gaps)
+    pos <- c(0, cumsum(comp_gaps))
+    pos <- pos / max(pos)
+
+    stretch <- approxfun(uvals, pos, rule = 2)
+
+    r1_eq <- app(r1, fun = function(x) {
+      out <- stretch(x)
+      out[is.na(x)] <- NA
+      out
+    })
+
+    # clean round-number ticks, positioned via the same stretch mapping
+    tick_vals <- seq(0, 0.5, by = 0.1)
+    tick_pos <- stretch(tick_vals)
+
+    png(
+      filename = paste0(pathOutMaps, gsub(" ", "", fluxName), "_flux.png"),
+      width = 3.5,
+      height = 2.5,
+      units = "in",
+      res = 600
+    )
+    plot(
+      r1_eq,
+      type = "continuous",
+      range = c(0, 1),
+      col = rev(mako(100)),
+      axes = FALSE,
+      main = paste0(fluxNameLetters[k], fluxName),
+      cex.main = 0.8,
+      maxcell = 10000000,
+      plg = list(
+        title = as.expression(bquote("Mg C" ~ ha^-1 ~ y^-1)),
+        title.cex = 0.65,
+        at = tick_pos,
+        labels = format(tick_vals, digits = 2)
+      )
+    )
+    sbar(
+      40000,
+      xy = c(500000, 694000),
+      divs = 2,
+      cex = 0.8,
+      type = "bar",
+      below = "km",
+      label = c(0, 20, 40)
+    )
+    dev.off()
+  }
 
   rm(fluxId, listFluxesSub, fluxName, r1)
 }
