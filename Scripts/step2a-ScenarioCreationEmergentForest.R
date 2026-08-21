@@ -1,5 +1,5 @@
 # ApexRMS
-# Updated 2025-03-06
+# Updated 2026-08-03
 # This script adds scenarios to the step1-LibraryCreation.R
 # to update emergent and forested wetland parameters
 

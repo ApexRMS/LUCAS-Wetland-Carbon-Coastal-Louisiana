@@ -1,6 +1,6 @@
 # Creates the Barataria Basin model
 # ApexRMS
-# Nov 2025
+# Nov 2025, Updated Aug 2026
 
 #rootPath <- "D:/Barataria/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
 #rootPath <- "~/A379/Barataria_LocalCH4/"
@@ -12,13 +12,21 @@ gwpModels <- c("Barataria LocalCH4 GWP-20", "Barataria LocalCH4 GWP-100")
 # Methane defined in step0 R:203-219
 # GWP defined in step2a R:930
 
+# Results based on spatial uncertainty scenarios?
+useSpatialUncertainty <- TRUE
+
+# Generate combined library results?
+generateCombinedLibraryResults <- TRUE
+
 varsKeep <- c(
   "scriptsPath",
   "varsKeep",
   "rootPath",
   "modelName",
   "gwpModels",
-  "m"
+  "m", 
+  "useSpatialUncertainty",
+  "generateCombinedLibraryResults"
 )
 
 # Build both GWP-variant libraries
@@ -105,6 +113,8 @@ for (m in seq_along(gwpModels)) {
 # Increase the size of your instance and run spatial scenarios using SyncroSim Studio
 # c6a.32xlarge to run with 62 tiles
 
+for (m in seq_along(gwpModels)) {
+  modelName <- gwpModels[m]
 # 10. Create charts (png files) for spatial scenarios: carbon
 source(paste0(scriptsPath, "step10-SpatialFigures.R"))
 rm(list = setdiff(ls(), varsKeep))
@@ -122,14 +132,22 @@ detach(package:terra)
 detach(package:viridis)
 
 # 12. Create data release files
-source(paste0(scriptsPath, "step12-DataRelease.R"))
+if(useSpatialUncertainty){
+  source(paste0(scriptsPath, "step12uncert-DataRelease.R"))
+} else {
+  source(paste0(scriptsPath, "step12-DataRelease.R"))
+}
 rm(list = setdiff(ls(), varsKeep))
 detach(package:rsyncrosim)
 detach(package:tidyverse)
 detach(package:terra)
 
 # 13. Create charts (png files) for spatial scenarios: land cover
-source(paste0(scriptsPath, "step13-FiguresManuscriptLand.R"))
+if(useSpatialUncertainty){
+  source(paste0(scriptsPath, "step13uncert-FiguresManuscriptLand.R"))
+} else {
+  source(paste0(scriptsPath, "step13-FiguresManuscriptLand.R"))
+}
 rm(list = setdiff(ls(), varsKeep))
 detach(package:rsyncrosim)
 detach(package:tidyverse)
@@ -165,3 +183,11 @@ rm(list = setdiff(ls(), varsKeep))
 # 14. Add charts to syncrosim library
 source(paste0(scriptsPath, "step14-AddCharts.R"))
 rm(list = setdiff(ls(), varsKeep))
+}
+
+if(generateCombinedLibraryResults){
+  source(paste0(scriptsPath, "step12gwp-DataRelease.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  source(paste0(scriptsPath, "step13gwp-FiguresManuscript.R"))
+  rm(list = setdiff(ls(), varsKeep))
+}

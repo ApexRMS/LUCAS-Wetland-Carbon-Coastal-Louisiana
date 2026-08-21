@@ -1,5 +1,5 @@
 # ApexRMS
-# Updated 2025-03-25
+# Updated 2026-08-20
 # Run after step13-FiguresManuscriptSingleCell.R
 # This script creates figures for spatial scenario results
 

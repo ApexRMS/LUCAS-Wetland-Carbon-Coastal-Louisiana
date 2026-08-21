@@ -1,5 +1,5 @@
 # ApexRMS
-# Updated 2025-03-25
+# Updated 2026-08-20
 # Run after step13-FiguresManuscriptSingleCell.R
 # This script creates figures for spatial scenario results
 
@@ -443,6 +443,7 @@ for (i in 1:length(plotFlows)) {
 
   #rm(myDataFlux2c, myDataFlux4c, myDataNECBB, plotName, p7, col, lineType)
 }
+
 
 plotFlows <- c("Annual Net Ecosystem Carbon Balance (tons C per year)")
 

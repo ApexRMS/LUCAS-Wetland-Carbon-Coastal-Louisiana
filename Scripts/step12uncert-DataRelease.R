@@ -1,5 +1,5 @@
 # ApexRMS
-# Updated 2025-04-16
+# Updated 2026-08-20
 # Run after step11-SpatialMaps.R
 # This script creates data release files
 
@@ -1019,28 +1019,6 @@ tabStockSub$Low[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 tabStockSub$High[
   tabStockSub$Scenario == "Original Oak Gum Cypress Forest"
 ] <- NA
-
-# tabStockSubIPCC <- tabStockSub %>%
-#   filter(StockGroup %in% c(keepStocks1)) %>%
-#   mutate(StockGroup = str_replace(StockGroup, "\\(tons", "\\(Mg")) %>%
-#   select(-Scenario)
-
-# tabStockSubLUCAS <- tabStockSub %>%
-#   filter(StockGroup %in% c(keepStocks2NoType)) %>%
-#   mutate(StockGroup = str_replace(StockGroup, "\\(tons", "\\(Mg")) %>%
-#   select(-Scenario)
-#
-# write.csv(
-#   tabStockSubIPCC,
-#   paste0(pathOutTabular, "CarbonStocksIPCC_SingleCell_AllStocks.csv"),
-#   row.names = F
-# )
-#
-# write.csv(
-#   tabStockSubLUCAS,
-#   paste0(pathOutTabular, "CarbonStocksLUCAS_SingleCell_AllStocks.csv"),
-#   row.names = F
-# )
 
 tabStockSub <- tabStockSub %>%
   mutate(StockGroup = str_replace(StockGroup, "\\(tons", "\\(Mg")) %>%

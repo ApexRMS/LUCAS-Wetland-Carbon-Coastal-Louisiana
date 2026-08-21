@@ -1,5 +1,5 @@
 # ApexRMS
-# Updated 2025-04-16
+# Updated 2026-08-20
 # Run after step11-SpatialMaps.R
 # This script creates data release files
 
@@ -81,7 +81,7 @@ pathOut <- paste0(modelFullPath, "JointOutputs", "/Output Data Release/")
 # Create File Structure
 
 if (!dir.exists(pathOut)) {
-  dir.create(pathOut)
+  dir.create(pathOut, recursive = TRUE)
 }
 
 pathOutSpatial <- paste0(pathOut, "Spatial Data/")
@@ -469,6 +469,38 @@ for (i in 1:length(basinRuns)) {
     listFluxesSubFiles <- gsub(
       paste0(
         file.path(libraryDataPath, "stsim_OutputAverageSpatialFlowGroup"),
+        "/"
+      ),
+      "",
+      listFluxesSub
+    )
+
+    listFluxesSubFiles <- gsub(fluxId, outName, listFluxesSubFiles)
+
+    file.copy(listFluxesSub, paste0(pathOutSpatialAll, "/", listFluxesSubFiles))
+
+    rm(fluxId, listFluxesSub, outName, listFluxesSubFiles)
+  }
+
+  ## Raw Carbon Fluxes for Uncertainty scenarios
+  listFluxes <- list.files(
+    file.path(libraryDataPath, "stsim_OutputSpatialFlowGroup"),
+    pattern = ".tif",
+    full.names = T
+  )
+
+  for (k in 1:length(keepFluxesSpatial)) {
+    outName <- lookupName$NameShort[lookupName$Name == keepFluxesSpatial[k]]
+
+    fluxId <- flowGroupIDsRun %>%
+      filter(Name == keepFluxesSpatial[k]) %>%
+      pull(FlowGroupId)
+
+    listFluxesSub <- grep(fluxId, listFluxes, value = T)
+
+    listFluxesSubFiles <- gsub(
+      paste0(
+        file.path(libraryDataPath, "stsim_OutputSpatialFlowGroup"),
         "/"
       ),
       "",

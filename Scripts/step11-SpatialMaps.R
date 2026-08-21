@@ -1,5 +1,5 @@
 # ApexRMS
-# Updated 2025-03-26
+# Updated 2026-08-20
 # Run after step10-SpatialFigures.R
 # This script creates maps for spatial scenario results
 
@@ -127,6 +127,8 @@ for (j in 1:length(keepStocksSpatial)) {
   )
   dev.off()
 
+  file.copy(r1, paste0(pathOutMaps, gsub(" ", "", stockName), "_stock.tif"))
+
   rm(stockId, listStocksSub, stockName, r1)
 }
 
@@ -212,8 +214,7 @@ for (k in 1:length(keepFluxesSpatial)) {
       label = c(0, 20, 40)
     )
     dev.off()
-  } else if (k == 4) {
-    #different plot scale for Annual Emissions: CH4 (tons C per year)
+  } else if (k == 4) { #different plot scale for Annual Emissions: CH4 (tons C per year)
     r1 <- rast(listFluxesSub)
 
     vals <- values(r1, na.rm = TRUE)
@@ -274,6 +275,8 @@ for (k in 1:length(keepFluxesSpatial)) {
     )
     dev.off()
   }
+
+  file.copy(r1, paste0(pathOutMaps, gsub(" ", "", fluxName), "_flux.tif"))
 
   rm(fluxId, listFluxesSub, fluxName, r1)
 }
@@ -481,6 +484,8 @@ sbar(
 )
 dev.off()
 
+file.copy(listLandCoverSub, paste0(pathOutMaps, "LandCover.tif"))
+
 
 ## Map of Total Ecosystem Carbon difference between Baseline and IPCC
 
@@ -504,6 +509,8 @@ stockName <- gsub(" (tons C)", "", gsub(": ", " ", totalC), fixed = T)
 baselineRast <- rast(listStocksSub)
 ipccRast <- rast(ipccStockSub)
 
+diffRast <- baselineRast - ipccRast
+
 png(
   filename = paste0(pathOutMaps, "EcosystemCarbon_stock_difference.png"),
   width = 3.5,
@@ -512,7 +519,7 @@ png(
   res = 600
 )
 plot(
-  baselineRast - ipccRast,
+  diffRast,
   plg = list(title = as.expression(bquote("Mg C" ~ ha^-1)), title.cex = 0.65),
   type = "continuous",
   axes = FALSE,
@@ -533,3 +540,8 @@ sbar(
   label = c(0, 20, 40)
 )
 dev.off()
+
+writeRaster(
+  diffRast,
+  paste0(pathOutMaps, "EcosystemCarbon_stock_difference.tif")
+)
