@@ -3,10 +3,8 @@
 # Nov 2025, Updated Aug 2026
 
 #rootPath <- "D:/Barataria/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
-#rootPath <- "~/A379/Barataria_LocalCH4/"
 rootPath <- "C:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
 scriptsPath <- paste0(rootPath, "Scripts/")
-#scriptsPath <- "C:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana/Scripts/"
 
 gwpModels <- c("Barataria LocalCH4 GWP-20", "Barataria LocalCH4 GWP-100")
 # Methane defined in step0 R:203-219
@@ -185,6 +183,7 @@ source(paste0(scriptsPath, "step14-AddCharts.R"))
 rm(list = setdiff(ls(), varsKeep))
 }
 
+# Generate combined library results for data release and manuscript figures
 if(generateCombinedLibraryResults){
   source(paste0(scriptsPath, "step12gwp-DataRelease.R"))
   rm(list = setdiff(ls(), varsKeep))

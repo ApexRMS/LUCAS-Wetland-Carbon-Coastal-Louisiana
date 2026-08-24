@@ -21,35 +21,12 @@ modelPath <- "Models/"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 
-# myLibrary_Avg <- ssimLibrary(file.path(
-#   path.expand("~"),
-#   "A379",
-#   "Barataria_LocalCH4/Models",
-#   "Barataria LocalCH4 GWP-100.ssim"
-# ))
-#
-# myLibrary_Uncert <- ssimLibrary(file.path(
-#   path.expand("~"),
-#   "A379",
-#   "Barataria_LocalCH4/Models",
-#   "Uncertainty",
-#   "Barataria LocalCH4 GWP-100.ssim"
-# ))
-
 myLibrary <- ssimLibrary(
   name = paste0(modelFullPath, "/", modelName, ".ssim"),
   session = mySession
 )
 
 myProject <- rsyncrosim::project(myLibrary, project = "Definitions")
-# myProject_Avg <- rsyncrosim::project(
-#   myLibrary_Avg,
-#   project = "Definitions"
-# )
-# myProject_Uncert <- rsyncrosim::project(
-#   myLibrary_Uncert,
-#   project = "Definitions"
-# )
 
 pathOut <- paste0(rootPath, "Models/", modelName, "/OutputFigures/")
 pathOut <- paste0(pathOut, "Uncertainty/")
@@ -65,9 +42,6 @@ pathOutManuscript <- paste0(pathOutSpatial, "Manuscript")
 if (!dir.exists(pathOutManuscript)) {
   dir.create(pathOutManuscript)
 }
-
-#scenarioList_Avg <- scenario(myProject_Avg, summary = TRUE, results = TRUE)
-#scenarioList_Unc <- scenario(myProject_Uncert, summary = TRUE, results = TRUE)
 
 scenarioList <- scenario(myProject, summary = TRUE, results = TRUE)
 

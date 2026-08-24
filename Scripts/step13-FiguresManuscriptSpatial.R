@@ -16,7 +16,7 @@ mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)
 
 dataPath <- "Data/"
-modelPath <- "Models/BaratariaNewCO/"
+modelPath <- "Models/"
 
 #modelName <- "Barataria"
 

@@ -927,9 +927,9 @@ myData <- data.frame(
 saveDatasheet(myScenario, myData, sheetName)
 
 # Calculate new GWP for methane, based on model name
-if (str_detect(modelName, "GWP-100")) {
+if (str_detect(modelName, "GWP[-_ ]?100")) {
   GWPmethane <- round((16.043 / 12.011) * 27, 2) # GWP-100
-} else if (str_detect(modelName, "GWP-20")) {
+} else if (str_detect(modelName, "GWP[-_ ]?20")) {
   GWPmethane <- round((16.043 / 12.011) * 79.7, 2) # GWP-20
 } else {
   cat("GWP variant not detected in modelName. Assuming GWP-100\n")
