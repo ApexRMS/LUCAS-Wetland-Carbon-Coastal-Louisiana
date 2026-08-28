@@ -351,6 +351,19 @@ for (i in 1:length(scenarios)) {
     dpi = 600
   )
 
+  write.csv(
+    myDataStock2,
+    paste0(
+      pathOutSingleCell,
+      "/SingleCell_Stocks_",
+      plotName,
+      "_",
+      substr(scenarioLetters[i], 1, 1),
+      ".csv"
+    ),
+    row.names = FALSE
+  )
+
   rm(p1, myDataStock2, myDataStock1, myScenario1, sId)
 }
 
@@ -574,6 +587,12 @@ for (i in 1:length(plotFlows)) {
     dpi = 600
   )
 
+  write.csv(
+    myDataNECB,
+    paste0(pathOutSingleCell, "/", plotName, ".csv"),
+    row.names = FALSE
+  )
+
   if (i == 4) {
     p5 <- ggplot(
       myDataNECB,
@@ -610,6 +629,12 @@ for (i in 1:length(plotFlows)) {
       width = 3.5,
       height = 3.5,
       dpi = 600
+    )
+
+    write.csv(
+      myDataNECB,
+      paste0(pathOutSingleCell, "/", plotName, ".csv"),
+      row.names = FALSE
     )
 
     myDataNECB$FlowGroupId <- "Annual Emissions: CH4 (tons CO2-eq per year)"
@@ -655,6 +680,12 @@ for (i in 1:length(plotFlows)) {
       width = 3.5,
       height = 3.5,
       dpi = 600
+    )
+
+    write.csv(
+      myDataNECB,
+      paste0(pathOutSingleCell, "/", plotName, "Option2.csv"),
+      row.names = FALSE
     )
   }
 
@@ -866,6 +897,12 @@ for (i in 1:length(plotFlows)) {
       height = 3.5,
       dpi = 600
     )
+
+    write.csv(
+      myDataNECB,
+      paste0(pathOutSingleCell, "/", "Fig4-", plotName, ".csv"),
+      row.names = FALSE
+    )
   } else {
     p5 <- ggplot(
       myDataNECB,
@@ -902,6 +939,11 @@ for (i in 1:length(plotFlows)) {
       width = 3.5,
       height = 3.5,
       dpi = 600
+    )
+    write.csv(
+      myDataNECB,
+      paste0(pathOutSingleCell, "/", "Fig4-", plotName, ".csv"),
+      row.names = FALSE
     )
   }
 

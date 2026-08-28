@@ -133,7 +133,7 @@ lookupName <- data.frame(
   ),
   NameShort = c(
     "EcoStorage",
-    "AnnNECBCO2e",
+    "AnnNRBCO2e", #"AnnNECBCO2e"
     "AnnNECBMgC",
     "AnnCH4CO2e",
     "AnnTotEmissCO2e",
@@ -158,6 +158,11 @@ landToChange <- c(
   "Wetland: Unvegetated Forested",
   "Grassland: Annual",
   "Shrubland: Non-sage"
+)
+
+fluxNameChange <- c(
+  "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+  "Annual Net Radiative Balance (tons CO2-eq per year)"
 )
 
 keepFluxesSpatial <- keepFluxes
@@ -1026,6 +1031,12 @@ tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 
 tabFluxSub <- tabFluxSub %>%
+  mutate(
+    FlowGroup = case_when(
+      FlowGroup == fluxNameChange[1] ~ fluxNameChange[2],
+      .default = FlowGroup
+    )
+  ) %>%
   mutate(FlowGroup = str_replace(FlowGroup, "\\(tons", "\\(Mg")) %>%
   select(-Scenario)
 

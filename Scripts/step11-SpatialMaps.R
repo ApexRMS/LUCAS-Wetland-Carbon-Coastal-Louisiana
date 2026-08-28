@@ -41,6 +41,12 @@ if (!dir.exists(pathOutMaps)) {
   dir.create(pathOutMaps)
 }
 
+pathOutRasters <- paste0(pathOutSpatial, "Rasters/")
+
+if (!dir.exists(pathOutRasters)) {
+  dir.create(pathOutRasters)
+}
+
 stockGroupIds <- datasheet(myProject, name = "stsim_StockGroup", includeKey = T)
 flowGroupIds <- datasheet(myProject, name = "stsim_FlowGroup", includeKey = T)
 transitionGroupIds <- datasheet(
@@ -127,7 +133,10 @@ for (j in 1:length(keepStocksSpatial)) {
   )
   dev.off()
 
-  file.copy(r1, paste0(pathOutMaps, gsub(" ", "", stockName), "_stock.tif"))
+  file.copy(
+    listStocksSub,
+    paste0(pathOutRasters, gsub(" ", "", stockName), "_stock.tif")
+  )
 
   rm(stockId, listStocksSub, stockName, r1)
 }
@@ -157,7 +166,7 @@ keepFluxesSpatial <- c(
   "Annual Emissions: CO2 (tons C per year)"
 )
 
-fluxNameLetters <- c("a. ", "b. ", "c. ", "z. ", "z. ")
+fluxNameLetters <- c("a. ", "z. ", "c. ", "b. ", "z. ")
 
 keepFluxesSpatialDiff <- "Annual Net Ecosystem Carbon Balance (tons C per year)"
 
@@ -214,7 +223,13 @@ for (k in 1:length(keepFluxesSpatial)) {
       label = c(0, 20, 40)
     )
     dev.off()
-  } else if (k == 4) { #different plot scale for Annual Emissions: CH4 (tons C per year)
+
+    file.copy(
+      listFluxesSub,
+      paste0(pathOutRasters, gsub(" ", "", fluxName), "_flux.png")
+    )
+  } else if (k == 4) {
+    #different plot scale for Annual Emissions: CH4 (tons C per year)
     r1 <- rast(listFluxesSub)
 
     vals <- values(r1, na.rm = TRUE)
@@ -276,7 +291,10 @@ for (k in 1:length(keepFluxesSpatial)) {
     dev.off()
   }
 
-  file.copy(r1, paste0(pathOutMaps, gsub(" ", "", fluxName), "_flux.tif"))
+  file.copy(
+    listFluxesSub,
+    paste0(pathOutRasters, gsub(" ", "", fluxName), "_flux.tif")
+  )
 
   rm(fluxId, listFluxesSub, fluxName, r1)
 }
@@ -368,6 +386,11 @@ for (k in 1:length(keepFluxesSpatialDiff)) {
     label = c(0, 20, 40)
   )
   dev.off()
+
+  file.copy(
+    listFluxesSub,
+    paste0(pathOutRasters, gsub(" ", "", fluxName), "_flux.tif")
+  )
 
   rm(fluxId, listFluxesSub, fluxName, r1)
 }
@@ -484,10 +507,10 @@ sbar(
 )
 dev.off()
 
-file.copy(listLandCoverSub, paste0(pathOutMaps, "LandCover.tif"))
+writeRaster(r1, paste0(pathOutRasters, "LandCover.tif"), datatype = "INT4U")
+# can't save color scheme with current implementation of terra
 
-
-## Map of Total Ecosystem Carbon difference between Baseline and IPCC
+## Map of Total Ecosystem Carbon difference between Baseline and IPCC ---------
 
 IPCCscenID <- scenarioList$ScenarioId[grep("Basin IPCC", scenarioList$Name)]
 
@@ -543,5 +566,5 @@ dev.off()
 
 writeRaster(
   diffRast,
-  paste0(pathOutMaps, "EcosystemCarbon_stock_difference.tif")
+  paste0(pathOutRasters, "EcosystemCarbon_stock_difference.tif")
 )

@@ -82,6 +82,10 @@ fluxBaseline20 <- datasheet(baseline20, "stsim_OutputFlow")
 fluxBaseline100 <- datasheet(baseline100, "stsim_OutputFlow")
 fluxIPCC100 <- datasheet(ipcc100, "stsim_OutputFlow")
 
+fluxNameChange <- c(
+  "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+  "Annual Net Radiative Balance (tons CO2-eq per year)"
+)
 
 # plotFlows <- c("Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)")
 #
@@ -267,23 +271,7 @@ for (i in 1:length(plotFlows)) {
       Type = "solid"
     )
 
-  # myDataFlux100i <- fluxIPCC100 %>%
-  #   filter(FlowGroupId == plotFlows[i]) %>%
-  #   group_by(Timestep, Iteration) %>%
-  #   summarize(totalC = sum(Amount, na.rm = T), .groups = "drop") %>%
-  #   group_by(Timestep) %>%
-  #   summarize(
-  #     mean = mean(totalC),
-  #     min = min(totalC),
-  #     max = max(totalC),
-  #     .groups = "drop"
-  #   ) %>%
-  #   mutate(Scenario = "IPCC", #IPCC
-  #          Color = "gray40",
-  #          Type = "dotted")
-
   myDataNECBB <- myDataFlux100b %>%
-    #bind_rows(myDataFlux100i) %>%
     bind_rows(myDataFlux20b)
 
   myDataNECBB$mean <- myDataNECBB$mean / 1000000
@@ -439,6 +427,12 @@ for (i in 1:length(plotFlows)) {
     width = 3.5,
     height = 3.5,
     dpi = 600
+  )
+
+  write.csv(
+    myDataNECBB,
+    paste0(pathOutManuscript, "/", "Figure8_", plotName, ".csv"),
+    row.names = FALSE
   )
 
   #rm(myDataFlux2c, myDataFlux4c, myDataNECBB, plotName, p7, col, lineType)

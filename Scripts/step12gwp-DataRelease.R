@@ -177,7 +177,7 @@ lookupName <- data.frame(
   ),
   NameShort = c(
     "EcoStorage",
-    "AnnNECBCO2e",
+    "AnnNRBCO2e", #"AnnNECBCO2e"
     "AnnNECBMgC",
     "AnnCH4CO2e",
     "AnnTotEmissCO2e",
@@ -202,6 +202,11 @@ landToChange <- c(
   "Wetland: Unvegetated Forested",
   "Grassland: Annual",
   "Shrubland: Non-sage"
+)
+
+fluxNameChange <- c(
+  "Annual Net Ecosystem Carbon Balance (tons CO2-eq per year)",
+  "Annual Net Radiative Balance (tons CO2-eq per year)"
 )
 
 keepFluxesSpatial <- keepFluxes
@@ -543,32 +548,47 @@ tabStockSubLUCAS <- tabStockSub %>%
   mutate(StockGroup = str_replace(StockGroup, "\\(tons", "\\(Mg")) %>%
   arrange(Year, StateClass, StockGroup)
 
-write.csv(
-  tabStockSubIPCC,
-  paste0(pathOutTabular, "CarbonStocksIPCC_Basin.csv"),
-  row.names = F
-)
+tabStocksOut <- tabStockSubLUCAS %>%
+  bind_rows(tabStockSubIPCC) %>%
+  arrange(Year, StateClass, StockGroup)
 
 write.csv(
-  tabStockSubLUCAS,
-  paste0(pathOutTabular, "CarbonStocksLUCAS_Basin.csv"),
-  row.names = F
+  tabStocksOut,
+  paste0(pathOutTabular, "CarbonStocks_Basin.csv"),
+  row.names = FALSE
 )
-
-write.csv(
-  tabStockSub %>%
-    arrange(Year, StateClass, StockGroup),
-  paste0(pathOutTabular, "CarbonStocksAll_Basin.csv"),
-  row.names = F
-)
+# write.csv(
+#   tabStockSubIPCC,
+#   paste0(pathOutTabular, "CarbonStocksIPCC_Basin.csv"),
+#   row.names = F
+# )
+#
+# write.csv(
+#   tabStockSubLUCAS,
+#   paste0(pathOutTabular, "CarbonStocksLUCAS_Basin.csv"),
+#   row.names = F
+# )
+#
+# write.csv(
+#   tabStockSub %>%
+#     arrange(Year, StateClass, StockGroup),
+#   paste0(pathOutTabular, "CarbonStocksAll_Basin.csv"),
+#   row.names = F
+# )
 
 # save fluxe csvs
-tabFluxSub <- tabFluxSub %>%
+tabFluxOut <- tabFluxSub %>%
+  mutate(
+    FlowGroup = case_when(
+      FlowGroup == fluxNameChange[1] ~ fluxNameChange[2],
+      .default = FlowGroup
+    )
+  ) %>%
   mutate(FlowGroup = str_replace(FlowGroup, "\\(tons", "\\(Mg")) %>%
   arrange(Year, StateClass, FlowGroup)
 
 write.csv(
-  tabFluxSub,
+  tabFluxOut,
   paste0(pathOutTabular, "CarbonFluxes_Basin.csv"),
   row.names = F
 )

@@ -197,6 +197,7 @@ myDataGrowthPal <- myDataGrowth %>%
   select(-DistributionTypeId, -ValueDistributionRelativeFrequency)
 
 myData <- datasheet(myScenario, "stsim_DistributionValue")
+myDataDistEmergent <- myData
 
 keepFlowsUnc <- gsub(" [Type]", "", unique(myDataEst1F$FlowGroupId), fixed = T)
 
@@ -444,6 +445,8 @@ myDataFor2 <- datasheet(myScenario, "stsim_FlowMultiplier") %>%
     -StateClassId
   )
 
+myDataFor2Site <- myDataFor2
+
 rm(myScenario)
 
 myScenario <- scenario(
@@ -509,5 +512,143 @@ myDataFor <- myDataFor1F %>%
 write.csv(
   myDataFor,
   paste0(pathOutTables, "PalustrineForestedParameters.csv"),
+  row.names = F
+)
+
+##------------------
+## Non-summarized
+
+# Estuarine
+
+myDataEst2NPPRaw <- myDataDistEmergent %>%
+  filter(
+    DistributionTypeId %in%
+      c(
+        "Wetland: Estuarine Emergent Net Growth Wetland Emergent: Atmosphere -> Foliage",
+        "Wetland: Estuarine Emergent Net Growth Wetland Emergent: Atmosphere -> Fine Roots"
+      )
+  ) %>%
+  left_join(
+    myDataGrowthEst,
+    by = c(
+      "ExternalVariableTypeId",
+      "ExternalVariableMin",
+      "ExternalVariableMax"
+    )
+  ) %>%
+  mutate(
+    Value = Value * NPP,
+    FlowGroupId = gsub("Wetland: Estuarine Emergent ", "", DistributionTypeId)
+  ) %>%
+  select(FlowGroupId, Value)
+
+myDataEst2Raw <- myDataDistEmergent %>%
+  filter(DistributionTypeId %in% keepFlowsEst) %>%
+  mutate(
+    FlowGroupId = gsub("Wetland: Estuarine Emergent ", "", DistributionTypeId)
+  ) %>%
+  select(FlowGroupId, Value) %>%
+  bind_rows(myDataEst2NPPRaw) %>%
+  mutate(FlowGroupId = paste0(FlowGroupId, " [Type]"))
+
+myDataEstRaw <- myDataEst2Raw %>%
+  left_join(
+    myDataEst1F %>% select(StateClassId, FlowGroupId, Mean, order),
+    by = "FlowGroupId"
+  ) %>%
+  arrange(order) %>%
+  select(StateClassId, FlowGroupId, Mean, Value)
+
+# Palustrine
+
+myDataPal2NPPRaw <- myDataDistEmergent %>%
+  filter(
+    DistributionTypeId %in%
+      c(
+        "Wetland: Palustrine Emergent Net Growth Wetland Emergent: Atmosphere -> Foliage",
+        "Wetland: Palustrine Emergent Net Growth Wetland Emergent: Atmosphere -> Fine Roots"
+      )
+  ) %>%
+  left_join(
+    myDataGrowthPal,
+    by = c(
+      "ExternalVariableTypeId",
+      "ExternalVariableMin",
+      "ExternalVariableMax"
+    )
+  ) %>%
+  mutate(
+    Value = Value * NPP,
+    FlowGroupId = gsub("Wetland: Palustrine Emergent ", "", DistributionTypeId)
+  ) %>%
+  select(FlowGroupId, Value)
+
+myDataPal2Raw <- myDataDistEmergent %>%
+  filter(DistributionTypeId %in% keepFlowsPal) %>%
+  mutate(
+    FlowGroupId = gsub("Wetland: Palustrine Emergent ", "", DistributionTypeId)
+  ) %>%
+  select(FlowGroupId, Value) %>%
+  bind_rows(myDataPal2NPPRaw) %>%
+  mutate(FlowGroupId = paste0(FlowGroupId, " [Type]"))
+
+myDataPalRaw <- myDataPal2Raw %>%
+  left_join(
+    myDataPal1F %>% select(StateClassId, FlowGroupId, Mean, order),
+    by = "FlowGroupId"
+  ) %>%
+  arrange(order) %>%
+  select(StateClassId, FlowGroupId, Mean, Value)
+
+write.csv(
+  myDataEstRaw,
+  paste0(pathOutTables, "EstuarineEmergentParameters_NonSummarized.csv"),
+  row.names = F
+)
+write.csv(
+  myDataPalRaw,
+  paste0(pathOutTables, "PalustrineEmergentParameters_NonSummarized.csv"),
+  row.names = F
+)
+
+# Palustrine Forested
+
+myDataFor2SiteRaw <- myDataFor2Site %>%
+  mutate(Value = Min) %>%
+  select(FlowGroupId, Value)
+
+myDataFor3NPPRaw <- myData %>%
+  filter(DistributionTypeId %in% c(keepFlowsGrowth66)) %>%
+  mutate(
+    Value = Value * myDataGrowthFor,
+    FlowGroupId = gsub("Wetland: Palustrine Forested ", "", DistributionTypeId),
+    FlowGroupId = gsub(" 66", "", FlowGroupId)
+  ) %>%
+  select(FlowGroupId, Value)
+
+myDataFor3Raw <- myData %>%
+  filter(DistributionTypeId %in% c(keepFlowsFor)) %>%
+  mutate(
+    FlowGroupId = gsub("Wetland: Palustrine Forested ", "", DistributionTypeId)
+  ) %>%
+  select(FlowGroupId, Value) %>%
+  bind_rows(myDataFor3NPPRaw) %>%
+  mutate(FlowGroupId = paste0(FlowGroupId, " [Type]"))
+
+myDataFor2Raw <- myDataFor2SiteRaw %>%
+  bind_rows(myDataFor3Raw)
+
+myDataForRaw <- myDataFor2Raw %>%
+  left_join(
+    myDataFor1F %>%
+      select(StateClassId, AgeMin, AgeMax, FlowGroupId, Mean, order),
+    by = "FlowGroupId"
+  ) %>%
+  arrange(order) %>%
+  select(StateClassId, AgeMin, AgeMax, FlowGroupId, Mean, Value)
+
+write.csv(
+  myDataForRaw,
+  paste0(pathOutTables, "PalustrineForestedParameters_NonSummarized.csv"),
   row.names = F
 )

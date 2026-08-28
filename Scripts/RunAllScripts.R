@@ -22,7 +22,7 @@ varsKeep <- c(
   "rootPath",
   "modelName",
   "gwpModels",
-  "m", 
+  "m",
   "useSpatialUncertainty",
   "generateCombinedLibraryResults"
 )
@@ -113,78 +113,78 @@ for (m in seq_along(gwpModels)) {
 
 for (m in seq_along(gwpModels)) {
   modelName <- gwpModels[m]
-# 10. Create charts (png files) for spatial scenarios: carbon
-source(paste0(scriptsPath, "step10-SpatialFigures.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
-detach(package:ggplot2)
-detach(package:terra)
+  # 10. Create charts (png files) for spatial scenarios: carbon
+  source(paste0(scriptsPath, "step10-SpatialFigures.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
+  detach(package:ggplot2)
+  detach(package:terra)
 
-# 11. Create maps (png files) of spatial scenarios
-source(paste0(scriptsPath, "step11-SpatialMaps.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
-detach(package:terra)
-detach(package:viridis)
+  # 11. Create maps (png files) of spatial scenarios
+  source(paste0(scriptsPath, "step11-SpatialMaps.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
+  detach(package:terra)
+  detach(package:viridis)
 
-# 12. Create data release files
-if(useSpatialUncertainty){
-  source(paste0(scriptsPath, "step12uncert-DataRelease.R"))
-} else {
-  source(paste0(scriptsPath, "step12-DataRelease.R"))
-}
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
-detach(package:terra)
+  # 12. Create data release files
+  if (useSpatialUncertainty) {
+    source(paste0(scriptsPath, "step12uncert-DataRelease.R"))
+  } else {
+    source(paste0(scriptsPath, "step12-DataRelease.R"))
+  }
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
+  detach(package:terra)
 
-# 13. Create charts (png files) for spatial scenarios: land cover
-if(useSpatialUncertainty){
-  source(paste0(scriptsPath, "step13uncert-FiguresManuscriptLand.R"))
-} else {
-  source(paste0(scriptsPath, "step13-FiguresManuscriptLand.R"))
-}
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
-detach(package:ggplot2)
-detach(package:terra)
+  # 13. Create charts (png files) for spatial scenarios: land cover
+  if (useSpatialUncertainty) {
+    source(paste0(scriptsPath, "step13uncert-FiguresManuscriptLand.R"))
+  } else {
+    source(paste0(scriptsPath, "step13-FiguresManuscriptLand.R"))
+  }
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
+  detach(package:ggplot2)
+  detach(package:terra)
 
-# 13 Create figures for manuscript: single-cell charts
-source(paste0(scriptsPath, "step13-FiguresManuscriptSingleCell.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
-detach(package:viridis)
+  # 13 Create figures for manuscript: single-cell charts
+  source(paste0(scriptsPath, "step13-FiguresManuscriptSingleCell.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
+  detach(package:viridis)
 
-# 13. Create figures for manuscript: spatial scenario charts
-source(paste0(scriptsPath, "step13-FiguresManuscriptSpatial.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
-detach(package:ggplot2)
+  # 13. Create figures for manuscript: spatial scenario charts
+  source(paste0(scriptsPath, "step13-FiguresManuscriptSpatial.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
+  detach(package:ggplot2)
 
-# 13. Extract data for results text
-source(paste0(scriptsPath, "step13-ResultsManuscript.R"))
-rm(list = setdiff(ls(), varsKeep))
-detach(package:rsyncrosim)
-detach(package:tidyverse)
-detach(package:ggplot2)
-detach(package:terra)
+  # 13. Extract data for results text
+  source(paste0(scriptsPath, "step13-ResultsManuscript.R"))
+  rm(list = setdiff(ls(), varsKeep))
+  detach(package:rsyncrosim)
+  detach(package:tidyverse)
+  detach(package:ggplot2)
+  detach(package:terra)
 
-# 13. Extract data for supplement tables
-source(paste0(scriptsPath, "step13-SupplementTables.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 13. Extract data for supplement tables
+  source(paste0(scriptsPath, "step13-SupplementTables.R"))
+  rm(list = setdiff(ls(), varsKeep))
 
-# 14. Add charts to syncrosim library
-source(paste0(scriptsPath, "step14-AddCharts.R"))
-rm(list = setdiff(ls(), varsKeep))
+  # 14. Add charts to syncrosim library
+  source(paste0(scriptsPath, "step14-AddCharts.R"))
+  rm(list = setdiff(ls(), varsKeep))
 }
 
 # Generate combined library results for data release and manuscript figures
-if(generateCombinedLibraryResults){
+if (generateCombinedLibraryResults) {
   source(paste0(scriptsPath, "step12gwp-DataRelease.R"))
   rm(list = setdiff(ls(), varsKeep))
   source(paste0(scriptsPath, "step13gwp-FiguresManuscript.R"))
