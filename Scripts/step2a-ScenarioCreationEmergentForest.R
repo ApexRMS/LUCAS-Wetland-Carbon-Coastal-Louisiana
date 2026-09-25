@@ -926,14 +926,16 @@ myData <- data.frame(
 
 saveDatasheet(myScenario, myData, sheetName)
 
-# Calculate new GWP for methane, based on model name
+# Calculate new GWP for methane, based on model name (stops if not specified)
 if (str_detect(modelName, "GWP[-_ ]?100")) {
   GWPmethane <- round((16.043 / 12.011) * 27, 2) # GWP-100
 } else if (str_detect(modelName, "GWP[-_ ]?20")) {
   GWPmethane <- round((16.043 / 12.011) * 79.7, 2) # GWP-20
 } else {
-  cat("GWP variant not detected in modelName. Assuming GWP-100\n")
-  GWPmethane <- round((16.043 / 12.011) * 27, 2) # Assume GWP-100 if not specified in the modelName
+  stop(
+    "GWP variant not detected in modelName ('", modelName, "'). ",
+    "modelName must contain 'GWP-100' or 'GWP-20'."
+  )
 }
 #
 
