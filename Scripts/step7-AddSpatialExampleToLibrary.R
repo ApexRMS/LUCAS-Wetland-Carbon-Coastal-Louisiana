@@ -1,5 +1,5 @@
 # ApexRMS
-# Updated 2025-02-04
+# Updated 2025-07-21
 # Run after step6-AddSpatialExample.R
 # This script creates the four spatial scenarios
 
@@ -14,7 +14,7 @@ turnOnSpatialMultiprocessing <- TRUE # Divide jobs by spatial tiles?
 numberOfTiles <- 62 # Exact number of tiles to divide the landscape into (e.g. match available cores)
 oversampleFactor <- 25 # Initial partitions generated per desired tile, before balancing into exactly numberOfTiles groups by non-NA cell count
 contig <- TRUE # Create contiguous tiles?
-numberOfJobs <- 62
+numberOfJobs <- numberOfTiles
 
 mySession <- session("C:/Program Files/SyncroSim/")
 signIn(mySession)

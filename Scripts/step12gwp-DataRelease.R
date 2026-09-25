@@ -1,7 +1,7 @@
 # ApexRMS
-# Updated 2026-08-20
-# Run after step11-SpatialMaps.R
-# This script creates data release files
+# Updated 2026-09-25
+# Run after the per-model loop in RunAllScripts.R (both GWP libraries built)
+# This script creates combined GWP-20 / GWP-100 data release files
 
 library(rsyncrosim)
 library(tidyverse)
@@ -10,26 +10,28 @@ library(terra)
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
-signIn(mySession)
 
-dataPath <- "Data/"
 modelPath <- "Models/"
 
 modelFullPath <- paste0(rootPath, modelPath)
 
-gwpModels
+myLibrary_GWP100 <- ssimLibrary(
+  file.path(
+    modelFullPath,
+    "Barataria LocalCH4 GWP-100",
+    "Barataria LocalCH4 GWP-100.ssim"
+  ),
+  session = mySession
+)
 
-myLibrary_GWP100 <- ssimLibrary(file.path(
-  modelFullPath,
-  "Barataria LocalCH4 GWP-100",
-  "Barataria LocalCH4 GWP-100.ssim"
-))
-
-myLibrary_GWP20 <- ssimLibrary(file.path(
-  modelFullPath,
-  "Barataria LocalCH4 GWP-20",
-  "Barataria LocalCH4 GWP-20.ssim"
-))
+myLibrary_GWP20 <- ssimLibrary(
+  file.path(
+    modelFullPath,
+    "Barataria LocalCH4 GWP-20",
+    "Barataria LocalCH4 GWP-20.ssim"
+  ),
+  session = mySession
+)
 
 
 myProject_GWP100 <- rsyncrosim::project(
@@ -531,7 +533,7 @@ for (i in 1:length(basinRuns)) {
 }
 
 
-# save stock csvs
+# Save land cover and stock CSVs
 write.csv(
   tabLandSub,
   paste0(pathOutTabular, "LandCoverArea_Basin.csv"),
@@ -557,26 +559,8 @@ write.csv(
   paste0(pathOutTabular, "CarbonStocks_Basin.csv"),
   row.names = FALSE
 )
-# write.csv(
-#   tabStockSubIPCC,
-#   paste0(pathOutTabular, "CarbonStocksIPCC_Basin.csv"),
-#   row.names = F
-# )
-#
-# write.csv(
-#   tabStockSubLUCAS,
-#   paste0(pathOutTabular, "CarbonStocksLUCAS_Basin.csv"),
-#   row.names = F
-# )
-#
-# write.csv(
-#   tabStockSub %>%
-#     arrange(Year, StateClass, StockGroup),
-#   paste0(pathOutTabular, "CarbonStocksAll_Basin.csv"),
-#   row.names = F
-# )
 
-# save fluxe csvs
+# Save flux CSVs
 tabFluxOut <- tabFluxSub %>%
   mutate(
     FlowGroup = case_when(
@@ -605,17 +589,17 @@ flowGroupIDs %>%
 
 # Extent, Project, Spatial Resolution
 
-scenID <- max(scenarioListAll$ScenarioId[grep(
+scenID <- max(scenarioList_100$ScenarioId[grep(
   paste0("Basin ", scenariosBasin[1]),
-  scenarioListAll$Name
+  scenarioList_100$Name
 )])
 
 r1 <- rast(paste0(
   rootPath,
   "Models/",
-  modelName,
+  "Barataria LocalCH4 GWP-100",
   "/",
-  modelName,
+  "Barataria LocalCH4 GWP-100",
   ".ssim.data/Scenario-",
   scenID,
   "/stsim_OutputSpatialState/sc.it1.ts2001.tif"

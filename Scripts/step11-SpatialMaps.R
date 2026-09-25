@@ -162,7 +162,7 @@ keepFluxesSpatial <- c(
   "Annual Net Growth (tons C per year)",
   "Annual Emissions: CO2 and CH4 (tons C per year)",
   "Annual Lateral Flux (tons C per year)",
-  "Annual Emissions: CH4 (tons C per year)",
+  "Annual Emissions: CH4 (tons C per year)", # special plotting for k == 4
   "Annual Emissions: CO2 (tons C per year)"
 )
 
@@ -226,7 +226,7 @@ for (k in 1:length(keepFluxesSpatial)) {
 
     file.copy(
       listFluxesSub,
-      paste0(pathOutRasters, gsub(" ", "", fluxName), "_flux.png")
+      paste0(pathOutRasters, gsub(" ", "", fluxName), "_flux.tif")
     )
   } else if (k == 4) {
     #different plot scale for Annual Emissions: CH4 (tons C per year)
@@ -525,7 +525,12 @@ stockId <- stockGroupIds %>%
 listStocksSub <- grep(stockId, listStocks, value = T)
 listStocksSub <- grep("ts2016", listStocksSub, value = T)
 
-ipccStockSub <- gsub(scenID, IPCCscenID, listStocksSub)
+ipccStockSub <- gsub(
+  paste0("Scenario-", scenarioId(myScenario), "/"),
+  paste0("Scenario-", scenarioId(ipccScenario), "/"),
+  listStocksSub,
+  fixed = TRUE
+)
 
 stockName <- gsub(" (tons C)", "", gsub(": ", " ", totalC), fixed = T)
 
@@ -552,7 +557,6 @@ plot(
   cex.main = 0.6,
   maxcell = 10000000
 )
-# north(type = 1, cex = 0.7, "bottomleft")
 sbar(
   40000,
   xy = c(500000, 694000),

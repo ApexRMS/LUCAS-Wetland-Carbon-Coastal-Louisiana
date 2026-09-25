@@ -7,7 +7,7 @@ rootPath <- "C:/gitprojects/LUCAS-Wetland-Carbon-Coastal-Louisiana/"
 scriptsPath <- paste0(rootPath, "Scripts/")
 
 gwpModels <- c("Barataria LocalCH4 GWP-20", "Barataria LocalCH4 GWP-100")
-# Methane defined in step0 R:203-219
+# Methane defined in step0 R:210-218
 # GWP defined in step2a R:930
 
 # Results based on spatial uncertainty scenarios?
@@ -141,11 +141,7 @@ for (m in seq_along(gwpModels)) {
   detach(package:terra)
 
   # 13. Create charts (png files) for spatial scenarios: land cover
-  if (useSpatialUncertainty) {
-    source(paste0(scriptsPath, "step13uncert-FiguresManuscriptLand.R"))
-  } else {
-    source(paste0(scriptsPath, "step13-FiguresManuscriptLand.R"))
-  }
+  source(paste0(scriptsPath, "step13-FiguresManuscriptLand.R"))
   rm(list = setdiff(ls(), varsKeep))
   detach(package:rsyncrosim)
   detach(package:tidyverse)
@@ -160,7 +156,11 @@ for (m in seq_along(gwpModels)) {
   detach(package:viridis)
 
   # 13. Create figures for manuscript: spatial scenario charts
-  source(paste0(scriptsPath, "step13-FiguresManuscriptSpatial.R"))
+  if (useSpatialUncertainty) {
+    source(paste0(scriptsPath, "step13uncert-FiguresManuscriptSpatial.R"))
+  } else {
+    source(paste0(scriptsPath, "step13-FiguresManuscriptSpatial.R"))
+  }
   rm(list = setdiff(ls(), varsKeep))
   detach(package:rsyncrosim)
   detach(package:tidyverse)
@@ -187,6 +187,6 @@ for (m in seq_along(gwpModels)) {
 if (generateCombinedLibraryResults) {
   source(paste0(scriptsPath, "step12gwp-DataRelease.R"))
   rm(list = setdiff(ls(), varsKeep))
-  source(paste0(scriptsPath, "step13gwp-FiguresManuscript.R"))
+  source(paste0(scriptsPath, "step13gwp-FiguresManuscriptSpatial.R"))
   rm(list = setdiff(ls(), varsKeep))
 }

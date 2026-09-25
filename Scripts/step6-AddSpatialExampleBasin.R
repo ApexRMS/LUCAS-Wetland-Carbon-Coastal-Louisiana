@@ -14,8 +14,7 @@ library(sf)
 library(terra)
 
 # Specify file paths
-#sourceDataPath <- "D:/Barataria/Data Sources/"
-sourceDataPath <- "~/A379/Data Sources/"
+sourceDataPath <- "D:/Barataria/Data Sources/"
 studyAreaFullPath <- paste0(rootPath, "StudyArea/BasinsCoastal.shp")
 
 applyCoarserGrid <- FALSE

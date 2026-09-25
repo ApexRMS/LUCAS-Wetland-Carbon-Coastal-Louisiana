@@ -10,7 +10,6 @@ library(terra)
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
-signIn(mySession)
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -132,7 +131,7 @@ lookupName <- data.frame(
   ),
   NameShort = c(
     "EcoStorage",
-    "AnnNRBCO2e", #"AnnNECBCO2e"
+    "AnnNRBCO2e",
     "AnnNECBMgC",
     "AnnCH4CO2e",
     "AnnTotEmissCO2e",
@@ -189,7 +188,6 @@ for (i in 1:length(scenariosBasin)) {
     tabLandSub <- tabLand %>%
       select(
         -c(
-          #Iteration,
           StateLabelXId,
           StateLabelYId,
           AgeMin,
@@ -327,7 +325,6 @@ for (i in 1:length(scenariosBasin)) {
     tabLandSub2 <- tabLand %>%
       select(
         -c(
-          #Iteration,
           StateLabelXId,
           StateLabelYId,
           AgeMin,
@@ -619,13 +616,22 @@ write.csv(
   row.names = F
 )
 
+tabStockSub <- tabStockSub %>%
+  mutate(StockGroup = str_replace(StockGroup, "\\(tons", "\\(Mg"))
+
 write.csv(
   tabStockSub,
-  paste0(pathOutTabular, "CarbonStocksAll_Basin.csv"),
+  paste0(pathOutTabular, "CarbonStocks_Basin.csv"),
   row.names = F
 )
 
 tabFluxSub <- tabFluxSub %>%
+  mutate(
+    FlowGroup = case_when(
+      FlowGroup == fluxNameChange[1] ~ fluxNameChange[2],
+      .default = FlowGroup
+    )
+  ) %>%
   mutate(FlowGroup = str_replace(FlowGroup, "\\(tons", "\\(Mg"))
 
 write.csv(
@@ -664,203 +670,6 @@ r1 <- rast(paste0(
 
 r1
 
-
-# Loop through single cell scenarios
-
-for (i in 1:length(scenariosSingleCell)) {
-  print(i)
-
-  scenID <- scenarioListAll$ScenarioId[grep(
-    scenariosSingleCell[i],
-    scenarioListAll$Name
-  )]
-
-  myScenario <- scenario(myProject, scenario = max(scenID))
-
-  if (i == 1) {
-    # Load Stock Data
-    tabStock <- datasheet(myScenario, "stsim_OutputStock")
-
-    tabStockSub <- tabStock %>%
-      select(-c(StratumId, SecondaryStratumId, Iteration, ResolutionId)) %>%
-      filter(StockGroupId %in% c(keepStocks1, keepStocks2)) %>%
-      rename(
-        Year = Timestep,
-        StateClass = StateClassId,
-        StockGroup = StockGroupId
-      ) %>%
-      mutate(StockGroup = gsub(" [Type]", "", StockGroup, fixed = T)) %>%
-      group_by(Year, StateClass, StockGroup) %>%
-      summarize(
-        Mean_MgC = mean(Amount, na.rm = T),
-        Low = quantile(Amount, 0.025, na.rm = T),
-        High = quantile(Amount, 0.975, na.rm = T)
-      ) %>%
-      ungroup() %>%
-      mutate(Scenario = scenariosSingleCell[i])
-
-    rm(tabStock)
-    gc()
-
-    # Load Flux Data
-    tabFlux <- datasheet(myScenario, "stsim_OutputFlow")
-
-    tabFluxSub <- tabFlux %>%
-      select(
-        -c(
-          FromStockTypeId,
-          TransitionTypeId,
-          ToStratumId,
-          ToStateClassId,
-          ToStockTypeId,
-          EndStratumId,
-          EndSecondaryStratumId,
-          EndStateClassId,
-          EndMinAge,
-          FromSecondaryStratumId,
-          FromStratumId,
-          ResolutionId
-        )
-      ) %>%
-      filter((FlowGroupId %in% keepFluxes)) %>%
-      rename(
-        Year = Timestep,
-        FlowGroup = FlowGroupId,
-        StateClass = FromStateClassId
-      ) %>%
-      group_by(Year, StateClass, FlowGroup, Iteration) %>%
-      summarize(totalC = sum(Amount, na.rm = T)) %>%
-      ungroup() %>%
-      group_by(Year, StateClass, FlowGroup) %>%
-      summarize(
-        Mean = mean(totalC, na.rm = T),
-        Low = quantile(totalC, 0.025, na.rm = T),
-        High = quantile(totalC, 0.975, na.rm = T)
-      ) %>%
-      ungroup() %>%
-      mutate(Scenario = scenariosSingleCell[i])
-
-    rm(tabFlux)
-    gc()
-  } else {
-    # Tabular Data
-
-    # Load Stock Data
-    tabStock <- datasheet(myScenario, "stsim_OutputStock")
-
-    tabStockSub2 <- tabStock %>%
-      select(-c(StratumId, SecondaryStratumId, Iteration, ResolutionId)) %>%
-      filter(StockGroupId %in% c(keepStocks1, keepStocks2)) %>%
-      rename(
-        Year = Timestep,
-        StateClass = StateClassId,
-        StockGroup = StockGroupId
-      ) %>%
-      mutate(StockGroup = gsub(" [Type]", "", StockGroup, fixed = T)) %>%
-      group_by(Year, StateClass, StockGroup) %>%
-      summarize(
-        Mean_MgC = mean(Amount, na.rm = T),
-        Low = quantile(Amount, 0.025, na.rm = T),
-        High = quantile(Amount, 0.975, na.rm = T)
-      ) %>%
-      ungroup() %>%
-      mutate(Scenario = scenariosSingleCell[i])
-
-    tabStockSub <- tabStockSub %>%
-      addRow(tabStockSub2)
-
-    rm(tabStock, tabStockSub2)
-    gc()
-
-    # Load Flux Data
-    tabFlux <- datasheet(myScenario, "stsim_OutputFlow")
-
-    tabFluxSub2 <- tabFlux %>%
-      select(
-        -c(
-          FromStockTypeId,
-          TransitionTypeId,
-          ToStratumId,
-          ToStateClassId,
-          ToStockTypeId,
-          EndStratumId,
-          EndSecondaryStratumId,
-          EndStateClassId,
-          EndMinAge,
-          FromSecondaryStratumId,
-          FromStratumId,
-          ResolutionId
-        )
-      ) %>%
-      filter((FlowGroupId %in% keepFluxes)) %>%
-      rename(
-        Year = Timestep,
-        FlowGroup = FlowGroupId,
-        StateClass = FromStateClassId
-      ) %>%
-      group_by(Year, StateClass, FlowGroup, Iteration) %>%
-      summarize(totalC = sum(Amount, na.rm = T)) %>%
-      ungroup() %>%
-      group_by(Year, StateClass, FlowGroup) %>%
-      summarize(
-        Mean = mean(totalC, na.rm = T),
-        Low = quantile(totalC, 0.025, na.rm = T),
-        High = quantile(totalC, 0.975, na.rm = T)
-      ) %>%
-      ungroup() %>%
-      mutate(Scenario = scenariosSingleCell[i])
-
-    tabFluxSub <- tabFluxSub %>%
-      addRow(tabFluxSub2)
-
-    rm(tabFlux, tabFluxSub2)
-    gc()
-  }
-
-  rm(scenID, myScenario)
-}
-
-tabStockSub$Low[tabStockSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-tabStockSub$High[
-  tabStockSub$Scenario == "Original Oak Gum Cypress Forest"
-] <- NA
-
-tabStockSubIPCC <- tabStockSub %>%
-  filter(StockGroup %in% c(keepStocks1)) %>%
-  mutate(StockGroup = str_replace(StockGroup, "\\(tons", "\\(Mg")) %>%
-  select(-Scenario)
-
-tabStockSubLUCAS <- tabStockSub %>%
-  filter(StockGroup %in% c(keepStocks2NoType)) %>%
-  mutate(StockGroup = str_replace(StockGroup, "\\(tons", "\\(Mg")) %>%
-  select(-Scenario)
-
-write.csv(
-  tabStockSubIPCC,
-  paste0(pathOutTabular, "CarbonStocksIPCC_SingleCell.csv"),
-  row.names = F
-)
-
-write.csv(
-  tabStockSubLUCAS,
-  paste0(pathOutTabular, "CarbonStocksLUCAS_SingleCell.csv"),
-  row.names = F
-)
-
-tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
-
-tabFluxSub <- tabFluxSub %>%
-  mutate(FlowGroup = str_replace(FlowGroup, "\\(tons", "\\(Mg")) %>%
-  select(-Scenario)
-
-write.csv(
-  tabFluxSub,
-  paste0(pathOutTabular, "CarbonFluxes_SingleCell.csv"),
-  row.names = F
-)
-
-
 ## ---------------------------------
 # Unfiltered stocks and fluxes
 ## ---------------------------------
@@ -868,7 +677,6 @@ write.csv(
 # Loop through single cell scenarios
 
 for (i in 1:length(scenariosSingleCell)) {
-  print(i)
 
   scenID <- scenarioListAll$ScenarioId[grep(
     scenariosSingleCell[i],
@@ -992,7 +800,7 @@ for (i in 1:length(scenariosSingleCell)) {
           ResolutionId
         )
       ) %>%
-      filter((FlowGroupId %in% keepFluxes)) %>%
+      #filter((FlowGroupId %in% keepFluxes)) %>%
       rename(
         Year = Timestep,
         FlowGroup = FlowGroupId,
@@ -1051,17 +859,18 @@ tabFluxSub <- tabFluxSub %>%
 
 write.csv(
   tabFluxSub,
-  paste0(pathOutTabular, "CarbonFluxes_Basin.csv"),
+  paste0(pathOutTabular, "CarbonFluxes_SingleCell_AllFluxes.csv"),
   row.names = F
 )
 
 
-## ====================================
+## ---------------------------------
+# Filtered single-cell stocks and fluxes
+## ---------------------------------
 
 # Loop through single cell scenarios
 
 for (i in 1:length(scenariosSingleCell)) {
-  print(i)
 
   scenID <- scenarioListAll$ScenarioId[grep(
     scenariosSingleCell[i],
@@ -1237,18 +1046,6 @@ write.csv(
   paste0(pathOutTabular, "CarbonStocks_SingleCell.csv"),
   row.names = FALSE
 )
-
-# write.csv(
-#   tabStockSubIPCC,
-#   paste0(pathOutTabular, "CarbonStocksIPCC_SingleCell.csv"),
-#   row.names = F
-# )
-#
-# write.csv(
-#   tabStockSubLUCAS,
-#   paste0(pathOutTabular, "CarbonStocksLUCAS_SingleCell.csv"),
-#   row.names = F
-# )
 
 tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA

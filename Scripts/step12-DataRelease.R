@@ -1,5 +1,5 @@
 # ApexRMS
-# Updated 2025-04-16
+# Updated 2026-08-20
 # Run after step11-SpatialMaps.R
 # This script creates data release files
 
@@ -10,7 +10,6 @@ library(terra)
 # Specify file paths, library, and project
 
 mySession <- session("C:/Program Files/SyncroSim/")
-signIn(mySession)
 
 dataPath <- "Data/"
 modelPath <- "Models/"
@@ -28,7 +27,6 @@ myProject <- rsyncrosim::project(myLibrary, project = "Definitions")
 
 scenariosBasin <- c(
   "Baseline",
-  #"No Palustrine Forested Wetland",
   "IPCC"
 )
 
@@ -595,6 +593,12 @@ write.csv(
 )
 
 tabFluxSub <- tabFluxSub %>%
+  mutate(
+    FlowGroup = case_when(
+      FlowGroup == fluxNameChange[1] ~ fluxNameChange[2],
+      .default = FlowGroup
+    )
+  ) %>%
   mutate(FlowGroup = str_replace(FlowGroup, "\\(tons", "\\(Mg"))
 
 write.csv(
@@ -820,6 +824,12 @@ tabFluxSub$Low[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 tabFluxSub$High[tabFluxSub$Scenario == "Original Oak Gum Cypress Forest"] <- NA
 
 tabFluxSub <- tabFluxSub %>%
+  mutate(
+    FlowGroup = case_when(
+      FlowGroup == fluxNameChange[1] ~ fluxNameChange[2],
+      .default = FlowGroup
+    )
+  ) %>%
   mutate(FlowGroup = str_replace(FlowGroup, "\\(tons", "\\(Mg")) %>%
   select(-Scenario)
 
