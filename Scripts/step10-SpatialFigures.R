@@ -19,7 +19,7 @@ signIn(mySession)
 dataPath <- "Data/"
 modelPath <- "Models/"
 
-modelName <- "Barataria"
+#modelName <- "Barataria"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName)
 
@@ -577,7 +577,7 @@ for (i in 2:length(years)){
   subTabTransitionBlank <- data.frame(LandClassStart = landClasses,
                                       LandClassEnd = landClasses,
                                       Area_ha = NA,
-                                      TimeStep = years[i])
+                                      Timestep = years[i])
   
   subTabTransition <- subTabTransition %>%
     filter(!(LandClassStart == LandClassEnd)) %>%

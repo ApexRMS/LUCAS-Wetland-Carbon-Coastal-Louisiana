@@ -23,7 +23,7 @@ dataPath <- "Data/"
 definitionsPath <- paste0(rootPath, dataPath, "Definitions/")
 stockFlowPath <- paste0(rootPath, dataPath, "Stock Flow/")
 
-modelName <- "Barataria"
+#modelName <- "Barataria"
 
 modelFullPath <- paste0(rootPath, modelPath, modelName) 
 
